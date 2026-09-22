@@ -24,7 +24,7 @@ class AuthInterceptor extends QueuedInterceptor {
 
   Completer<AuthTokens?>? _refreshInFlight;
 
-  static const _anonymous = {ApiEndpoints.login, ApiEndpoints.refresh};
+  static const _anonymous = {ApiEndpoints.login, ApiEndpoints.register, ApiEndpoints.refresh};
 
   @override
   Future<void> onRequest(
