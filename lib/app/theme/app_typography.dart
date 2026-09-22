@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract final class AppTypography {
   static const _family = 'Cairo';
 
-  static TextTheme textTheme(ColorScheme scheme) => TextTheme(
+  static TextTheme textTheme(ColorScheme scheme) => const TextTheme(
         displayLarge: const TextStyle(fontFamily: _family, fontSize: 57, height: 1.2),
         displayMedium: const TextStyle(fontFamily: _family, fontSize: 45, height: 1.2),
         displaySmall: const TextStyle(fontFamily: _family, fontSize: 36, height: 1.2),
