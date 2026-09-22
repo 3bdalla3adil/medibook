@@ -29,6 +29,7 @@ abstract final class ConfigLoader {
       enableDeviceIntegrityCheck: const bool.fromEnvironment('ENABLE_DEVICE_INTEGRITY'),
       enableScreenGuard: const bool.fromEnvironment('ENABLE_SCREEN_GUARD', defaultValue: true),
       enableBiometrics: const bool.fromEnvironment('ENABLE_BIOMETRICS'),
+      enableDemoAuth: const bool.fromEnvironment('ENABLE_DEMO_AUTH'),
       allowCleartextTraffic: const bool.fromEnvironment('ALLOW_CLEARTEXT'),
       maxOutboxAttempts: 8,
       sessionIdleTimeout: const Duration(minutes: 15),
