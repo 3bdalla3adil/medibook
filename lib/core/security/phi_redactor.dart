@@ -29,7 +29,7 @@ abstract final class PhiRedactor {
   );
 
   static String redact(String input) {
-    final out = input;
+    var out = input;
     out = out.replaceAllMapped(_bearer, (m) => '${m[1]} $_mask');
     out = out.replaceAll(_jwt, _mask);
     out = out.replaceAll(_email, _mask);
