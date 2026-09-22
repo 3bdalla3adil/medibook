@@ -41,7 +41,7 @@ class RetryInterceptor extends Interceptor {
     _log.warn('Retrying request', data: {
       'method': options.method,
       'attempt': attempt + 1,
-    });
+    },);
 
     await Future<void>.delayed(delay);
 
