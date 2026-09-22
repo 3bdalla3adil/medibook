@@ -179,7 +179,7 @@ class _Dropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DropdownButtonFormField<BookingOption>(
-    value: value,
+    initialValue: value,
     isExpanded: true,
     decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
     items: [for (final item in items) DropdownMenuItem(value: item, child: Text(item.name))],
