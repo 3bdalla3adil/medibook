@@ -21,6 +21,7 @@ class DioClient {
     required NetworkInfo networkInfo,
     required CertificatePinning pinning,
     required Future<void> Function() onSessionExpired,
+    Future<AuthTokens?> Function()? firebaseTokenRefresher,
   }) {
     BaseOptions baseOptions() => BaseOptions(
           baseUrl: '${config.apiBaseUrl}${config.apiVersion}',
