@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injector.dart';
@@ -39,7 +38,7 @@ class _AppointmentDetailsCubit extends Cubit<_AppointmentDetailsState> {
       case Ok(value: final value):
         emit(value == null ? const _AppointmentDetailsState.notFound() : _AppointmentDetailsState.ready(value));
       case Err(:final failure):
-        emit(_AppointmentDetailsState.error(failure.message));
+        emit(_AppointmentDetailsState.error(failure.code));
     }
   }
 
