@@ -1,5 +1,5 @@
-import '../../../../core/error/result.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/error/result.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../domain/entities/booking_option.dart';
 import '../../domain/entities/booking_slot.dart';
