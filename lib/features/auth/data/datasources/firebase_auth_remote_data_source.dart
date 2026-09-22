@@ -82,7 +82,12 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
 
       // Email verification is enabled as part of the registration flow, but
       // account verification is not enforced by the client.
-      await currentUser.sendEmailVerification();
+      try {
+        await currentUser.sendEmailVerification();
+      } on FirebaseAuthException {
+        // Registration itself remains successful if the verification email
+        // cannot be sent; the user can request verification again later.
+      }
 
       return _responseFor(currentUser);
     } on FirebaseAuthException catch (e) {
