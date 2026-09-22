@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../lib/core/error/exceptions.dart';
+
 import '../../../lib/features/auth/data/datasources/demo_auth_remote_data_source.dart';
 
 void main() {
