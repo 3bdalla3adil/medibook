@@ -45,7 +45,7 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
         throw const AuthException('unauthorized');
       }
 
-      return _responseFor(user);
+      return await _responseFor(user);
     } on FirebaseAuthException catch (e) {
       throw _mapAuthException(e);
     } on AuthException {
@@ -89,7 +89,7 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
         // cannot be sent; the user can request verification again later.
       }
 
-      return _responseFor(currentUser);
+      return await _responseFor(currentUser);
     } on FirebaseAuthException catch (e) {
       throw _mapAuthException(e);
     } on AuthException {
