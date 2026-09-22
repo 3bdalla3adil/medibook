@@ -163,7 +163,7 @@ class _LoginViewState extends State<_LoginView> {
   String _localizeError(AppLocalizations l10n, String code) {
     return switch (code) {
       'validation' => l10n.loginEmailInvalid,
-      'unauthorized' => l10n.loginInvalidCredentials,
+      'unauthorized' || 'user_not_found' || 'user_disabled' => l10n.loginInvalidCredentials,
       'network' || 'timeout' => l10n.errorNetwork,
       'forbidden' => l10n.errorForbidden,
       _ => l10n.errorGeneric,
