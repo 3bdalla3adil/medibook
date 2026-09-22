@@ -11,10 +11,12 @@ import '../../features/appointments/domain/usecases/get_upcoming_appointment.dar
 import '../../features/auth/data/datasources/auth_local_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/datasources/demo_auth_remote_data_source.dart';
+import '../../features/auth/data/datasources/firebase_auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login.dart';
 import '../../features/auth/domain/usecases/logout.dart';
+import '../../features/auth/domain/usecases/register.dart';
 import '../../features/auth/domain/usecases/restore_session.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -37,9 +39,16 @@ Future<void> registerFeatures() async {
 
   getIt
     ..registerLazySingleton<AuthRemoteDataSource>(
-      () => getIt<AppConfig>().enableDemoAuth
-          ? DemoAuthRemoteDataSource()
-          : DioAuthRemoteDataSource(dio),
+      () {
+        final config = getIt<AppConfig>();
+        if (config.enableDemoAuth) {
+          return DemoAuthRemoteDataSource();
+        }
+        if (config.enableFirebaseAuth) {
+          return FirebaseAuthRemoteDataSource();
+        }
+        return DioAuthRemoteDataSource(dio);
+      },
     )
     ..registerLazySingleton<AuthLocalDataSource>(
       () => SecureAuthLocalDataSource(getIt()),
@@ -52,11 +61,13 @@ Future<void> registerFeatures() async {
       ),
     )
     ..registerFactory(() => LoginUseCase(getIt()))
+    ..registerFactory(() => RegisterUseCase(getIt()))
     ..registerFactory(() => LogoutUseCase(getIt()))
     ..registerFactory(() => RestoreSessionUseCase(getIt()))
     ..registerFactory(
       () => AuthBloc(
         login: getIt(),
+        register: getIt(),
         logout: getIt(),
         restore: getIt(),
         repository: getIt(),
