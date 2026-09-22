@@ -58,7 +58,7 @@ class SyncEngine {
     _log.info('Outbox enqueued', data: {
       'entity': entry.entityType,
       'op': entry.op.name,
-    });
+    },);
     if (await _network.isOnline()) unawaited(drain());
   }
 
@@ -78,7 +78,7 @@ class SyncEngine {
 
         final handler = _handlers[entry.entityType];
         if (handler == null) {
-          _log.warn('No outbox handler', data: {'entity': entry.entityType});
+          _log.warn('No outbox handler', data: {'entity': entry.entityType},);
           continue;
         }
 
@@ -87,7 +87,7 @@ class SyncEngine {
         switch (result) {
           case Ok():
             await _store.delete(Boxes.outbox, entry.id);
-            _log.info('Outbox entry synced', data: {'entity': entry.entityType});
+            _log.info('Outbox entry synced', data: {'entity': entry.entityType},);
           case Err(:final failure):
             await _onFailure(entry, failure);
         }
@@ -118,7 +118,7 @@ class SyncEngine {
         'entity': entry.entityType,
         'code': failure.code,
         'permanent': permanent,
-      });
+      },);
       return;
     }
 
