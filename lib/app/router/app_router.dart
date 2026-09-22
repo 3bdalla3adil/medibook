@@ -27,7 +27,7 @@ class AppRouter {
         redirect: (context, state) => _guard.redirect(context, state),
         routes: [
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
-          GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
+          //GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.dashboard, builder: (_, __) => const PatientDashboardPage()),
           GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           GoRoute(path: Routes.bookAppointment, builder: (_, __) => const BookAppointmentPage()),
