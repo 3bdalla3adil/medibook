@@ -10,6 +10,7 @@ import '../../features/appointments/domain/usecases/get_appointments.dart';
 import '../../features/appointments/domain/usecases/get_upcoming_appointment.dart';
 import '../../features/auth/data/datasources/auth_local_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/auth/data/datasources/demo_auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login.dart';
@@ -23,6 +24,7 @@ import '../../features/patients/domain/repositories/patient_repository.dart';
 import '../../features/patients/domain/usecases/get_patient_profile.dart';
 import '../../features/telehealth/data/repositories/telehealth_repository_impl.dart';
 import '../../features/telehealth/domain/repositories/telehealth_repository.dart';
+import '../config/app_config.dart';
 import '../network/dio_client.dart';
 import '../storage/local_store.dart';
 import '../sync/sync_engine.dart';
@@ -34,7 +36,11 @@ Future<void> registerFeatures() async {
   final sync = getIt<SyncEngine>();
 
   getIt
-    ..registerLazySingleton<AuthRemoteDataSource>(() => DioAuthRemoteDataSource(dio))
+    ..registerLazySingleton<AuthRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoAuthRemoteDataSource()
+          : DioAuthRemoteDataSource(dio),
+    )
     ..registerLazySingleton<AuthLocalDataSource>(
       () => SecureAuthLocalDataSource(getIt()),
     )
