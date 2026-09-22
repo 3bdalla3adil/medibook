@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../app/router/routes.dart';
@@ -12,8 +12,8 @@ import '../../domain/entities/appointment.dart';
 import '../../domain/entities/appointment_status.dart';
 import '../../domain/entities/booking_option.dart';
 import '../../domain/entities/booking_slot.dart';
-import '../../domain/repositories/booking_repository.dart';
 import '../../domain/repositories/appointment_repository.dart';
+import '../../domain/repositories/booking_repository.dart';
 
 class BookAppointmentPage extends StatefulWidget {
   const BookAppointmentPage({super.key});
