@@ -4,12 +4,12 @@ abstract final class AppTypography {
   static const _family = 'Cairo';
 
   static TextTheme textTheme(ColorScheme scheme) => TextTheme(
-        displayLarge: const TextStyle(fontFamily: _family, fontSize: 57, height: 1.2),
-        displayMedium: const TextStyle(fontFamily: _family, fontSize: 45, height: 1.2),
-        displaySmall: const TextStyle(fontFamily: _family, fontSize: 36, height: 1.2),
-        headlineLarge: const TextStyle(fontFamily: _family, fontSize: 32, height: 1.3),
-        headlineMedium: const TextStyle(fontFamily: _family, fontSize: 28, height: 1.3),
-        headlineSmall: const TextStyle(fontFamily: _family, fontSize: 24, height: 1.3),
+        displayLarge: TextStyle(fontFamily: _family, fontSize: 57, height: 1.2),
+        displayMedium: TextStyle(fontFamily: _family, fontSize: 45, height: 1.2),
+        displaySmall: TextStyle(fontFamily: _family, fontSize: 36, height: 1.2),
+        headlineLarge: TextStyle(fontFamily: _family, fontSize: 32, height: 1.3),
+        headlineMedium: TextStyle(fontFamily: _family, fontSize: 28, height: 1.3),
+        headlineSmall: TextStyle(fontFamily: _family, fontSize: 24, height: 1.3),
         titleLarge: const TextStyle(
           fontFamily: _family,
           fontSize: 22,
