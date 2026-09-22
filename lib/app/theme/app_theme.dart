@@ -21,7 +21,7 @@ abstract final class AppTheme {
       textTheme: AppTypography.textTheme(scheme),
       fontFamily: 'Cairo',
       scaffoldBackgroundColor: scheme.surface,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         color: scheme.surfaceContainerHigh,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
