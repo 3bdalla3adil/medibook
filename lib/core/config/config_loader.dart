@@ -30,6 +30,7 @@ abstract final class ConfigLoader {
       enableScreenGuard: const bool.fromEnvironment('ENABLE_SCREEN_GUARD', defaultValue: true),
       enableBiometrics: const bool.fromEnvironment('ENABLE_BIOMETRICS'),
       enableDemoAuth: const bool.fromEnvironment('ENABLE_DEMO_AUTH'),
+      enableFirebaseAuth: const bool.fromEnvironment('ENABLE_FIREBASE_AUTH'),
       allowCleartextTraffic: const bool.fromEnvironment('ALLOW_CLEARTEXT'),
       maxOutboxAttempts: 8,
       sessionIdleTimeout: const Duration(minutes: 15),
