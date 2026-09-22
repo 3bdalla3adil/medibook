@@ -39,7 +39,7 @@ class DioTelehealthRepository implements TelehealthRepository {
   Future<Result<String>> refreshJoinToken(String sessionId) async {
     final result = await guard(() => _dio.post<Map<String, dynamic>>(
           ApiEndpoints.telehealthJoin(sessionId),
-        ));
+        ),);
     return result.map((res) => res.data!['data']['join_token'] as String);
   }
 
