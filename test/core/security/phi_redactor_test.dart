@@ -4,8 +4,10 @@ import 'package:medibook/core/security/phi_redactor.dart';
 void main() {
   group('PhiRedactor.redact', () {
     test('masks email addresses', () {
-      expect(PhiRedactor.redact('contact sara@example.com today'),
-          'contact *** today');
+      expect(
+        PhiRedactor.redact('contact sara@example.com today'),
+        'contact *** today',
+      );
     });
 
     test('masks JWTs regardless of position', () {
@@ -28,8 +30,10 @@ void main() {
     });
 
     test('leaves benign text untouched', () {
-      expect(PhiRedactor.redact('Appointment booked successfully'),
-          'Appointment booked successfully');
+      expect(
+        PhiRedactor.redact('Appointment booked successfully'),
+        'Appointment booked successfully',
+      );
     });
   });
 
