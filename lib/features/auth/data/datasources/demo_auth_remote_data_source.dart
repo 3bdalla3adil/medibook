@@ -1,3 +1,4 @@
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/security/token_store.dart';
 import '../../domain/entities/auth_user.dart';
 import 'auth_remote_data_source.dart';
