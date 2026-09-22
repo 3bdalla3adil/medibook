@@ -41,9 +41,22 @@ class AppConfig {
   Uri resolve(String path) => Uri.parse('$apiBaseUrl$apiVersion$path');
 
   void validate() {
-    if (isProd) {
-      assert(!allowCleartextTraffic, 'Cleartext traffic forbidden in production.');
-      assert(apiBaseUrl.startsWith('https://'), 'Production API must use HTTPS.');
+    if (!isProd) return;
+
+    if (allowCleartextTraffic) {
+      throw StateError('Cleartext traffic must be disabled in production.');
+    }
+
+    if (!apiBaseUrl.startsWith('https://')) {
+      throw StateError('Production API_BASE_URL must use HTTPS.');
+    }
+
+    if (apiBaseUrl.contains('example.com')) {
+      throw StateError('Production API_BASE_URL must be configured.');
+    }
+
+    if (maxOutboxAttempts < 1) {
+      throw StateError('maxOutboxAttempts must be greater than zero.');
     }
   }
 }
