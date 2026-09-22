@@ -83,6 +83,9 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Regenerate Android platform scaffolding
+        run: flutter create --platforms=android --org "$ORG" --project-name "$APP" .
+
       - name: Install Dependencies
         run: flutter pub get
 
@@ -125,6 +128,9 @@ jobs:
           channel: stable
           cache: true
           
+      - name: Regenerate iOS platform scaffolding
+        run: flutter create --platforms=ios --org "$ORG" --project-name "$APP" .
+
       - name: Install Dependencies
         run: flutter pub get
 
