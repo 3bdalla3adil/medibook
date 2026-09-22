@@ -1,4 +1,5 @@
 import '../config/app_config.dart';
+import '../firebase/firebase_token_refresher.dart';
 import '../network/dio_client.dart';
 import '../network/network_info.dart';
 import '../security/biometric_service.dart';
@@ -63,6 +64,9 @@ Future<void> registerCore(
       networkInfo: getIt<NetworkInfo>(),
       pinning: getIt<CertificatePinning>(),
       onSessionExpired: onSessionExpired,
+      firebaseTokenRefresher: config.enableFirebaseAuth
+          ? const FirebaseTokenRefresher().refresh
+          : null,
     ),
   );
 }
