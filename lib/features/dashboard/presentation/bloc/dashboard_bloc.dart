@@ -152,7 +152,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       isOffline: !online,
       isRefreshing: false,
       lastSyncedAt: online ? _clock.now() : state.lastSyncedAt,
-    ));
+    ),);
   }
 
   void _onAppointmentsChanged(List<Appointment> appointments) {
