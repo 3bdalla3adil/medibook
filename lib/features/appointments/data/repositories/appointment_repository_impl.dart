@@ -131,7 +131,7 @@ class AppointmentRepositoryImpl implements AppointmentRepository, OutboxHandler 
     final result = await guard(() => _remote.create(
           _toWire(optimistic),
           idempotencyKey: _uuid.v4(),
-        ));
+        ),);
 
     switch (result) {
       case Ok(value: final dto):
