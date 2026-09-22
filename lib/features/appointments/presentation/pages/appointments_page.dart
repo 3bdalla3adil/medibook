@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/router/routes.dart';
@@ -74,7 +74,7 @@ class _AppointmentsView extends StatelessWidget {
                     title: Text(a.doctorName, maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Text(a.serviceName + '\n' + date.format(a.startsAt.toLocal()) + ' · ' + time.format(a.startsAt.toLocal())),
+                      child: Text('${a.serviceName}\n${date.format(a.startsAt.toLocal())} · ${time.format(a.startsAt.toLocal())}'),
                     ),
                     isThreeLine: true,
                     trailing: _StatusIcon(status: a.status),
