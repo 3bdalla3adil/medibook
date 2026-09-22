@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/di/injector.dart';
-import '../../data/datasources/demo_auth_remote_data_source.dart';
+import '../../data/datasources/demo_auth_remote_data_source.dart';   // <-- out of order
 import '../../../../l10n/gen/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 
