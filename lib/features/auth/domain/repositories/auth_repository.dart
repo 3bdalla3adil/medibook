@@ -9,6 +9,11 @@ class Session {
 
 abstract interface class AuthRepository {
   Future<Result<Session>> login({required String email, required String password});
+  Future<Result<Session>> register({
+    required String email,
+    required String password,
+    required String displayName,
+  });
   Future<Result<Session>> restoreSession();
   Future<Result<void>> logout({bool revokeOnServer = true});
   Stream<AuthUser?> watchUser();
