@@ -54,5 +54,6 @@
   "statusInConsultation": "قيد الاستشارة",
   "statusCompleted": "مكتمل",
   "statusCancelled": "ملغى",
-  "statusNoShow": "لم يحضر"
+  "statusNoShow": "لم يحضر",
+  "loginDemoAccount": "المتابعة بحساب تجريبي"
 }
