@@ -25,7 +25,7 @@ Then enable:
 - **Authentication → Sign-in method → Email/Password**
 - **Firestore Database**
 
-Firebase's current Flutter documentation recommends the Firebase CLI plus FlutterFire CLI for configuring Flutter applications. The CLI generates the platform configuration and `firebase_options.dart`. citeturn0search0turn2search1
+Firebase's current Flutter documentation recommends the Firebase CLI plus FlutterFire CLI for configuring Flutter applications. The CLI generates the platform configuration and `firebase_options.dart`.
 
 ## 2. Install the CLIs
 
@@ -53,7 +53,7 @@ For iOS, FlutterFire registers the iOS app and provides the Apple configuration.
 
 Do not manually invent Firebase project IDs, application IDs, or API keys. Let `flutterfire configure` generate the correct configuration for the Firebase project.
 
-Firebase configuration identifiers are not passwords; however, access control must come from Firebase Authentication and Firestore Security Rules, not from hiding the client configuration. citeturn0search5
+Firebase configuration identifiers are not passwords; however, access control must come from Firebase Authentication and Firestore Security Rules, not from hiding the client configuration.
 
 ## 4. Enable Firebase authentication in MediBook
 
@@ -95,7 +95,7 @@ FirebaseAuthRemoteDataSource
       └── Firestore users/{uid}: create patient profile
 ```
 
-Firebase Auth creates the account and signs the user in after successful password registration. The app then creates a patient profile in Firestore. Firebase documents the same email/password creation flow and recommends handling errors such as weak passwords and existing email addresses. citeturn2search1turn2search0
+Firebase Auth creates the account and signs the user in after successful password registration. The app then creates a patient profile in Firestore. Firebase documents the same email/password creation flow and recommends handling errors such as weak passwords and existing email addresses.
 
 ## 6. Firestore data model
 
@@ -144,7 +144,7 @@ Deploy with:
 firebase deploy --only firestore
 ```
 
-Do **not** use `allow read, write: if true` in a deployed medical application. Firebase explicitly warns that open Firestore rules can expose or allow modification of the database. Security Rules should use Firebase Authentication and data-based authorization. citeturn1search0turn1search10
+Do **not** use `allow read, write: if true` in a deployed medical application. Firebase explicitly warns that open Firestore rules can expose or allow modification of the database. Security Rules should use Firebase Authentication and data-based authorization.
 
 ## 8. Fixing the existing login flow
 
@@ -172,7 +172,7 @@ In Firebase Console:
 6. Sign out.
 7. Sign back in with the registered account.
 
-For automated/local testing, Firebase also provides the Local Emulator Suite. citeturn2search7
+For automated/local testing, Firebase also provides the Local Emulator Suite.
 
 ## 10. Important architecture boundary
 
