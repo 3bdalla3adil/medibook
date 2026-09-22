@@ -119,10 +119,21 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                 const SizedBox(height: 16),
                 _Dropdown(label: 'Service', value: service, items: services, onChanged: clinic == null ? null : _selectService),
                 const SizedBox(height: 16),
-                _Dropdown(label: 'Doctor', value: doctor, items: doctors, onChanged: service == null ? null : (v) async {
-                  setState(() { doctor = v; slot = null; slots = []; });
-                  await _loadSlots();
-                }),
+                _Dropdown(
+                  label: 'Doctor',
+                  value: doctor,
+                  items: doctors,
+                  onChanged: service == null
+                      ? null
+                      : (v) async {
+                          setState(() {
+                            doctor = v;
+                            slot = null;
+                            slots = [];
+                          });
+                          await _loadSlots();
+                        },
+                ),
                 const SizedBox(height: 16),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
