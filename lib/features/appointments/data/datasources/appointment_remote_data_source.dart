@@ -122,14 +122,14 @@ class DioAppointmentRemoteDataSource implements AppointmentRemoteDataSource {
   AppException _asException(DioException e) {
     final failure = ErrorMapper.fromDio(e);
     return switch (failure) {
-      UnauthorizedFailure() => AuthException('unauthorized'),
-      ForbiddenFailure() => ServerException('forbidden', statusCode: 403),
-      NotFoundFailure() => ServerException('not_found', statusCode: 404),
-      ConflictFailure(:final code) => ConflictException('conflict', code: code),
-      ValidationFailure() => ServerException('validation', statusCode: 422),
-      ServerFailure(:final statusCode) => ServerException('server', statusCode: statusCode),
-      NetworkFailure() || TimeoutFailure() => NetworkException('network'),
-      _ => ServerException('unknown'),
+      UnauthorizedFailure() => const AuthException('unauthorized'),
+      ForbiddenFailure() => const ServerException('forbidden', statusCode: 403),
+      NotFoundFailure() => const ServerException('not_found', statusCode: 404),
+      ConflictFailure(:final code) => const ConflictException('conflict', code: code),
+      ValidationFailure() => const ServerException('validation', statusCode: 422),
+      ServerFailure(:final statusCode) => const ServerException('server', statusCode: statusCode),
+      NetworkFailure() || TimeoutFailure() => const NetworkException('network'),
+      _ => const ServerException('unknown'),
     };
   }
 }
