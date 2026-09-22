@@ -18,6 +18,7 @@ class AuthInterceptor extends QueuedInterceptor {
   final TokenStore _tokenStore;
   final Dio _refreshClient;
   final Future<void> Function() _onSessionExpired;
+  final Future<AuthTokens?> Function()? firebaseTokenRefresher;
   final _log = SecureLogger('AuthInterceptor');
 
   Completer<AuthTokens?>? _refreshInFlight;
@@ -86,6 +87,20 @@ class AuthInterceptor extends QueuedInterceptor {
   }
 
   Future<AuthTokens?> _performRefresh() async {
+    if (firebaseTokenRefresher != null) {
+      try {
+        final refreshed = await firebaseTokenRefresher!();
+        if (refreshed != null) {
+          await _tokenStore.write(refreshed);
+          _log.info('Firebase access token refreshed');
+        }
+        return refreshed;
+      } catch (_) {
+        await _tokenStore.clear();
+        return null;
+      }
+    }
+
     final current = await _tokenStore.read();
     final refreshToken = current?.refreshToken;
     if (current == null || refreshToken == null) return null;
