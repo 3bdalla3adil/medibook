@@ -15,6 +15,7 @@ class AppConfig {
     required this.enableDeviceIntegrityCheck,
     required this.enableScreenGuard,
     required this.enableBiometrics,
+    required this.enableDemoAuth,
     required this.allowCleartextTraffic,
     required this.maxOutboxAttempts,
     required this.sessionIdleTimeout,
@@ -31,6 +32,7 @@ class AppConfig {
   final bool enableDeviceIntegrityCheck;
   final bool enableScreenGuard;
   final bool enableBiometrics;
+  final bool enableDemoAuth;
   final bool allowCleartextTraffic;
   final int maxOutboxAttempts;
   final Duration sessionIdleTimeout;
@@ -53,6 +55,10 @@ class AppConfig {
 
     if (apiBaseUrl.contains('example.com')) {
       throw StateError('Production API_BASE_URL must be configured.');
+    }
+
+    if (enableDemoAuth) {
+      throw StateError('Demo authentication must be disabled in production.');
     }
 
     if (maxOutboxAttempts < 1) {
