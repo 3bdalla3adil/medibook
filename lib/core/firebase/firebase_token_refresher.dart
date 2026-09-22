@@ -16,7 +16,6 @@ class FirebaseTokenRefresher {
     final now = DateTime.now().toUtc();
     return AuthTokens(
       accessToken: token,
-      refreshToken: user.refreshToken,
       accessExpiresAt:
           (result.expirationTime ?? now.add(const Duration(hours: 1))).toUtc(),
       refreshExpiresAt: now.add(const Duration(days: 30)),
