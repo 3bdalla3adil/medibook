@@ -11,6 +11,7 @@ class AuthInterceptor extends QueuedInterceptor {
     required TokenStore tokenStore,
     required Dio refreshClient,
     required Future<void> Function() onSessionExpired,
+    this.firebaseTokenRefresher,
   })  : _tokenStore = tokenStore,
         _refreshClient = refreshClient,
         _onSessionExpired = onSessionExpired;
