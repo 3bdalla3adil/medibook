@@ -33,7 +33,7 @@ class SafeLogInterceptor extends Interceptor {
           '${PhiRedactor.redactUri(err.requestOptions.uri)}', data: {
         'type': err.type.name,
         'status': err.response?.statusCode,
-      });
+      },);
     }
     handler.next(err);
   }
