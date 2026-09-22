@@ -38,7 +38,7 @@ Future<void> registerFeatures() async {
   getIt
     ..registerLazySingleton<AuthRemoteDataSource>(
       () => getIt<AppConfig>().enableDemoAuth
-          ? const DemoAuthRemoteDataSource()
+          ? DemoAuthRemoteDataSource()
           : DioAuthRemoteDataSource(dio),
     )
     ..registerLazySingleton<AuthLocalDataSource>(
