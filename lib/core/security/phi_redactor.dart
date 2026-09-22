@@ -11,15 +11,22 @@ abstract final class PhiRedactor {
     'first_name', 'last_name', 'patient_name', 'card_number', 'iban',
   };
 
-  static final _email = RegExp(r'[\w.\-+]+@[\w\-]+\.[\w.\-]+');
-  static final _jwt = RegExp(r'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}');
-  static final _bearer = RegExp(r'(?i)\b(bearer|basic)\s+[A-Za-z0-9._\-+/=]{8,}');
-  static final _phone = RegExp(r'(?:\+|00)?\d[\d\s\-().]{7,}\d');
+  static final _email = RegExp(r'[\w.+-]+@[\w-]+\.[\w.-]+');
+  static final _jwt = RegExp(
+    r'eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}',
+  );
+  static final _bearer = RegExp(
+    r'\b(bearer|basic)\s+[A-Za-z0-9._+/=-]{8,}',
+    caseSensitive: false,
+  );
+  static final _phone = RegExp(r'(?:\+|00)?\d[\d\s().-]{7,}\d');
   static final _uuid = RegExp(
     r'\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b',
   );
-  static final _querySecret =
-      RegExp(r'(?i)\b(token|key|secret|password|sig|signature)=([^&\s]+)');
+  static final _querySecret = RegExp(
+    r'\b(token|key|secret|password|sig|signature)=([^&\s]+)',
+    caseSensitive: false,
+  );
 
   static String redact(String input) {
     var out = input;
@@ -40,14 +47,15 @@ abstract final class PhiRedactor {
     return switch (value) {
       null => null,
       String s => redact(s),
-      num || bool => value,
-      Map m => m.map(
+      num _ || bool _ => value,
+      Map<Object?, Object?> m => m.map(
           (k, v) => MapEntry(
             k.toString(),
             redactValue(v, key: k.toString(), depth: depth + 1),
           ),
         ),
-      Iterable it => it.map((e) => redactValue(e, depth: depth + 1)).toList(),
+      Iterable<Object?> it =>
+          it.map((e) => redactValue(e, depth: depth + 1)).toList(),
       _ => _mask,
     };
   }

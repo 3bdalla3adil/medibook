@@ -40,7 +40,6 @@ Future<void> registerFeatures() async {
         remote: getIt(),
         local: getIt(),
         store: store,
-        sync: sync,
       ),
     )
     ..registerFactory(() => LoginUseCase(getIt()))

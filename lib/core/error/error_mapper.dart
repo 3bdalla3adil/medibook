@@ -12,6 +12,7 @@ abstract final class ErrorMapper {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
+      case DioExceptionType.transformTimeout:
         return TimeoutFailure(cause: e);
       case DioExceptionType.connectionError:
         return NetworkFailure(cause: e);

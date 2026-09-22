@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:medibook/core/error/failure.dart';
 import 'package:medibook/core/error/result.dart';
 import 'package:medibook/core/network/network_info.dart';
@@ -13,6 +12,7 @@ import 'package:medibook/features/dashboard/presentation/bloc/dashboard_bloc.dar
 import 'package:medibook/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:medibook/features/patients/domain/entities/patient_profile.dart';
 import 'package:medibook/features/patients/domain/usecases/get_patient_profile.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../../../_fixtures/fixtures.dart';
 
@@ -37,7 +37,7 @@ void main() {
     network = _MockNetwork();
 
     when(() => appointmentRepo.watchAppointments())
-        .thenAnswer((_) => const Stream<Appointment>.empty());
+        .thenAnswer((_) => const Stream<List<Appointment>>.empty());
     when(() => network.onStatusChange).thenAnswer((_) => const Stream<bool>.empty());
   });
 

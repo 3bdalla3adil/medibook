@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'app/app.dart';
 import 'core/config/config_loader.dart';
-import 'core/di/injector.dart';
 import 'core/di/register_core.dart';
 import 'core/di/register_features.dart';
 import 'core/security/secure_logger.dart';

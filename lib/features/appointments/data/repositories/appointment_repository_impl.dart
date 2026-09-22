@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
 import '../../../../core/network/network_info.dart';
-import '../../../../core/security/secure_logger.dart';
 import '../../../../core/sync/outbox.dart';
 import '../../../../core/sync/sync_engine.dart';
 import '../../../../core/sync/sync_status.dart';
@@ -39,8 +38,6 @@ class AppointmentRepositoryImpl implements AppointmentRepository, OutboxHandler 
   final NetworkInfo _network;
   final Clock _clock;
   final Uuid _uuid;
-  final _log = SecureLogger('AppointmentRepository');
-
   final _changes = StreamController<List<Appointment>>.broadcast();
 
   @override

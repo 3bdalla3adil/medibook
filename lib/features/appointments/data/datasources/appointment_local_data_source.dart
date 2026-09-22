@@ -2,7 +2,6 @@ import '../../../../core/storage/boxes.dart';
 import '../../../../core/storage/local_store.dart';
 import '../../../../core/sync/sync_status.dart';
 import '../../domain/entities/appointment.dart';
-import '../../domain/entities/appointment_status.dart';
 import '../models/appointment_dto.dart';
 
 abstract interface class AppointmentLocalDataSource {

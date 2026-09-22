@@ -36,6 +36,16 @@ final class DashboardConnectivityChanged extends DashboardEvent {
   List<Object?> get props => [isOnline];
 }
 
+/// Internal — fired when the appointment repository's cache stream emits.
+/// Routing through an event keeps `emit` inside a proper Bloc handler,
+/// which is what the analyzer requires.
+final class _AppointmentsCacheChanged extends DashboardEvent {
+  const _AppointmentsCacheChanged(this.appointments);
+  final List<Appointment> appointments;
+  @override
+  List<Object?> get props => [appointments];
+}
+
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   DashboardBloc({
     required GetPatientProfileUseCase getProfile,
@@ -54,6 +64,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardStarted>(_onStarted);
     on<DashboardRefreshed>(_onRefreshed);
     on<DashboardConnectivityChanged>(_onConnectivity);
+    on<_AppointmentsCacheChanged>(_onCacheChanged);
 
     _appointmentsSub = _appointmentsRepo
         .watchAppointments()
@@ -146,8 +157,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _onAppointmentsChanged(List<Appointment> appointments) {
     if (isClosed) return;
+    add(_AppointmentsCacheChanged(appointments));
+  }
+
+  void _onCacheChanged(
+    _AppointmentsCacheChanged event,
+    Emitter<DashboardState> emit,
+  ) {
     emit(state.copyWith(
-      appointments: appointments,
+      appointments: event.appointments,
       status: DashboardStatus.ready,
     ));
   }

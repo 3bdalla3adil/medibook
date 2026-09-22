@@ -3,7 +3,6 @@ import 'dart:async';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
 import '../../../../core/storage/local_store.dart';
-import '../../../../core/sync/sync_engine.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
@@ -14,16 +13,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required AuthRemoteDataSource remote,
     required AuthLocalDataSource local,
     required LocalStore store,
-    required SyncEngine sync,
   })  : _remote = remote,
         _local = local,
-        _store = store,
-        _sync = sync;
+        _store = store;
 
   final AuthRemoteDataSource _remote;
   final AuthLocalDataSource _local;
   final LocalStore _store;
-  final SyncEngine _sync;
 
   final _userController = StreamController<AuthUser?>.broadcast();
 
