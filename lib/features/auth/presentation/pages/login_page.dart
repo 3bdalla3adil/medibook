@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/di/injector.dart';
+import '../../data/datasources/demo_auth_remote_data_source.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 
@@ -114,6 +116,14 @@ class _LoginViewState extends State<_LoginView> {
                                 : Text(l10n.actionSignIn),
                           ),
                         ),
+                        if (getIt<AppConfig>().enableDemoAuth) ...[
+                          const SizedBox(height: 12),
+                          OutlinedButton.icon(
+                            onPressed: isLoading ? null : _useDemoAccount,
+                            icon: const Icon(Icons.play_circle_outline),
+                            label: Text(l10n.loginDemoAccount),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -124,6 +134,17 @@ class _LoginViewState extends State<_LoginView> {
         ),
       ),
     );
+  }
+
+  void _useDemoAccount() {
+    _emailController.text = DemoAuthRemoteDataSource.email;
+    _passwordController.text = DemoAuthRemoteDataSource.password;
+    context.read<AuthBloc>().add(
+          const AuthLoginRequested(
+            email: DemoAuthRemoteDataSource.email,
+            password: DemoAuthRemoteDataSource.password,
+          ),
+        );
   }
 
   void _submit() {
