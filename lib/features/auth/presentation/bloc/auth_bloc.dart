@@ -9,6 +9,7 @@ import '../../../../core/security/secure_logger.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login.dart';
+import '../../domain/usecases/register.dart';
 import '../../domain/usecases/logout.dart';
 import '../../domain/usecases/restore_session.dart';
 
@@ -18,6 +19,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required LoginUseCase login,
+    required RegisterUseCase register,
     required LogoutUseCase logout,
     required RestoreSessionUseCase restore,
     required AuthRepository repository,
@@ -28,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(const AuthState.unknown()) {
     on<AuthBootstrapRequested>(_onBootstrap);
     on<AuthLoginRequested>(_onLogin);
+    on<AuthRegisterRequested>(_onRegister);
     on<AuthLogoutRequested>(_onLogout);
     on<AuthSessionExpired>(_onSessionExpired);
 
@@ -39,6 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   final LoginUseCase _login;
+  final RegisterUseCase _register;
   final LogoutUseCase _logout;
   final RestoreSessionUseCase _restore;
   final AuthRepository _repository;
@@ -64,6 +68,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogin(AuthLoginRequested event, Emitter<AuthState> emit) async {
     emit(const AuthState.authenticating());
     final result = await _login(email: event.email, password: event.password);
+
+    switch (result) {
+      case Ok(value: final session):
+        emit(AuthState.authenticated(session.user));
+      case Err(:final failure):
+        emit(AuthState.failed(failure));
+    }
+  }
+
+  Future<void> _onRegister(
+    AuthRegisterRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthState.authenticating());
+    final result = await _register(
+      email: event.email,
+      password: event.password,
+      displayName: event.displayName,
+    );
 
     switch (result) {
       case Ok(value: final session):
