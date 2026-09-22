@@ -16,6 +16,7 @@ class AppConfig {
     required this.enableScreenGuard,
     required this.enableBiometrics,
     required this.enableDemoAuth,
+    required this.enableFirebaseAuth,
     required this.allowCleartextTraffic,
     required this.maxOutboxAttempts,
     required this.sessionIdleTimeout,
@@ -33,6 +34,7 @@ class AppConfig {
   final bool enableScreenGuard;
   final bool enableBiometrics;
   final bool enableDemoAuth;
+  final bool enableFirebaseAuth;
   final bool allowCleartextTraffic;
   final int maxOutboxAttempts;
   final Duration sessionIdleTimeout;
