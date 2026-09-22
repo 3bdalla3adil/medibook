@@ -49,7 +49,7 @@ class _AppointmentDetailsCubit extends Cubit<_AppointmentDetailsState> {
         emit(_AppointmentDetailsState.ready(value));
         return true;
       case Err(:final failure):
-        emit(_AppointmentDetailsState.error(failure.message));
+        emit(_AppointmentDetailsState.error(failure.code));
         return false;
     }
   }
