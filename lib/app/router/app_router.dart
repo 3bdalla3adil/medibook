@@ -1,0 +1,98 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/dashboard/presentation/pages/patient_dashboard_page.dart';
+import 'auth_guard.dart';
+import 'routes.dart';
+
+class AppRouter {
+  AppRouter(this._authBloc) {
+    _guard = AuthGuard(_authBloc);
+  }
+
+  final AuthBloc _authBloc;
+  late final AuthGuard _guard;
+
+  GoRouter get router => GoRouter(
+        initialLocation: Routes.splash,
+        debugLogDiagnostics: false,
+        refreshListenable: _AuthBlocListenable(_authBloc),
+        redirect: (context, state) => _guard.redirect(context, state),
+        routes: [
+          GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
+          GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
+          GoRoute(path: Routes.dashboard, builder: (_, __) => const PatientDashboardPage()),
+          _stub(Routes.appointments, 'Appointments'),
+          _stub(Routes.bookAppointment, 'Book appointment'),
+          _stub(Routes.services, 'Services'),
+          _stub(Routes.medicalRecords, 'Medical records'),
+          _stub(Routes.telehealthLobby, 'Telehealth lobby'),
+          _stub(Routes.settings, 'Settings'),
+          GoRoute(
+            path: '/appointments/:id',
+            builder: (_, state) =>
+                _StubPage(title: 'Appointment ${state.pathParameters['id']}'),
+          ),
+          GoRoute(
+            path: '/telehealth/:appointmentId',
+            builder: (_, state) =>
+                _StubPage(title: 'Telehealth ${state.pathParameters['appointmentId']}'),
+          ),
+        ],
+        errorBuilder: (_, state) =>
+            _ErrorPage(message: state.error?.toString() ?? 'Not found'),
+      );
+
+  GoRoute _stub(String path, String title) =>
+      GoRoute(path: path, builder: (_, __) => _StubPage(title: title));
+}
+
+class _AuthBlocListenable extends ChangeNotifier {
+  _AuthBlocListenable(this._bloc) {
+    _sub = _bloc.stream.listen((_) => notifyListeners());
+  }
+
+  final AuthBloc _bloc;
+  late final StreamSubscription<AuthState> _sub;
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
+
+class _SplashPage extends StatelessWidget {
+  const _SplashPage();
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(
+        body: Center(child: CircularProgressIndicator.adaptive()),
+      );
+}
+
+class _StubPage extends StatelessWidget {
+  const _StubPage({required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: Center(child: Text(title)),
+      );
+}
+
+class _ErrorPage extends StatelessWidget {
+  const _ErrorPage({required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(),
+        body: Center(child: Text(message)),
+      );
+}

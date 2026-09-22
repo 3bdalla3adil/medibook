@@ -1,0 +1,10 @@
+config/prod.json
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+.env
+.env.*
+lib/l10n/gen/
+coverage/
+build/symbols/

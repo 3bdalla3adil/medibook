@@ -1,0 +1,10 @@
+{
+  "APP_ENV": "dev",
+  "API_BASE_URL": "https://api.example.com",
+  "API_VERSION": "/v1",
+  "ENABLE_SSL_PINNING": "false",
+  "ENABLE_DEVICE_INTEGRITY": "false",
+  "ENABLE_SCREEN_GUARD": "true",
+  "ENABLE_BIOMETRICS": "false",
+  "ALLOW_CLEARTEXT": "false"
+}
