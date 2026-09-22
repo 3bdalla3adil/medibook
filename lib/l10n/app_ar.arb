@@ -9,7 +9,11 @@
   "offlineReadOnly": "أنت غير متصل. يتم عرض آخر بيانات تمت مزامنتها.",
   "offlineWithPending": "أنت غير متصل. سيتم مزامنة {count, plural, =1{تغيير واحد} other{{count} تغييرات}} عند عودة الاتصال.",
   "@offlineWithPending": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "syncPending": "في انتظار المزامنة",
   "syncConflict": "بحاجة إلى مراجعتك",
@@ -31,7 +35,13 @@
   "loginPasswordRequired": "كلمة المرور مطلوبة.",
   "loginInvalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "dashboardGreeting": "مرحبًا، {name}",
-  "@dashboardGreeting": { "placeholders": { "name": { "type": "String" } } },
+  "@dashboardGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dashboardGreetingFallback": "بك",
   "dashboardUpcoming": "الموعد القادم",
   "dashboardQuickActions": "إجراءات سريعة",
@@ -44,9 +54,15 @@
   "appointmentSemanticLabel": "{doctor}، {status}، بتاريخ {date}",
   "@appointmentSemanticLabel": {
     "placeholders": {
-      "doctor": { "type": "String" },
-      "status": { "type": "String" },
-      "date": { "type": "String" }
+      "doctor": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
     }
   },
   "statusScheduled": "مجدول",
@@ -55,5 +71,16 @@
   "statusCompleted": "مكتمل",
   "statusCancelled": "ملغى",
   "statusNoShow": "لم يحضر",
-  "loginDemoAccount": "المتابعة بحساب تجريبي"
+  "loginDemoAccount": "المتابعة بحساب تجريبي",
+  "registerTitle": "إنشاء حساب في ميديبوك",
+  "registerSubtitle": "أنشئ حساب مريض لحجز المواعيد وإدارتها.",
+  "registerNameLabel": "الاسم الكامل",
+  "registerNameInvalid": "أدخل اسمك الكامل.",
+  "registerPasswordInvalid": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+  "registerConfirmPasswordLabel": "تأكيد كلمة المرور",
+  "registerPasswordsMismatch": "كلمتا المرور غير متطابقتين.",
+  "registerEmailAlreadyInUse": "يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.",
+  "registerUnavailable": "التسجيل غير متاح حاليًا.",
+  "registerAlreadyHaveAccount": "لديك حساب بالفعل؟ تسجيل الدخول",
+  "actionCreateAccount": "إنشاء الحساب"
 }
