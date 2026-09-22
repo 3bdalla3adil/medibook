@@ -6,7 +6,7 @@ import 'auth_remote_data_source.dart';
 /// Development/staging-only authentication provider.
 ///
 /// The credentials are intentionally public demo credentials, not a secret.
-/// Production builds must reject [AppConfig.enableDemoAuth].
+/// Production builds must reject demo authentication.
 class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
   static const email = 'demo@medibook.app';
   static const password = 'Demo@2026!';
@@ -49,6 +49,15 @@ class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
       ),
       user: _user,
     );
+  }
+
+  @override
+  Future<LoginResponse> register({
+    required String email,
+    required String password,
+    required String displayName,
+  }) async {
+    throw const AuthException('registration_disabled');
   }
 
   @override
