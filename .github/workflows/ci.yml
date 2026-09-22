@@ -11,53 +11,38 @@ permissions:
   contents: read
 
 env:
-  ORG: com.example
-  APP: clinicflow
+  ORG: com.medibook
+  APP: medibook
 
 jobs:
-  # ---------- Analyze + Test ----------
   analyze-and-test:
     name: Analyze and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
       - name: Install dependencies
         run: flutter pub get
-
       - name: Generate localizations
-        # lib/l10n/gen/ is gitignored, so it must be regenerated before
-        # analyze — otherwise every AppLocalizations reference is unresolved.
         run: flutter gen-l10n
-
       - name: Static analysis
-        # --fatal-warnings catches real issues. Drop to plain `flutter analyze`
-        # if you want to tolerate lints during early development.
         run: flutter analyze --fatal-warnings
-
       - name: Unit and widget tests
         run: flutter test --coverage
-
       - name: Layer boundary guardrail
-        # Enforces Clean Architecture: presentation and domain layers must not
-        # import infrastructure packages directly. Fails the build if someone
-        # reaches for Dio/Hive/secure_storage from a widget or entity.
         run: |
           violations=$(grep -rn --include="*.dart" \
             -E "package:(dio|hive_ce|hive_ce_flutter|flutter_secure_storage)/" \
             lib/features/*/presentation lib/features/*/domain lib/app lib/core/widgets \
             || true)
           if [ -n "$violations" ]; then
-            echo "::error::Forbidden imports in presentation/domain layers:"
+            echo "::error::Forbidden infrastructure imports in presentation/domain layers:"
             echo "$violations"
             exit 1
           fi
-
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v4
@@ -67,100 +52,57 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # ---------- Android APK ----------
   build-apk:
     name: Build release APK
     needs: analyze-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: '17'
-
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate localizations
-        run: flutter gen-l10n
-
-      - name: Inject Firebase config (Android)
-        # Only runs if the secret is set. Without firebase_core in pubspec,
-        # the file is present but unused — harmless.
-        if: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > android/app/google-services.json
-          ls -la android/app/google-services.json
-
+      - run: flutter pub get
+      - run: flutter gen-l10n
       - name: Build release APK
-        run: |
-          flutter build apk --release \
-            --dart-define-from-file=config/staging.json
-
+        run: flutter build apk --release --dart-define-from-file=config/staging.json
       - name: Verify APK
-        run: |
-          ls -la build/app/outputs/flutter-apk/
-          test -f build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+        run: test -f build/app/outputs/flutter-apk/app-release.apk
+      - uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
+          name: medibook-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 30
 
-  # ---------- iOS IPA (unsigned, for Sideloadly) ----------
   build-ipa:
     name: Build unsigned IPA
     needs: analyze-and-test
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
-
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate localizations
-        run: flutter gen-l10n
-
-      - name: Inject Firebase config (iOS)
-        if: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST != '' }}
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 -d > ios/Runner/GoogleService-Info.plist
-          ls -la ios/Runner/GoogleService-Info.plist
-
-      - name: Build iOS (no codesign)
-        run: |
-          flutter build ios --release --no-codesign \
-            --dart-define-from-file=config/staging.json
-
+      - run: flutter pub get
+      - run: flutter gen-l10n
+      - name: Build iOS without codesign
+        run: flutter build ios --release --no-codesign --dart-define-from-file=config/staging.json
       - name: Package unsigned IPA
         run: |
           rm -rf Payload app-release-unsigned.ipa
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
-          # -X strips macOS extended attributes that corrupt the IPA
-          # when installed via Sideloadly / AltStore.
           zip -r -X -q app-release-unsigned.ipa Payload
-          ls -la app-release-unsigned.ipa
-
-      - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+          test -f app-release-unsigned.ipa
+      - uses: actions/upload-artifact@v4
         with:
-          name: app-release-ipa-unsigned
+          name: medibook-release-ipa-unsigned
           path: app-release-unsigned.ipa
           if-no-files-found: error
           retention-days: 30
