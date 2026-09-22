@@ -15,6 +15,11 @@ class LoginResponse {
 
 abstract interface class AuthRemoteDataSource {
   Future<LoginResponse> login({required String email, required String password});
+  Future<LoginResponse> register({
+    required String email,
+    required String password,
+    required String displayName,
+  });
   Future<AuthUser> me();
   Future<void> logout();
 }
@@ -29,6 +34,42 @@ class DioAuthRemoteDataSource implements AuthRemoteDataSource {
       final res = await _dio.post<Map<String, dynamic>>(
         ApiEndpoints.login,
         data: {'email': email, 'password': password},
+      );
+
+      final body = res.data!['data'] as Map<String, dynamic>;
+      final tokens = AuthTokens(
+        accessToken: body['access_token'] as String,
+        refreshToken: body['refresh_token'] as String?,
+        accessExpiresAt: DateTime.parse(body['access_expires_at'] as String),
+        refreshExpiresAt: body['refresh_expires_at'] == null
+            ? null
+            : DateTime.parse(body['refresh_expires_at'] as String),
+        sessionId: body['session_id'] as String?,
+      );
+
+      return LoginResponse(
+        tokens: tokens,
+        user: _mapUser(body['user'] as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      throw _asException(e);
+    }
+  }
+
+  @override
+  Future<LoginResponse> register({
+    required String email,
+    required String password,
+    required String displayName,
+  }) async {
+    try {
+      final res = await _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.register,
+        data: {
+          'email': email,
+          'password': password,
+          'display_name': displayName,
+        },
       );
 
       final body = res.data!['data'] as Map<String, dynamic>;
