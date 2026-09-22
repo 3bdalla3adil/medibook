@@ -18,6 +18,21 @@ final class AuthLoginRequested extends AuthEvent {
   List<Object?> get props => [email];
 }
 
+final class AuthRegisterRequested extends AuthEvent {
+  const AuthRegisterRequested({
+    required this.email,
+    required this.password,
+    required this.displayName,
+  });
+
+  final String email;
+  final String password;
+  final String displayName;
+
+  @override
+  List<Object?> get props => [email, displayName];
+}
+
 final class AuthLogoutRequested extends AuthEvent {
   const AuthLogoutRequested();
 }
