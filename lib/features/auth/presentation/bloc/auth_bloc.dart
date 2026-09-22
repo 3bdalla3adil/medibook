@@ -9,8 +9,8 @@ import '../../../../core/security/secure_logger.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login.dart';
-import '../../domain/usecases/register.dart';
 import '../../domain/usecases/logout.dart';
+import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
 
 part 'auth_event.dart';
