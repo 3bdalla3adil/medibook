@@ -46,14 +46,17 @@ abstract final class PhiRedactor {
     }
     return switch (value) {
       null => null,
+      // ignore: prefer_final_locals
       String s => redact(s),
       num _ || bool _ => value,
+      // ignore: prefer_final_locals
       Map<Object?, Object?> m => m.map(
           (k, v) => MapEntry(
             k.toString(),
             redactValue(v, key: k.toString(), depth: depth + 1),
           ),
         ),
+      // ignore: prefer_final_locals
       Iterable<Object?> it =>
           it.map((e) => redactValue(e, depth: depth + 1)).toList(),
       _ => _mask,
