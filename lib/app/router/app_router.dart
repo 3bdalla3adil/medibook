@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/dashboard/presentation/pages/patient_dashboard_page.dart';
+import '../../features/appointments/presentation/pages/appointments_page.dart';
+import '../../features/appointments/presentation/pages/appointment_details_page.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
 
@@ -26,7 +28,7 @@ class AppRouter {
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.dashboard, builder: (_, __) => const PatientDashboardPage()),
-          _stub(Routes.appointments, 'Appointments'),
+          GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           _stub(Routes.bookAppointment, 'Book appointment'),
           _stub(Routes.services, 'Services'),
           _stub(Routes.medicalRecords, 'Medical records'),
@@ -35,7 +37,7 @@ class AppRouter {
           GoRoute(
             path: '/appointments/:id',
             builder: (_, state) =>
-                _StubPage(title: 'Appointment ${state.pathParameters['id']}'),
+                AppointmentDetailsPage(appointmentId: state.pathParameters['id']!),
           ),
           GoRoute(
             path: '/telehealth/:appointmentId',
