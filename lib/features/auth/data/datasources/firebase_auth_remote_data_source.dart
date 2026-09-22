@@ -133,7 +133,6 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
     return LoginResponse(
       tokens: AuthTokens(
         accessToken: tokenResult.token ?? await user.getIdToken() ?? '',
-        refreshToken: user.refreshToken,
         accessExpiresAt: expiresAt.toUtc(),
         refreshExpiresAt: now.add(const Duration(days: 30)),
         sessionId: user.uid,
