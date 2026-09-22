@@ -106,7 +106,7 @@ class DioAuthRemoteDataSource implements AuthRemoteDataSource {
   AppException _asException(DioException e) {
     final f = ErrorMapper.fromDio(e);
     return switch (f) {
-      UnauthorizedFailure(:final expired) => const AuthException('unauthorized', expired: expired),
+      UnauthorizedFailure(:final expired) => AuthException('unauthorized', expired: expired),
       NetworkFailure() || TimeoutFailure() => const NetworkException('network'),
       ForbiddenFailure() => const ServerException('forbidden', statusCode: 403),
       ValidationFailure() => const ServerException('invalid_credentials', statusCode: 400),
