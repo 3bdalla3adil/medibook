@@ -22,9 +22,11 @@ class ConnectivityNetworkInfo implements NetworkInfo {
       _connectivity.onConnectivityChanged.map(_isOnline).distinct();
 
   bool _isOnline(List<ConnectivityResult> results) =>
-      results.any((r) =>
-          r == ConnectivityResult.wifi ||
-          r == ConnectivityResult.mobile ||
-          r == ConnectivityResult.ethernet ||
-          r == ConnectivityResult.vpn);
+      results.any(
+        (r) =>
+            r == ConnectivityResult.wifi ||
+            r == ConnectivityResult.mobile ||
+            r == ConnectivityResult.ethernet ||
+            r == ConnectivityResult.vpn,
+      );
 }
