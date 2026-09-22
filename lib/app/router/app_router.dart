@@ -8,6 +8,7 @@ import '../../features/appointments/presentation/pages/appointments_page.dart';
 import '../../features/appointments/presentation/pages/book_appointment_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/dashboard/presentation/pages/patient_dashboard_page.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
@@ -28,6 +29,7 @@ class AppRouter {
         routes: [
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
+          GoRoute(path: Routes.register, builder: (_, __) => const RegisterPage()),
           GoRoute(path: Routes.dashboard, builder: (_, __) => const PatientDashboardPage()),
           GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           GoRoute(path: Routes.bookAppointment, builder: (_, __) => const BookAppointmentPage()),
