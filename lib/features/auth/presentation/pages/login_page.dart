@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/di/injector.dart';
@@ -111,6 +112,13 @@ class _LoginViewState extends State<_LoginView> {
                                 : Text(l10n.actionSignIn),
                           ),
                         ),
+                        if (!getIt<AppConfig>().enableDemoAuth) ...[
+                          const SizedBox(height: 12),
+                          TextButton(
+                            onPressed: isLoading ? null : () => context.go('/register'),
+                            child: Text(l10n.actionCreateAccount),
+                          ),
+                        ],
                         if (getIt<AppConfig>().enableDemoAuth) ...[
                           const SizedBox(height: 12),
                           OutlinedButton.icon(
