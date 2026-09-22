@@ -161,7 +161,7 @@ class AppointmentRepositoryImpl implements AppointmentRepository, OutboxHandler 
           appointment.id,
           _toWire(appointment),
           version: appointment.version,
-        ));
+        ),);
 
     return result.mapAsync((dto) async {
       final confirmed = dto.toDomain();
