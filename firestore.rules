@@ -9,21 +9,30 @@ service cloud.firestore {
       allow create: if request.auth != null
                     && request.auth.uid == userId
                     && request.resource.data.id == userId
-                    && request.resource.data.role == 'patient'
+                    && request.resource.data.roles.size() == 1
+                    && request.resource.data.roles[0] == 'patient'
+                    && request.resource.data.permissions.hasOnly([
+                      'viewOwnAppointments',
+                      'bookAppointment',
+                      'cancelOwnAppointment',
+                      'viewOwnMedicalRecord',
+                      'joinTelehealth'
+                    ])
                     && request.resource.data.organization_id == 'default';
 
       allow update: if request.auth != null
                     && request.auth.uid == userId
                     && resource.data.id == userId
                     && request.resource.data.id == userId
-                    && resource.data.role == request.resource.data.role
+                    && resource.data.roles == request.resource.data.roles
+                    && resource.data.permissions == request.resource.data.permissions
                     && resource.data.organization_id == request.resource.data.organization_id;
 
       allow delete: if false;
     }
 
-    // Medical, appointment, billing, and administration collections should
-    // remain denied until their access model is defined and tested.
+    // Medical, appointment, billing, and administration collections remain
+    // denied until their access model is defined and tested.
     match /{document=**} {
       allow read, write: if false;
     }
