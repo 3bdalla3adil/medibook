@@ -9,7 +9,11 @@
   "offlineReadOnly": "You're offline. Showing last synced data.",
   "offlineWithPending": "You're offline. {count, plural, =1{1 change will sync} other{{count} changes will sync}} when you're back online.",
   "@offlineWithPending": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "syncPending": "Waiting to sync",
   "syncConflict": "Needs your review",
@@ -31,7 +35,13 @@
   "loginPasswordRequired": "Password is required.",
   "loginInvalidCredentials": "The email or password is incorrect.",
   "dashboardGreeting": "Hello, {name}",
-  "@dashboardGreeting": { "placeholders": { "name": { "type": "String" } } },
+  "@dashboardGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dashboardGreetingFallback": "there",
   "dashboardUpcoming": "Upcoming appointment",
   "dashboardQuickActions": "Quick actions",
@@ -44,9 +54,15 @@
   "appointmentSemanticLabel": "{doctor}, {status}, on {date}",
   "@appointmentSemanticLabel": {
     "placeholders": {
-      "doctor": { "type": "String" },
-      "status": { "type": "String" },
-      "date": { "type": "String" }
+      "doctor": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
     }
   },
   "statusScheduled": "Scheduled",
@@ -55,5 +71,16 @@
   "statusCompleted": "Completed",
   "statusCancelled": "Cancelled",
   "statusNoShow": "No show",
-  "loginDemoAccount": "Continue with demo account"
+  "loginDemoAccount": "Continue with demo account",
+  "registerTitle": "Create your MediBook account",
+  "registerSubtitle": "Create a patient account to book and manage appointments.",
+  "registerNameLabel": "Full name",
+  "registerNameInvalid": "Enter your full name.",
+  "registerPasswordInvalid": "Password must be at least 8 characters.",
+  "registerConfirmPasswordLabel": "Confirm password",
+  "registerPasswordsMismatch": "Passwords do not match.",
+  "registerEmailAlreadyInUse": "An account already exists for this email.",
+  "registerUnavailable": "Registration is currently unavailable.",
+  "registerAlreadyHaveAccount": "Already have an account? Sign in",
+  "actionCreateAccount": "Create account"
 }
