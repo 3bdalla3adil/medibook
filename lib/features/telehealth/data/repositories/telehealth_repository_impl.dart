@@ -18,7 +18,7 @@ class DioTelehealthRepository implements TelehealthRepository {
             headers: {'Idempotency-Key': 'telehealth:$appointmentId'},
             extra: {'idempotent': true},
           ),
-        ));
+        ),);
 
     return result.map((res) {
       final d = res.data!['data'] as Map<String, dynamic>;
