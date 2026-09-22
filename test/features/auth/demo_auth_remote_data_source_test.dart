@@ -1,11 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../lib/core/error/exceptions.dart';
-
-import '../../../lib/features/auth/data/datasources/demo_auth_remote_data_source.dart';
+import 'package:medibook/core/error/exceptions.dart';
+import 'package:medibook/features/auth/data/datasources/demo_auth_remote_data_source.dart';
 
 void main() {
-  const dataSource = DemoAuthRemoteDataSource();
+  final dataSource = DemoAuthRemoteDataSource();
 
   test('accepts the documented demo credentials', () async {
     final response = await dataSource.login(
