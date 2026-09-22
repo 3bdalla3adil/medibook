@@ -41,10 +41,10 @@ class DioPatientRemoteDataSource implements PatientRemoteDataSource {
   AppException _asException(DioException e) {
     final f = ErrorMapper.fromDio(e);
     return switch (f) {
-      UnauthorizedFailure() => AuthException('unauthorized'),
-      NotFoundFailure() => ServerException('not_found', statusCode: 404),
-      NetworkFailure() || TimeoutFailure() => NetworkException('network'),
-      _ => ServerException('unknown'),
+      UnauthorizedFailure() => const AuthException('unauthorized'),
+      NotFoundFailure() => const ServerException('not_found', statusCode: 404),
+      NetworkFailure() || TimeoutFailure() => const NetworkException('network'),
+      _ => const ServerException('unknown'),
     };
   }
 }
