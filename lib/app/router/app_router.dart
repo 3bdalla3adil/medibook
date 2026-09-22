@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/appointments/presentation/pages/appointment_details_page.dart';
+import '../../features/appointments/presentation/pages/appointments_page.dart';
+import '../../features/appointments/presentation/pages/book_appointment_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/dashboard/presentation/pages/patient_dashboard_page.dart';
-import '../../features/appointments/presentation/pages/appointments_page.dart';
-import '../../features/appointments/presentation/pages/appointment_details_page.dart';
-import '../../features/appointments/presentation/pages/book_appointment_page.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
 
