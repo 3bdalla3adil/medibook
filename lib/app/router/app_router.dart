@@ -7,7 +7,7 @@ import '../../features/appointments/presentation/pages/appointment_details_page.
 import '../../features/appointments/presentation/pages/appointments_page.dart';
 import '../../features/appointments/presentation/pages/book_appointment_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
-// import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/dashboard/presentation/pages/patient_dashboard_page.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
@@ -27,7 +27,7 @@ class AppRouter {
         redirect: (context, state) => _guard.redirect(context, state),
         routes: [
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
-          //GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
+          GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.dashboard, builder: (_, __) => const PatientDashboardPage()),
           GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           GoRoute(path: Routes.bookAppointment, builder: (_, __) => const BookAppointmentPage()),
