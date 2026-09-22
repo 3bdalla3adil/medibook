@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/router/routes.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../core/widgets/state_views.dart';
 import '../../../../l10n/gen/app_localizations.dart';
@@ -65,6 +67,7 @@ class _AppointmentsView extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
+                    onTap: () => context.push(Routes.appointmentDetails(a.id)),
                     leading: CircleAvatar(
                       child: Icon(a.isTelehealth ? Icons.videocam_outlined : Icons.local_hospital_outlined),
                     ),
