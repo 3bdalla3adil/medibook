@@ -7,5 +7,6 @@
   "ENABLE_SCREEN_GUARD": "true",
   "ENABLE_BIOMETRICS": "false",
   "ENABLE_DEMO_AUTH": "true",
-  "ALLOW_CLEARTEXT": "false"
+  "ALLOW_CLEARTEXT": "false",
+  "ENABLE_FIREBASE_AUTH": "false"
 }
