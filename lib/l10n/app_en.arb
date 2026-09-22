@@ -54,5 +54,6 @@
   "statusInConsultation": "In consultation",
   "statusCompleted": "Completed",
   "statusCancelled": "Cancelled",
-  "statusNoShow": "No show"
+  "statusNoShow": "No show",
+  "loginDemoAccount": "Continue with demo account"
 }
