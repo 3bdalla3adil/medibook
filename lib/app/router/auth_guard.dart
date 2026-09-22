@@ -12,17 +12,19 @@ class AuthGuard {
   String? redirect(BuildContext context, GoRouterState state) {
     final authState = _bloc.state;
     final isLoggingIn = state.matchedLocation == Routes.login;
+    final isRegistering = state.matchedLocation == Routes.register;
     final isSplash = state.matchedLocation == Routes.splash;
+    final isAuthEntry = isLoggingIn || isRegistering;
 
     if (authState is AuthUnknown || authState is AuthRestoring) {
       return isSplash ? null : Routes.splash;
     }
 
     if (authState is AuthUnauthenticated) {
-      return isLoggingIn ? null : Routes.login;
+      return isAuthEntry ? null : Routes.login;
     }
 
-    if (isLoggingIn || isSplash) return Routes.dashboard;
+    if (isAuthEntry || isSplash) return Routes.dashboard;
 
     return null;
   }
