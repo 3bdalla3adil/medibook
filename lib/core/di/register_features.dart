@@ -1,7 +1,9 @@
 import '../../features/appointments/data/datasources/appointment_local_data_source.dart';
 import '../../features/appointments/data/datasources/appointment_remote_data_source.dart';
 import '../../features/appointments/data/repositories/appointment_repository_impl.dart';
+import '../../features/appointments/data/repositories/booking_repository_impl.dart';
 import '../../features/appointments/domain/repositories/appointment_repository.dart';
+import '../../features/appointments/domain/repositories/booking_repository.dart';
 import '../../features/appointments/domain/usecases/cancel_appointment.dart';
 import '../../features/appointments/domain/usecases/get_appointment.dart';
 import '../../features/appointments/domain/usecases/get_appointments.dart';
@@ -74,7 +76,8 @@ Future<void> registerFeatures() async {
     ..registerFactory(() => GetAppointmentUseCase(getIt()))
     ..registerFactory(() => GetAppointmentsUseCase(getIt()))
     ..registerFactory(() => GetUpcomingAppointmentUseCase(getIt()))
-    ..registerFactory(() => CancelAppointmentUseCase(getIt()));
+    ..registerFactory(() => CancelAppointmentUseCase(getIt()))
+    ..registerLazySingleton<BookingRepository>(() => DioBookingRepository(dio));
 
   getIt
     ..registerLazySingleton<PatientRemoteDataSource>(
