@@ -128,7 +128,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           failure: failure,
           isOffline: !online,
           isRefreshing: false,
-        ));
+        ),);
         return;
       }
       _log.warn('Profile refresh failed, showing cached dashboard');
@@ -167,7 +167,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(state.copyWith(
       appointments: event.appointments,
       status: DashboardStatus.ready,
-    ));
+    ),);
   }
 
   @override
