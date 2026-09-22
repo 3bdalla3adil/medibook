@@ -49,6 +49,7 @@ class DioClient {
         tokenStore: tokenStore,
         refreshClient: refreshDio,
         onSessionExpired: onSessionExpired,
+        firebaseTokenRefresher: firebaseTokenRefresher,
       ),
       RetryInterceptor(dio: mainDio),
       if (config.isDev) SafeLogInterceptor(enabled: true),
