@@ -40,6 +40,26 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Result<Session>> register({
+    required String email,
+    required String password,
+    required String displayName,
+  }) async {
+    final result = await guard(
+      () => _remote.register(
+        email: email,
+        password: password,
+        displayName: displayName,
+      ),
+    );
+    return result.mapAsync((response) async {
+      await _local.persistTokens(response.tokens);
+      _userController.add(response.user);
+      return Session(user: response.user, expiresAt: response.tokens.accessExpiresAt);
+    });
+  }
+
+  @override
   Future<Result<Session>> restoreSession() async {
     final tokens = await _local.readTokens();
     if (tokens == null) return const Err(UnauthorizedFailure());
