@@ -34,7 +34,7 @@ class MedicalRecordCubit extends Cubit<MedicalRecordState> {
       case Err(:final failure):
         emit(
           MedicalRecordState(
-          status: MedicalRecordStatus.error,
+            status: MedicalRecordStatus.error,
           entries: state.entries,
           failure: failure,
         ));
