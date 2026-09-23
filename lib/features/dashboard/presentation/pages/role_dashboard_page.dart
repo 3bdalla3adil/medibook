@@ -29,22 +29,22 @@ class RoleDashboardPage extends StatelessWidget {
         return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.patient);
       }
       if (currentUser.roles.contains(UserRole.doctor)) {
-        return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
+        return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.doctor);
       }
-      if (user.roles.contains(UserRole.orgAdmin) ||
-          user.roles.contains(UserRole.clinicAdmin) ||
-          user.roles.contains(UserRole.superAdmin)) {
-        return _DemoRoleDashboard(user: user, kind: _DemoRole.admin);
+      if (currentUser.roles.contains(UserRole.orgAdmin) ||
+          currentUser.roles.contains(UserRole.clinicAdmin) ||
+          currentUser.roles.contains(UserRole.superAdmin)) {
+        return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.admin);
       }
     }
 
-    if (user.roles.contains(UserRole.doctor)) {
-      return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
+    if (currentUser.roles.contains(UserRole.doctor)) {
+      return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.doctor);
     }
-    if (user.roles.contains(UserRole.orgAdmin) ||
-        user.roles.contains(UserRole.clinicAdmin) ||
-        user.roles.contains(UserRole.superAdmin)) {
-      return _DemoRoleDashboard(user: user, kind: _DemoRole.admin);
+    if (currentUser.roles.contains(UserRole.orgAdmin) ||
+        currentUser.roles.contains(UserRole.clinicAdmin) ||
+        currentUser.roles.contains(UserRole.superAdmin)) {
+      return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.admin);
     }
 
     return const _UnknownRoleDashboard();
