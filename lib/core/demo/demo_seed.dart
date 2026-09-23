@@ -1,13 +1,12 @@
 import '../../features/appointments/data/models/appointment_dto.dart';
-import '../../features/doctors/data/models/doctor_dto.dart';
 import '../../features/clinics/data/models/clinic_dto.dart';
-import '../../features/services/data/models/medical_service_dto.dart';
-import '../../features/patients/data/models/patient_dto.dart';
-import '../../features/patients/data/datasources/patient_directory_remote_data_source.dart';
-import '../../features/medical_records/data/models/medical_record_entry_dto.dart';
 import '../../features/consultations/data/models/consultation_dto.dart';
+import '../../features/doctors/data/models/doctor_dto.dart';
+import '../../features/medical_records/data/models/medical_record_entry_dto.dart';
+import '../../features/patients/data/datasources/patient_directory_remote_data_source.dart';
+import '../../features/patients/data/models/patient_dto.dart';
 import '../../features/prescriptions/data/models/prescription_dto.dart';
-
+import '../../features/services/data/models/medical_service_dto.dart';
 abstract final class DemoSeed {
   static const patientId = 'demo-patient-001';
   static const organizationId = 'demo-org-001';
@@ -15,7 +14,7 @@ abstract final class DemoSeed {
   static const doctorId = 'demo-doctor-001';
   static const serviceId = 'demo-service-001';
 
-  static PatientDto patient() => PatientDto({
+  static PatientDto patient() => const PatientDto({
         'id': patientId,
         'display_name': 'Demo Patient',
         'organization_id': organizationId,
@@ -30,14 +29,14 @@ abstract final class DemoSeed {
           serviceName: 'General Consultation',
           startsAt: '2026-10-05T09:00:00Z',
           telehealth: true,
-        )),
+        ),),
         AppointmentDto(_appointmentJson(
           id: 'demo-appointment-002',
           doctorName: 'Dr. Demo',
           serviceName: 'Follow-up Consultation',
           startsAt: '2026-10-20T11:00:00Z',
           telehealth: false,
-        )),
+        ),),
       ];
 
   static Map<String, dynamic> _appointmentJson({
@@ -67,7 +66,7 @@ abstract final class DemoSeed {
       };
 
   static List<ClinicDto> clinics() => [
-        ClinicDto({
+        const ClinicDto({
           'id': clinicId,
           'name': {'en': 'MediBook Demo Clinic', 'ar': 'عيادة ميديبوك التجريبية'},
           'address': 'Demo Street',
@@ -80,7 +79,7 @@ abstract final class DemoSeed {
       ];
 
   static List<MedicalServiceDto> services() => [
-        MedicalServiceDto({
+        const MedicalServiceDto({
           'id': serviceId,
           'name': 'General Consultation',
           'description': 'Demo consultation service',
@@ -93,7 +92,7 @@ abstract final class DemoSeed {
       ];
 
   static List<DoctorDto> doctors() => [
-        DoctorDto({
+        const DoctorDto({
           'id': doctorId,
           'display_name': 'Dr. Demo',
           'specialization': 'General Medicine',
@@ -106,7 +105,7 @@ abstract final class DemoSeed {
       ];
 
   static List<PatientSummaryDto> patients() => [
-        PatientSummaryDto({
+        const PatientSummaryDto({
           'id': patientId,
           'display_name': 'Demo Patient',
           'date_of_birth': '1995-05-10',
@@ -116,7 +115,7 @@ abstract final class DemoSeed {
       ];
 
   static List<MedicalRecordEntryDto> records() => [
-        MedicalRecordEntryDto({
+        const MedicalRecordEntryDto({
           'id': 'demo-record-001',
           'created_by': doctorId,
           'created_at': '2026-09-01T10:00:00Z',
@@ -129,7 +128,7 @@ abstract final class DemoSeed {
       ];
 
   static List<ConsultationDto> consultations() => [
-        ConsultationDto({
+        const ConsultationDto({
           'id': 'demo-consultation-001',
           'appointment_id': 'demo-appointment-001',
           'patient_id': patientId,
@@ -142,7 +141,7 @@ abstract final class DemoSeed {
       ];
 
   static List<PrescriptionDto> prescriptions() => [
-        PrescriptionDto({
+        const PrescriptionDto({
           'id': 'demo-prescription-001',
           'consultation_id': 'demo-consultation-001',
           'patient_id': patientId,
