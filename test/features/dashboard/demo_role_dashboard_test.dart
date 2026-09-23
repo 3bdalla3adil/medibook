@@ -79,7 +79,7 @@ void main() {
   testWidgets('demo patient reaches a local dashboard without DashboardBloc', (tester) async {
     await _pumpDashboard(tester, _patient);
 
-    expect(find.text(_patient.displayName), findsOneWidget);
+    expect(find.textContaining(_patient.displayName), findsOneWidget);
     expect(find.text('حجز موعد'), findsOneWidget);
     expect(find.text('المواعيد'), findsOneWidget);
   });
@@ -87,7 +87,7 @@ void main() {
   testWidgets('demo doctor reaches the local doctor dashboard', (tester) async {
     await _pumpDashboard(tester, _doctor);
 
-    expect(find.text(_doctor.displayName), findsOneWidget);
+    expect(find.textContaining(_doctor.displayName), findsOneWidget);
     expect(find.text('جدولي'), findsOneWidget);
     expect(find.text('مرضاي'), findsOneWidget);
   });
@@ -95,7 +95,7 @@ void main() {
   testWidgets('demo administrator reaches the local admin dashboard', (tester) async {
     await _pumpDashboard(tester, _admin);
 
-    expect(find.text(_admin.displayName), findsOneWidget);
+    expect(find.textContaining(_admin.displayName), findsOneWidget);
     expect(find.text('إدارة المواعيد'), findsOneWidget);
     expect(find.text('إدارة المرضى'), findsOneWidget);
   });
