@@ -30,7 +30,7 @@ void main() {
       enableFirebaseAuth: false,
       allowCleartextTraffic: false,
       maxOutboxAttempts: 2,
-      sessionIdleTimeout: const Duration(minutes: 15),
+      sessionIdleTimeout: Duration(minutes: 15),
     );
 
     await registerCore(config, onSessionExpired: () async {});
@@ -43,7 +43,7 @@ void main() {
 
     await tester.tap(find.text('المتابعة كمريض'));
     await tester.pump();
-    await tester.pumpAndSettle(Duration(seconds: 3));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
 
     expect(find.textContaining('Demo Patient'), findsOneWidget);
     expect(find.byType(AppointmentCard), findsNWidgets(2));
