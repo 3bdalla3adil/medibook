@@ -118,8 +118,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSessionExpired event,
     Emitter<AuthState> emit,
   ) async {
-    await _logout(revokeOnServer: false);
     emit(const AuthState.unauthenticated());
+    await _logout(revokeOnServer: false);
   }
 
   @override
