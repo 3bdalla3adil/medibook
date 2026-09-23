@@ -138,5 +138,7 @@
   "prescriptionsTitle": "الوصفات الطبية",
   "prescriptionsEmpty": "لا توجد وصفات طبية متاحة.",
   "telehealthRequiresAppointment": "جلسات الاستشارة عن بُعد تتطلب موعدًا.",
-  "notImplementedPhase2": "هذه الوحدة لم تُنفذ ضمن المرحلة الثانية."
+  "notImplementedPhase2": "هذه الوحدة لم تُنفذ ضمن المرحلة الثانية.",
+  "availableTimes": "الأوقات المتاحة",
+  "noAvailableSlots": "لا توجد أوقات متاحة لهذا التاريخ."
 }
