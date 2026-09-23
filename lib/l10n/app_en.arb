@@ -103,5 +103,40 @@
   "adminDoctors": "Doctor management",
   "adminClinics": "Clinic management",
   "adminBilling": "Billing and payments",
-  "adminSettings": "Administration settings"
+  "adminSettings": "Administration settings",
+  "actionBackToDashboard": "Back to dashboard",
+  "clinicsTitle": "Clinics",
+  "clinicsEmpty": "No clinics are available.",
+  "servicesTitle": "Medical services",
+  "servicesEmpty": "No services are available.",
+  "serviceDuration": "{minutes} minutes",
+  "@serviceDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "doctorsTitle": "Doctors",
+  "doctorsEmpty": "No doctors are available.",
+  "patientsTitle": "Patients",
+  "patientsEmpty": "No patients are available.",
+  "patientNoLastVisit": "No recorded visit",
+  "patientLastVisit": "Last visit: {date}",
+  "@patientLastVisit": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "medicalRecordsTitle": "Medical records",
+  "medicalRecordsEmpty": "No medical record entries are available.",
+  "consultationsTitle": "Consultations",
+  "consultationsEmpty": "No consultations are available.",
+  "consultationWithoutDiagnosis": "Consultation",
+  "prescriptionsTitle": "Prescriptions",
+  "prescriptionsEmpty": "No prescriptions are available.",
+  "telehealthRequiresAppointment": "Telehealth sessions require an appointment.",
+  "notImplementedPhase2": "This module is not implemented in Phase 2."
 }
