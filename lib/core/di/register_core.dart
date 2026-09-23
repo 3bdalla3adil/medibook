@@ -8,15 +8,14 @@ import '../security/device_integrity.dart';
 import '../security/encryption_key_provider.dart';
 import '../security/screen_guard.dart';
 import '../security/secure_logger.dart';
-import '../security/session_expiry_signal.dart';
 import '../security/secure_storage.dart';
+import '../security/session_expiry_signal.dart';
 import '../security/token_store.dart';
 import '../storage/hive_local_store.dart';
 import '../storage/local_store.dart';
 import '../sync/sync_engine.dart';
 import '../utils/clock.dart';
 import 'injector.dart';
-
 Future<void> registerCore(
   AppConfig config, {
   required Future<void> Function() onSessionExpired,
