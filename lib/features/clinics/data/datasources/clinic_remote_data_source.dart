@@ -11,6 +11,7 @@ abstract interface class ClinicRemoteDataSource {
 
 class DioClinicRemoteDataSource implements ClinicRemoteDataSource {
   DioClinicRemoteDataSource(this._dio);
+
   final Dio _dio;
 
   @override
@@ -19,7 +20,11 @@ class DioClinicRemoteDataSource implements ClinicRemoteDataSource {
       ApiEndpoints.clinics,
       queryParameters: {'active': activeOnly},
     );
-    return _list(response.data).map(ClinicDto.fromJson).toList(growable: false);
+    final data = response.data?['data'];
+    if (data is! List) return const [];
+    return data.whereType<Map<String, dynamic>>().map<ClinicDto>(
+      ClinicDto.fromJson,
+    ).toList(growable: false);
   }
 
   @override
@@ -36,7 +41,9 @@ class DioClinicRemoteDataSource implements ClinicRemoteDataSource {
     final response = await _dio.get<Map<String, dynamic>>(
       ApiEndpoints.clinics + '/' + id + '/services',
     );
-    return _list(response.data).whereType<Map<String, dynamic>>().toList(growable: false);
+    return _list(response.data)
+        .whereType<Map<String, dynamic>>()
+        .toList(growable: false);
   }
 
   List<dynamic> _list(Map<String, dynamic>? body) =>
