@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/di/injector.dart';
 import '../../features/appointments/presentation/pages/appointment_details_page.dart';
 import '../../features/appointments/presentation/pages/appointments_page.dart';
 import '../../features/appointments/presentation/pages/book_appointment_page.dart';
@@ -19,11 +20,11 @@ import '../../features/medical_records/presentation/pages/patient_record_view_pa
 import '../../features/patients/presentation/pages/patient_directory_page.dart';
 import '../../features/prescriptions/presentation/pages/prescription_list_page.dart';
 import '../../features/services/presentation/pages/service_list_page.dart';
+import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
-import '../../core/di/injector.dart';
-import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import 'routes.dart';
+
 class AppRouter {
   AppRouter(this._authBloc) {
     _guard = AuthGuard(_authBloc);
@@ -75,7 +76,7 @@ class AppRouter {
           ),
           GoRoute(
             path: Routes.telehealthLobby,
-            builder: (_, __) => const _TelehealthLobbyPage(),
+            builder: (_, __) => const _UnavailableClinicalRoutePage(),
           ),
           GoRoute(
             path: Routes.billing,
@@ -113,6 +114,19 @@ class _SplashPage extends StatelessWidget {
   Widget build(BuildContext context) => const Scaffold(
         body: Center(child: CircularProgressIndicator.adaptive()),
       );
+}
+
+class _UnavailableClinicalRoutePage extends StatelessWidget {
+  const _UnavailableClinicalRoutePage();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.errorForbidden)),
+      body: Center(child: Text(l10n.notImplementedPhase2)),
+    );
+  }
 }
 
 class _ErrorPage extends StatelessWidget {
