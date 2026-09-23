@@ -7,7 +7,7 @@ void main() {
 
   test('accepts the documented demo credentials', () async {
     final response = await dataSource.login(
-      email: DemoAuthRemoteDataSource.email,
+      email: DemoAuthRemoteDataSource.patientEmail,
       password: DemoAuthRemoteDataSource.password,
     );
 
@@ -19,7 +19,7 @@ void main() {
   test('rejects incorrect demo credentials', () async {
     expect(
       () => dataSource.login(
-        email: DemoAuthRemoteDataSource.email,
+        email: DemoAuthRemoteDataSource.patientEmail,
         password: 'wrong-password',
       ),
       throwsA(isA<AuthException>()),
