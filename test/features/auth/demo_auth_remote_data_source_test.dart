@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medibook/core/error/exceptions.dart';
 import 'package:medibook/features/auth/data/datasources/demo_auth_remote_data_source.dart';
+import 'package:medibook/features/auth/domain/entities/auth_user.dart';
 
 void main() {
   final dataSource = DemoAuthRemoteDataSource();
@@ -15,7 +16,6 @@ void main() {
     expect(response.user.isPatient, isTrue);
     expect(response.tokens.accessToken, 'demo-access-token');
   });
-
 
   test('accepts doctor and administrator demo credentials', () async {
     final doctor = await dataSource.login(
