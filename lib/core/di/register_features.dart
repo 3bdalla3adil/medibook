@@ -139,87 +139,99 @@ Future<void> registerFeatures() async {
     ..registerFactory(() => GetAppointmentsUseCase(getIt()))
     ..registerFactory(() => GetUpcomingAppointmentUseCase(getIt()))
     ..registerFactory(() => CancelAppointmentUseCase(getIt()))
-    ..registerLazySingleton<BookingRepository>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoBookingRepository()
-        : DioBookingRepository(dio),
-      )
-    ..registerLazySingleton<PatientRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoPatientRemoteDataSource()
-        : DioPatientRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<BookingRepository>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoBookingRepository()
+          : DioBookingRepository(dio),
+    )
+    ..registerLazySingleton<PatientRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoPatientRemoteDataSource()
+          : DioPatientRemoteDataSource(dio),
+    )
     ..registerLazySingleton<PatientRepository>(
       () => PatientRepositoryImpl(remote: getIt(), local: store),
     )
     ..registerFactory(() => GetPatientProfileUseCase(getIt()))
-    ..registerLazySingleton<PatientDirectoryRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoPatientDirectoryRemoteDataSource()
-        : DioPatientDirectoryRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<PatientDirectoryRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoPatientDirectoryRemoteDataSource()
+          : DioPatientDirectoryRemoteDataSource(dio),
+    )
     ..registerLazySingleton<PatientDirectoryRepository>(
       () => PatientDirectoryRepositoryImpl(getIt()),
     )
     ..registerFactory(() => GetPatientDirectoryUseCase(getIt()))
     ..registerFactory(() => PatientDirectoryCubit(getIt()))
-    ..registerLazySingleton<ClinicRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoClinicRemoteDataSource()
-        : DioClinicRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<ClinicRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoClinicRemoteDataSource()
+          : DioClinicRemoteDataSource(dio),
+    )
     ..registerLazySingleton<ClinicRepository>(() => ClinicRepositoryImpl(getIt()))
     ..registerFactory(() => GetClinicsUseCase(getIt()))
     ..registerFactory(() => ClinicListCubit(getIt()))
-    ..registerLazySingleton<ServiceRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoServiceRemoteDataSource()
-        : DioServiceRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<ServiceRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoServiceRemoteDataSource()
+          : DioServiceRemoteDataSource(dio),
+    )
     ..registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl(getIt()))
     ..registerFactory(() => GetServicesUseCase(getIt()))
     ..registerFactory(() => ServiceListCubit(getIt()))
-    ..registerLazySingleton<DoctorRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoDoctorRemoteDataSource()
-        : DioDoctorRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<DoctorRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoDoctorRemoteDataSource()
+          : DioDoctorRemoteDataSource(dio),
+    )
     ..registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(getIt()))
     ..registerFactory(() => GetDoctorsUseCase(getIt()))
     ..registerFactory(() => DoctorListCubit(getIt()))
-    ..registerLazySingleton<MedicalRecordRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoMedicalRecordDataSource()
-        : DioMedicalRecordRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<MedicalRecordRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoMedicalRecordRemoteDataSource()
+          : DioMedicalRecordRemoteDataSource(dio),
+    )
     ..registerLazySingleton<MedicalRecordRepository>(
       () => MedicalRecordRepositoryImpl(getIt()),
     )
     ..registerFactory(() => GetMedicalRecordUseCase(getIt()))
     ..registerFactory(() => MedicalRecordCubit(getIt()))
-    ..registerLazySingleton<ConsultationRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoConsultationRemoteDataSource()
-        : DioConsultationRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<ConsultationRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoConsultationRemoteDataSource()
+          : DioConsultationRemoteDataSource(dio),
+    )
     ..registerLazySingleton<ConsultationRepository>(
       () => ConsultationRepositoryImpl(getIt()),
     )
     ..registerFactory(() => GetConsultationsUseCase(getIt()))
     ..registerFactory(() => ConsultationListCubit(getIt()))
-    ..registerLazySingleton<PrescriptionRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoPrescriptionRemoteDataSource()
-        : DioPrescriptionRemoteDataSource(dio),
-      )
+    ..registerLazySingleton<PrescriptionRemoteDataSource>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoPrescriptionRemoteDataSource()
+          : DioPrescriptionRemoteDataSource(dio),
+    )
     ..registerLazySingleton<PrescriptionRepository>(
       () => PrescriptionRepositoryImpl(getIt()),
     )
     ..registerFactory(() => GetPrescriptionsUseCase(getIt()))
     ..registerFactory(() => PrescriptionListCubit(getIt()))
-    ..registerLazySingleton<TelehealthRepository>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoTelehealthRepository()
-        : DailyTelehealthRepository(dio),
-      )
+    ..registerLazySingleton<TelehealthRepository>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoTelehealthRepository()
+          : DailyTelehealthRepository(dio),
+    )
     ..registerLazySingleton<DailyCallService>(DailyCallServiceImpl.new)
-    ..registerFactory(() => TelehealthSessionBloc(
-      repository: getIt(),
-      callService: getIt(),
-      consultations: getIt(),
-      screenGuard: getIt(),
-      clock: getIt(),
-    ))
+    ..registerFactory(
+      () => TelehealthSessionBloc(
+        repository: getIt(),
+        callService: getIt(),
+        consultations: getIt(),
+        screenGuard: getIt(),
+        clock: getIt(),
+      ),
+    )
     ..registerFactory(
       () => DashboardBloc(
         getProfile: getIt(),
