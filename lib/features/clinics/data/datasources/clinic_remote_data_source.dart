@@ -30,7 +30,7 @@ class DioClinicRemoteDataSource implements ClinicRemoteDataSource {
   @override
   Future<ClinicDto?> fetchClinic(String id) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      ApiEndpoints.clinics + '/' + id,
+      ApiEndpoints.clinics + '/$id',
     );
     final data = response.data?['data'];
     return data is Map<String, dynamic> ? ClinicDto.fromJson(data) : null;
@@ -39,7 +39,7 @@ class DioClinicRemoteDataSource implements ClinicRemoteDataSource {
   @override
   Future<List<Map<String, dynamic>>> fetchServices(String id) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      ApiEndpoints.clinics + '/' + id + '/services',
+      ApiEndpoints.clinics + '/$id/services',
     );
     return _list(response.data)
         .whereType<Map<String, dynamic>>()
