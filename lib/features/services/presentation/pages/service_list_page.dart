@@ -54,7 +54,7 @@ class _ServiceListView extends StatelessWidget {
                           : service.description,
                     ),
                     trailing: Text(
-                      service.price.toStringAsFixed(2) + ' ' + service.currency,
+                      '${service.price.toStringAsFixed(2)} ${service.currency}',
                     ),
                   ),
                 );
