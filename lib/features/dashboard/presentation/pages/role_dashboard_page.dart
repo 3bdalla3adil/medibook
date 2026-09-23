@@ -10,21 +10,25 @@ import '../../../auth/presentation/bloc/auth_bloc.dart';
 /// Role-aware landing page. Demo users use local workflow navigation so the
 /// demo can be explored without a clinical backend.
 class RoleDashboardPage extends StatelessWidget {
-  const RoleDashboardPage({super.key});
+  const RoleDashboardPage({super.key, this.user});
+
+  /// Optional explicit user for deterministic previews/tests. Production
+  /// routing leaves this null and reads the authenticated user from AuthBloc.
+  final AuthUser? user;
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthBloc>().state.user;
-    if (user == null) return const SizedBox.shrink();
+    final currentUser = user ?? context.read<AuthBloc>().state.user;
+    if (currentUser == null) return const SizedBox.shrink();
 
     // Demo identities must never enter the production dashboard path. The
     // production patient dashboard loads backend data; demo users must remain
     // fully deterministic and offline-capable after authentication.
-    if (_isDemoUser(user)) {
-      if (user.isPatient) {
-        return _DemoRoleDashboard(user: user, kind: _DemoRole.patient);
+    if (_isDemoUser(currentUser)) {
+      if (currentUser.isPatient) {
+        return _DemoRoleDashboard(user: currentUser, kind: _DemoRole.patient);
       }
-      if (user.roles.contains(UserRole.doctor)) {
+      if (currentUser.roles.contains(UserRole.doctor)) {
         return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
       }
       if (user.roles.contains(UserRole.orgAdmin) ||
