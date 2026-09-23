@@ -1,7 +1,6 @@
 import '../../../../core/demo/demo_seed.dart';
-import 'patient_remote_data_source.dart';
 import '../models/patient_dto.dart';
-
+import 'patient_remote_data_source.dart';
 class DemoPatientRemoteDataSource implements PatientRemoteDataSource {
   const DemoPatientRemoteDataSource();
 
