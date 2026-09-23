@@ -12,12 +12,13 @@ class PatientRecordViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (_) => getIt<MedicalRecordCubit>()..load(patientId),
-        child: const _RecordView(),
+        child: _RecordView(patientId: patientId),
       );
 }
 
 class _RecordView extends StatelessWidget {
-  const _RecordView();
+  const _RecordView({required this.patientId});
+  final String patientId;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +33,14 @@ class _RecordView extends StatelessWidget {
           if (state.status == MedicalRecordStatus.error && state.entries.isEmpty) {
             return Center(
               child: FilledButton(
-                onPressed: () => context.read<MedicalRecordCubit>().load(
-                  (context.findAncestorWidgetOfExactType<PatientRecordViewPage>()?.patientId) ?? '',
-                ),
+                onPressed: () => context.read<MedicalRecordCubit>().load(patientId),
                 child: Text(l10n.actionRetry),
               ),
             );
           }
-          if (state.entries.isEmpty) return Center(child: Text(l10n.medicalRecordsEmpty));
+          if (state.entries.isEmpty) {
+            return Center(child: Text(l10n.medicalRecordsEmpty));
+          }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: state.entries.length,
