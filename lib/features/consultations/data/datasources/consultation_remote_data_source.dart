@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../models/consultation_dto.dart';
-
 abstract interface class ConsultationRemoteDataSource {
   Future<List<ConsultationDto>> fetchConsultations();
   Future<ConsultationDto?> fetchConsultation(String id);
@@ -21,7 +20,7 @@ class DioConsultationRemoteDataSource implements ConsultationRemoteDataSource {
 
   @override
   Future<ConsultationDto?> fetchConsultation(String id) async {
-    final response = await _dio.get<Map<String, dynamic>>('/consultations/' + id);
+    final response = await _dio.get<Map<String, dynamic>>('/consultations/$id');
     final data = response.data?['data'];
     return data is Map<String, dynamic> ? ConsultationDto.fromJson(data) : null;
   }
@@ -37,7 +36,7 @@ class DioConsultationRemoteDataSource implements ConsultationRemoteDataSource {
 
   @override
   Future<ConsultationDto> complete(String id) async {
-    final response = await _dio.post<Map<String, dynamic>>('/consultations/' + id + '/complete');
+    final response = await _dio.post<Map<String, dynamic>>('/consultations/$id/complete');
     return ConsultationDto.fromJson(response.data!['data'] as Map<String, dynamic>);
   }
 
