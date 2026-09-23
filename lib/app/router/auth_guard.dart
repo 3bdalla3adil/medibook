@@ -34,12 +34,21 @@ class AuthGuard {
     if (isAuthEntry || isSplash) return Routes.dashboard;
 
     final requirement = requirementFor(location);
-    if (requirement != null &&
-        !_authorizer.can(authState.user, requirement)) {
-      return Routes.forbidden;
+    if (requirement != null) {
+      final denied = requirePermission(context, requirement);
+      if (denied != null) return denied;
     }
 
     return null;
+  }
+
+  String? requirePermission(
+    BuildContext context,
+    RouteRequirement requirement,
+  ) {
+    final user = _bloc.state.user;
+    if (user == null) return Routes.login;
+    return _authorizer.can(user, requirement) ? null : Routes.forbidden;
   }
 
   RouteRequirement? requirementFor(String location) {
