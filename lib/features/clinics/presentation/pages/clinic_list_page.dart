@@ -55,7 +55,7 @@ class _ClinicListView extends StatelessWidget {
                         Localizations.localeOf(context).languageCode,
                       ),
                     ),
-                    subtitle: Text(clinic.address + '\n' + clinic.phone),
+                    subtitle: Text('${clinic.address}\n${clinic.phone}'),
                     isThreeLine: true,
                     trailing: Icon(
                       clinic.isActive
