@@ -47,7 +47,7 @@ void main() {
 
     when(repository.watchUser).thenAnswer((_) => const Stream<AuthUser?>.empty());
     when(() => restore()).thenAnswer(
-      (_) async => const Ok(
+      (_) async => Ok(
         Session(
           user: user,
           expiresAt: DateTime.utc(2026, 12, 31),
