@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required RestoreSessionUseCase restore,
     required AuthRepository repository,
   })  : _login = login,
+        _register = register,
         _logout = logout,
         _restore = restore,
         _repository = repository,
