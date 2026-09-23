@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/repositories/daily_call_service.dart';
+import '../../../../l10n/gen/app_localizations.dart';
 import '../bloc/telehealth_session_bloc.dart';
 
 class TelehealthLobbyPage extends StatelessWidget {
@@ -10,18 +10,26 @@ class TelehealthLobbyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => context.read<TelehealthSessionBloc>(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Telehealth lobby')),
-        body: BlocBuilder<TelehealthSessionBloc, TelehealthSessionState>(
-          builder: (context,state)=>Center(child: switch(state.status){
-            TelehealthSessionStatus.idle => FilledButton(onPressed:()=>context.read<TelehealthSessionBloc>().add(TelehealthStartRequested(appointmentId)),child:const Text('Join consultation')),
-            TelehealthSessionStatus.loading || TelehealthSessionStatus.connecting => const CircularProgressIndicator(),
-            TelehealthSessionStatus.error => Text(state.message??'Unable to join'),
-            TelehealthSessionStatus.connected => const Text('Connected.'),
-            _ => const Text('Session ended.'),
-          }),
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.telehealthLobbyTitle)),
+      body: BlocBuilder<TelehealthSessionBloc, TelehealthSessionState>(
+        builder: (context, state) => Center(
+          child: switch (state.status) {
+            TelehealthSessionStatus.idle => FilledButton(
+                onPressed: () => context.read<TelehealthSessionBloc>().add(
+                  TelehealthStartRequested(appointmentId),
+                ),
+                child: Text(l10n.telehealthJoin),
+              ),
+            TelehealthSessionStatus.loading ||
+            TelehealthSessionStatus.connecting =>
+              const CircularProgressIndicator(),
+            TelehealthSessionStatus.error =>
+              Text(state.message ?? l10n.telehealthUnableToJoin),
+            TelehealthSessionStatus.connected => Text(l10n.telehealthConnected),
+            _ => Text(l10n.telehealthEnded),
+          },
         ),
       ),
     );
