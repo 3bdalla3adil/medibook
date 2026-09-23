@@ -12,9 +12,13 @@ import 'package:medibook/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLogin extends Mock implements LoginUseCase {}
+
 class _MockRegister extends Mock implements RegisterUseCase {}
+
 class _MockLogout extends Mock implements LogoutUseCase {}
+
 class _MockRestore extends Mock implements RestoreSessionUseCase {}
+
 class _MockRepository extends Mock implements AuthRepository {}
 
 void main() {
