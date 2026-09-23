@@ -138,5 +138,7 @@
   "prescriptionsTitle": "Prescriptions",
   "prescriptionsEmpty": "No prescriptions are available.",
   "telehealthRequiresAppointment": "Telehealth sessions require an appointment.",
-  "notImplementedPhase2": "This module is not implemented in Phase 2."
+  "notImplementedPhase2": "This module is not implemented in Phase 2.",
+  "availableTimes": "Available times",
+  "noAvailableSlots": "No available slots for this date."
 }
