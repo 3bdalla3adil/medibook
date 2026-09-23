@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/appointments/presentation/pages/appointment_details_page.dart';
 import '../../features/appointments/presentation/pages/appointments_page.dart';
@@ -20,6 +21,8 @@ import '../../features/prescriptions/presentation/pages/prescription_list_page.d
 import '../../features/services/presentation/pages/service_list_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
+import '../../core/di/injector.dart';
+import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import 'routes.dart';
 class AppRouter {
   AppRouter(this._authBloc) {
@@ -63,8 +66,11 @@ class AppRouter {
           ),
           GoRoute(
             path: '/telehealth/:appointmentId',
-            builder: (_, state) => _TelehealthRoutePage(
-              appointmentId: state.pathParameters['appointmentId']!,
+            builder: (_, state) => BlocProvider(
+              create: (_) => getIt<TelehealthSessionBloc>(),
+              child: TelehealthLobbyPage(
+                appointmentId: state.pathParameters['appointmentId']!,
+              ),
             ),
           ),
           GoRoute(
