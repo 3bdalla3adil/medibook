@@ -5,6 +5,9 @@ import 'auth_remote_data_source.dart';
 
 /// Development/staging-only demo authentication provider.
 class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
+  DemoAuthRemoteDataSource({this.firebase});
+
+  final AuthRemoteDataSource? firebase;
   static const password = 'Demo@2026!';
 
   static const patientEmail = 'demo.patient@medibook.app';
@@ -93,7 +96,11 @@ class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
       _ => null,
     };
 
-    if (user == null) throw const AuthException('unauthorized');
+    if (user == null) {
+      final provider = firebase;
+      if (provider == null) throw const AuthException('unauthorized');
+      return provider.login(email: email, password: password);
+    }
 
     _activeUser = user;
     final now = DateTime.now().toUtc();
@@ -115,19 +122,30 @@ class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
     required String password,
     required String displayName,
   }) async {
-    throw const AuthException('registration_disabled');
+    final provider = firebase;
+    if (provider == null) {
+      throw const AuthException('registration_disabled');
+    }
+    return provider.register(
+      email: email,
+      password: password,
+      displayName: displayName,
+    );
   }
 
   @override
   Future<AuthUser> me() async {
     final user = _activeUser;
-    if (user == null) throw const AuthException('unauthorized');
-    return user;
+    if (user != null) return user;
+    final provider = firebase;
+    if (provider == null) throw const AuthException('unauthorized');
+    return provider.me();
   }
 
   @override
   Future<void> logout() async {
     _activeUser = null;
+    await firebase?.logout();
   }
 }
 
