@@ -15,4 +15,11 @@ abstract final class Routes {
   static String appointmentDetails(String id) => '/appointments/$id';
 
   static const settings = '/settings';
+  static const doctors = '/doctors';
+  static const clinics = '/clinics';
+  static const consultations = '/consultations';
+  static const prescriptions = '/prescriptions';
+  static const doctorPatients = '/doctor/patients';
+  static const adminPatients = '/admin/patients';
+  static const billing = '/billing';
 }
