@@ -3,7 +3,6 @@ import '../../../../core/error/result.dart';
 import '../../domain/entities/booking_option.dart';
 import '../../domain/entities/booking_slot.dart';
 import '../../domain/repositories/booking_repository.dart';
-
 class DemoBookingRepository implements BookingRepository {
   const DemoBookingRepository();
 
@@ -12,7 +11,8 @@ class DemoBookingRepository implements BookingRepository {
         DemoSeed.clinics().map((e) => BookingOption(
           id: e.json['id'].toString(),
           name: (e.json['name'] as Map)['en'].toString(),
-        )).toList(growable: false),
+        ),
+      ).toList(growable: false),
       );
 
   @override
@@ -21,7 +21,8 @@ class DemoBookingRepository implements BookingRepository {
           id: e.json['id'].toString(),
           name: e.json['name'].toString(),
           description: e.json['description']?.toString(),
-        )).toList(growable: false),
+        ),
+      ).toList(growable: false),
       );
 
   @override
@@ -33,7 +34,8 @@ class DemoBookingRepository implements BookingRepository {
           id: e.json['id'].toString(),
           name: e.json['display_name'].toString(),
           description: e.json['specialization']?.toString(),
-        )).toList(growable: false),
+        ),
+      ).toList(growable: false),
       );
 
   @override
