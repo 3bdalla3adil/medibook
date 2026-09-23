@@ -57,6 +57,15 @@ jobs:
             exit 1
           fi
 
+      - name: No hardcoded user-facing strings
+        run: |
+          hits=$(grep -rn --include="*.dart" -E "(Text|TextSpan)\\(\\s*['\"][A-Z]" lib/features/*/presentation || true)
+          if [ -n "$hits" ]; then
+            echo "::error::Hardcoded user-facing strings found:"
+            echo "$hits"
+            exit 1
+          fi
+
       - name: Upload Coverage
         if: always()
         uses: actions/upload-artifact@v4
