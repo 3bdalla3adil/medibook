@@ -140,5 +140,12 @@
   "telehealthRequiresAppointment": "جلسات الاستشارة عن بُعد تتطلب موعدًا.",
   "notImplementedPhase2": "هذه الوحدة لم تُنفذ ضمن المرحلة الثانية.",
   "availableTimes": "الأوقات المتاحة",
-  "noAvailableSlots": "لا توجد أوقات متاحة لهذا التاريخ."
+  "noAvailableSlots": "لا توجد أوقات متاحة لهذا التاريخ.",
+  "telehealthLobbyTitle": "ردهة الاستشارة عن بُعد",
+  "telehealthJoin": "الانضمام إلى الاستشارة",
+  "telehealthConnected": "متصل.",
+  "telehealthEnded": "انتهت الجلسة.",
+  "telehealthUnableToJoin": "تعذر الانضمام",
+  "telehealthRoom": "الاستشارة عن بُعد",
+  "telehealthLeave": "مغادرة"
 }
