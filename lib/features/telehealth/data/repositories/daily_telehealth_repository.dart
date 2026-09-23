@@ -11,11 +11,16 @@ class DailyTelehealthRepository implements TelehealthRepository {
 
   @override
   Future<Result<TelehealthSession>> createSession(String appointmentId) async {
-    final result = await guard(() => _dio.post<Map<String, dynamic>>(
-      ApiEndpoints.telehealthSession,
-      data: {'appointment_id': appointmentId, 'provider': 'daily'},
-      options: Options(headers: {'Idempotency-Key': 'daily:$appointmentId'}, extra: {'idempotent': true}),
-    ));
+    final result = await guard(
+      () => _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.telehealthSession,
+        data: {'appointment_id': appointmentId, 'provider': 'daily'},
+        options: Options(
+          headers: {'Idempotency-Key': 'daily:$appointmentId'},
+          extra: {'idempotent': true},
+        ),
+      ),
+    );
     return result.map((response) {
       final data = response.data!['data'] as Map<String, dynamic>;
       final expires = DateTime.parse(data['expires_at'].toString()).toUtc();
@@ -37,17 +42,25 @@ class DailyTelehealthRepository implements TelehealthRepository {
 
   @override
   Future<Result<String>> refreshJoinToken(String sessionId) async {
-    final result = await guard(() => _dio.post<Map<String, dynamic>>(ApiEndpoints.telehealthJoin(sessionId)));
+    final result = await guard(
+      () => _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.telehealthJoin(sessionId),
+      ),
+    );
     return result.map((response) => response.data!['data']['join_token'].toString());
   }
 
   @override
   Future<Result<void>> markJoined(String sessionId) => guard(
-    () => _dio.post<void>(ApiEndpoints.telehealthSession + '/' + sessionId + '/joined'),
-  );
+        () => _dio.post<void>(
+          '${ApiEndpoints.telehealthSession}/$sessionId/joined',
+        ),
+      );
 
   @override
   Future<Result<void>> endSession(String sessionId) => guard(
-    () => _dio.post<void>(ApiEndpoints.telehealthSession + '/' + sessionId + '/end'),
-  );
+        () => _dio.post<void>(
+          '${ApiEndpoints.telehealthSession}/$sessionId/end',
+        ),
+      );
 }

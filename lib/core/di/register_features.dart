@@ -70,19 +70,19 @@ import '../../features/services/data/repositories/service_repository_impl.dart';
 import '../../features/services/domain/repositories/service_repository.dart';
 import '../../features/services/domain/usecases/get_services.dart';
 import '../../features/services/presentation/bloc/service_list_cubit.dart';
-import '../../features/telehealth/data/repositories/telehealth_demo_repository.dart';
-import '../../features/telehealth/data/repositories/telehealth_repository_impl.dart';
-import '../../features/telehealth/data/repositories/daily_telehealth_repository.dart';
 import '../../features/telehealth/data/repositories/daily_call_service_impl.dart';
+import '../../features/telehealth/data/repositories/daily_telehealth_repository.dart';
+import '../../features/telehealth/data/repositories/telehealth_demo_repository.dart';
 import '../../features/telehealth/domain/repositories/daily_call_service.dart';
-import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import '../../features/telehealth/domain/repositories/telehealth_repository.dart';
+import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import '../config/app_config.dart';
 import '../network/dio_client.dart';
 import '../security/session_expiry_signal.dart';
 import '../storage/local_store.dart';
 import '../sync/sync_engine.dart';
 import 'injector.dart';
+
 Future<void> registerFeatures() async {
   final dio = getIt<DioClient>().dio;
   final store = getIt<LocalStore>();
@@ -182,7 +182,7 @@ Future<void> registerFeatures() async {
     ..registerFactory(() => GetDoctorsUseCase(getIt()))
     ..registerFactory(() => DoctorListCubit(getIt()))
     ..registerLazySingleton<MedicalRecordRemoteDataSource>(() => getIt<AppConfig>().enableDemoAuth
-        ? const DemoMedicalRecordRemoteDataSource()
+        ? const DemoMedicalRecordDataSource()
         : DioMedicalRecordRemoteDataSource(dio),
       )
     ..registerLazySingleton<MedicalRecordRepository>(
