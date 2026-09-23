@@ -100,7 +100,7 @@ void main() {
     await _pumpDashboard(tester, _doctor);
 
     expect(find.text(_doctor.displayName), findsOneWidget);
-    expect(find.text('جدول الطبيب'), findsOneWidget);
+    expect(find.text('جدولي'), findsOneWidget);
     expect(find.text('مرضاي'), findsOneWidget);
   });
 
