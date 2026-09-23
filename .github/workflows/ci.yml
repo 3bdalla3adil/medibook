@@ -97,7 +97,7 @@ jobs:
 
       - name: Set Android compile SDK for Daily/Firebase plugins
         run: |
-          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' android/app/build.gradle.kts
+          sed -i -E 's/^[[:space:]]*compileSdk = .*/    compileSdk = 36/' android/app/build.gradle.kts
           grep -n "compileSdk" android/app/build.gradle.kts
 
       - name: Install Dependencies
