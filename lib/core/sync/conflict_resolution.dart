@@ -1,5 +1,3 @@
-import '../error/result.dart';
-
 class LocalVersion<T>{const LocalVersion({required this.value,required this.version,required this.updatedAt});final T value;final int version;final DateTime updatedAt;}
 class RemoteVersion<T>{const RemoteVersion({required this.value,required this.version,required this.updatedAt});final T value;final int version;final DateTime updatedAt;}
 sealed class ConflictResolution<T>{const ConflictResolution();}
