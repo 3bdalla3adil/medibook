@@ -42,7 +42,11 @@ Future<void> registerFeatures() async {
       () {
         final config = getIt<AppConfig>();
         if (config.enableDemoAuth) {
-          return DemoAuthRemoteDataSource();
+          return DemoAuthRemoteDataSource(
+            firebase: config.enableFirebaseAuth
+                ? FirebaseAuthRemoteDataSource()
+                : null,
+          );
         }
         if (config.enableFirebaseAuth) {
           return FirebaseAuthRemoteDataSource();
