@@ -140,5 +140,12 @@
   "telehealthRequiresAppointment": "Telehealth sessions require an appointment.",
   "notImplementedPhase2": "This module is not implemented in Phase 2.",
   "availableTimes": "Available times",
-  "noAvailableSlots": "No available slots for this date."
+  "noAvailableSlots": "No available slots for this date.",
+  "telehealthLobbyTitle": "Telehealth lobby",
+  "telehealthJoin": "Join consultation",
+  "telehealthConnected": "Connected.",
+  "telehealthEnded": "Session ended.",
+  "telehealthUnableToJoin": "Unable to join",
+  "telehealthRoom": "Telehealth",
+  "telehealthLeave": "Leave"
 }
