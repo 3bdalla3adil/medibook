@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "964079786919",
+    "project_id": "clinic-app-v4",
+    "storage_bucket": "clinic-app-v4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964079786919:android:429d16d9fe7b20144a3482",
+        "android_client_info": {
+          "package_name": "com.medibook.medibook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964079786919-s8p09c3dagik0emc28fgi3icm6putuhn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNEBSPYleK6jJQ8EcFGMuZ6w0fX22Mr-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964079786919-s8p09c3dagik0emc28fgi3icm6putuhn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
