@@ -197,7 +197,7 @@ class _DemoRoleDashboard extends StatelessWidget {
                   return Card(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
-                      onTap: () => context.push(item.route),
+                      onTap: () => _openItem(context, item),
                       child: Padding(
                         padding: const EdgeInsetsDirectional.all(16),
                         child: Column(
@@ -221,6 +221,24 @@ class _DemoRoleDashboard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openItem(BuildContext context, _WorkflowItem item) {
+    // Demo identities never navigate into backend-dependent clinical screens.
+    // The demo must remain usable when no API/Firebase business backend exists.
+    if (user.id.startsWith('demo-')) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => _DemoWorkflowPage(
+            title: item.title,
+            role: kind,
+            route: item.route,
+          ),
+        ),
+      );
+      return;
+    }
+    context.push(item.route);
   }
 
   IconData _roleIcon(_DemoRole role) => switch (role) {
@@ -254,4 +272,71 @@ class _WorkflowItem {
   final String title;
   final IconData icon;
   final String route;
+}
+
+
+class _DemoWorkflowPage extends StatelessWidget {
+  const _DemoWorkflowPage({
+    required this.title,
+    required this.role,
+    required this.route,
+  });
+
+  final String title;
+  final _DemoRole role;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final isPatient = role == _DemoRole.patient;
+    final isDoctor = role == _DemoRole.doctor;
+    final summary = isPatient
+        ? l10n.demoWorkflowDescription
+        : isDoctor
+            ? l10n.demoWorkflowDescription
+            : l10n.demoWorkflowDescription;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    isPatient
+                        ? Icons.person_outline
+                        : isDoctor
+                            ? Icons.medical_services_outlined
+                            : Icons.admin_panel_settings_outlined,
+                    size: 40,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(title, style: Theme.of(context).textTheme.headlineSmall),
+                  const SizedBox(height: 8),
+                  Text(summary),
+                  const SizedBox(height: 16),
+                  Text(
+                    route,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            leading: const Icon(Icons.check_circle_outline),
+            title: Text(l10n.demoWorkflowDescription),
+            subtitle: Text(l10n.appTitle),
+          ),
+        ],
+      ),
+    );
+  }
 }
