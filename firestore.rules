@@ -31,6 +31,14 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /users/{userId}/notifications/{notificationId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read_at']);
+      allow create, delete: if false;
+    }
+
     // Medical, appointment, billing, and administration collections remain
     // denied until their access model is defined and tested.
     match /{document=**} {
