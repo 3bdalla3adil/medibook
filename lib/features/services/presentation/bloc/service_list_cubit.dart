@@ -34,10 +34,11 @@ class ServiceListCubit extends Cubit<ServiceListState> {
       case Err(:final failure):
         emit(
           ServiceListState(
-          status: ServiceListStatus.error,
-          items: state.items,
-          failure: failure,
-        ));
+            status: ServiceListStatus.error,
+            items: state.items,
+            failure: failure,
+          ),
+        );
     }
   }
 }
