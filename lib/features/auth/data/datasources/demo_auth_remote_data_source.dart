@@ -3,15 +3,25 @@ import '../../../../core/security/token_store.dart';
 import '../../domain/entities/auth_user.dart';
 import 'auth_remote_data_source.dart';
 
-/// Development/staging-only authentication provider.
-///
-/// The credentials are intentionally public demo credentials, not a secret.
-/// Production builds must reject demo authentication.
+/// Development/staging-only demo authentication provider.
 class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
-  static const email = 'demo@medibook.app';
   static const password = 'Demo@2026!';
 
-  static const _user = AuthUser(
+  static const patientEmail = 'demo.patient@medibook.app';
+  static const doctorEmail = 'demo.doctor@medibook.app';
+  static const adminEmail = 'demo.admin@medibook.app';
+
+  static const patientCredentials = DemoCredentials(
+    email: patientEmail, password: password, label: 'Patient',
+  );
+  static const doctorCredentials = DemoCredentials(
+    email: doctorEmail, password: password, label: 'Doctor',
+  );
+  static const adminCredentials = DemoCredentials(
+    email: adminEmail, password: password, label: 'Admin',
+  );
+
+  static const _patient = AuthUser(
     id: 'demo-patient-001',
     displayName: 'MediBook Demo Patient',
     roles: {UserRole.patient},
@@ -24,30 +34,78 @@ class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
     },
     organizationId: 'demo-organization',
     clinicIds: {'demo-clinic'},
-    email: email,
+    email: patientEmail,
     localeCode: 'ar',
   );
+
+  static const _doctor = AuthUser(
+    id: 'demo-doctor-001',
+    displayName: 'MediBook Demo Doctor',
+    roles: {UserRole.doctor},
+    permissions: {
+      Permission.viewOwnAppointments,
+      Permission.viewAnyAppointment,
+      Permission.viewAnyMedicalRecord,
+      Permission.writePrescription,
+      Permission.joinTelehealth,
+      Permission.hostTelehealth,
+    },
+    organizationId: 'demo-organization',
+    clinicIds: {'demo-clinic'},
+    email: doctorEmail,
+    localeCode: 'ar',
+  );
+
+  static const _admin = AuthUser(
+    id: 'demo-admin-001',
+    displayName: 'MediBook Demo Administrator',
+    roles: {UserRole.orgAdmin},
+    permissions: {
+      Permission.viewAnyAppointment,
+      Permission.viewAnyMedicalRecord,
+      Permission.manageClinicStaff,
+      Permission.viewBilling,
+      Permission.processPayment,
+      Permission.manageOrganization,
+    },
+    organizationId: 'demo-organization',
+    clinicIds: {'demo-clinic'},
+    email: adminEmail,
+    localeCode: 'ar',
+  );
+
+  AuthUser? _activeUser;
 
   @override
   Future<LoginResponse> login({
     required String email,
     required String password,
   }) async {
-    if (email.trim().toLowerCase() != DemoAuthRemoteDataSource.email ||
-        password != DemoAuthRemoteDataSource.password) {
+    if (password != DemoAuthRemoteDataSource.password) {
       throw const AuthException('unauthorized');
     }
 
+    final normalizedEmail = email.trim().toLowerCase();
+    final user = switch (normalizedEmail) {
+      DemoAuthRemoteDataSource.patientEmail => _patient,
+      DemoAuthRemoteDataSource.doctorEmail => _doctor,
+      DemoAuthRemoteDataSource.adminEmail => _admin,
+      _ => null,
+    };
+
+    if (user == null) throw const AuthException('unauthorized');
+
+    _activeUser = user;
     final now = DateTime.now().toUtc();
     return LoginResponse(
       tokens: AuthTokens(
-        accessToken: 'demo-access-token',
-        refreshToken: 'demo-refresh-token',
+        accessToken: 'demo-access-${user.id}',
+        refreshToken: 'demo-refresh-${user.id}',
         accessExpiresAt: now.add(const Duration(hours: 1)),
         refreshExpiresAt: now.add(const Duration(days: 7)),
-        sessionId: 'demo-session',
+        sessionId: 'demo-session-${user.id}',
       ),
-      user: _user,
+      user: user,
     );
   }
 
@@ -61,8 +119,26 @@ class DemoAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthUser> me() async => _user;
+  Future<AuthUser> me() async {
+    final user = _activeUser;
+    if (user == null) throw const AuthException('unauthorized');
+    return user;
+  }
 
   @override
-  Future<void> logout() async {}
+  Future<void> logout() async {
+    _activeUser = null;
+  }
+}
+
+class DemoCredentials {
+  const DemoCredentials({
+    required this.email,
+    required this.password,
+    required this.label,
+  });
+
+  final String email;
+  final String password;
+  final String label;
 }
