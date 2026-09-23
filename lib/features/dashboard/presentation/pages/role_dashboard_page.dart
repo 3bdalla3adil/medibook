@@ -18,12 +18,7 @@ class RoleDashboardPage extends StatelessWidget {
     final user = context.read<AuthBloc>().state.user;
     if (user == null) return const SizedBox.shrink();
 
-    if (user.isPatient) {
-      if (user.id.startsWith('demo-')) {
-        return _DemoRoleDashboard(user: user, kind: _DemoRole.patient);
-      }
-      return const PatientDashboardPage();
-    }
+    if (user.isPatient) return const PatientDashboardPage();
     if (user.roles.contains(UserRole.doctor)) {
       return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
     }
