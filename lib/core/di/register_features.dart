@@ -19,11 +19,46 @@ import '../../features/auth/domain/usecases/logout.dart';
 import '../../features/auth/domain/usecases/register.dart';
 import '../../features/auth/domain/usecases/restore_session.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/clinics/data/datasources/clinic_remote_data_source.dart';
+import '../../features/clinics/data/repositories/clinic_repository_impl.dart';
+import '../../features/clinics/domain/repositories/clinic_repository.dart';
+import '../../features/clinics/domain/usecases/get_clinics.dart';
+import '../../features/clinics/presentation/bloc/clinic_list_cubit.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../features/doctors/data/datasources/doctor_remote_data_source.dart';
+import '../../features/doctors/data/repositories/doctor_repository_impl.dart';
+import '../../features/doctors/domain/repositories/doctor_repository.dart';
+import '../../features/doctors/domain/usecases/get_doctors.dart';
+import '../../features/doctors/presentation/bloc/doctor_list_cubit.dart';
+import '../../features/medical_records/data/datasources/medical_record_remote_data_source.dart';
+import '../../features/medical_records/data/repositories/medical_record_repository_impl.dart';
+import '../../features/medical_records/domain/repositories/medical_record_repository.dart';
+import '../../features/medical_records/domain/usecases/get_medical_record.dart';
+import '../../features/medical_records/presentation/bloc/medical_record_cubit.dart';
+import '../../features/patients/data/datasources/patient_directory_remote_data_source.dart';
 import '../../features/patients/data/datasources/patient_remote_data_source.dart';
+import '../../features/patients/data/repositories/patient_directory_repository_impl.dart';
 import '../../features/patients/data/repositories/patient_repository_impl.dart';
+import '../../features/patients/domain/repositories/patient_directory_repository.dart';
 import '../../features/patients/domain/repositories/patient_repository.dart';
+import '../../features/patients/domain/usecases/get_patient_directory.dart';
 import '../../features/patients/domain/usecases/get_patient_profile.dart';
+import '../../features/patients/presentation/bloc/patient_directory_cubit.dart';
+import '../../features/prescriptions/data/datasources/prescription_remote_data_source.dart';
+import '../../features/prescriptions/data/repositories/prescription_repository_impl.dart';
+import '../../features/prescriptions/domain/repositories/prescription_repository.dart';
+import '../../features/prescriptions/domain/usecases/get_prescriptions.dart';
+import '../../features/prescriptions/presentation/bloc/prescription_list_cubit.dart';
+import '../../features/services/data/datasources/service_remote_data_source.dart';
+import '../../features/services/data/repositories/service_repository_impl.dart';
+import '../../features/services/domain/repositories/service_repository.dart';
+import '../../features/services/domain/usecases/get_services.dart';
+import '../../features/services/presentation/bloc/service_list_cubit.dart';
+import '../../features/consultations/data/datasources/consultation_remote_data_source.dart';
+import '../../features/consultations/data/repositories/consultation_repository_impl.dart';
+import '../../features/consultations/domain/repositories/consultation_repository.dart';
+import '../../features/consultations/domain/usecases/get_consultations.dart';
+import '../../features/consultations/presentation/bloc/consultation_list_cubit.dart';
 import '../../features/telehealth/data/repositories/telehealth_repository_impl.dart';
 import '../../features/telehealth/domain/repositories/telehealth_repository.dart';
 import '../config/app_config.dart';
@@ -38,31 +73,19 @@ Future<void> registerFeatures() async {
   final sync = getIt<SyncEngine>();
 
   getIt
-    ..registerLazySingleton<AuthRemoteDataSource>(
-      () {
-        final config = getIt<AppConfig>();
-        if (config.enableDemoAuth) {
-          return DemoAuthRemoteDataSource(
-            firebase: config.enableFirebaseAuth
-                ? FirebaseAuthRemoteDataSource()
-                : null,
-          );
-        }
-        if (config.enableFirebaseAuth) {
-          return FirebaseAuthRemoteDataSource();
-        }
-        return DioAuthRemoteDataSource(dio);
-      },
-    )
-    ..registerLazySingleton<AuthLocalDataSource>(
-      () => SecureAuthLocalDataSource(getIt()),
-    )
+    ..registerLazySingleton<AuthRemoteDataSource>(() {
+      final config = getIt<AppConfig>();
+      if (config.enableDemoAuth) {
+        return DemoAuthRemoteDataSource(
+          firebase: config.enableFirebaseAuth ? FirebaseAuthRemoteDataSource() : null,
+        );
+      }
+      if (config.enableFirebaseAuth) return FirebaseAuthRemoteDataSource();
+      return DioAuthRemoteDataSource(dio);
+    })
+    ..registerLazySingleton<AuthLocalDataSource>(() => SecureAuthLocalDataSource(getIt()))
     ..registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(
-        remote: getIt(),
-        local: getIt(),
-        store: store,
-      ),
+      () => AuthRepositoryImpl(remote: getIt(), local: getIt(), store: store),
     )
     ..registerFactory(() => LoginUseCase(getIt()))
     ..registerFactory(() => RegisterUseCase(getIt()))
@@ -76,15 +99,9 @@ Future<void> registerFeatures() async {
         restore: getIt(),
         repository: getIt(),
       ),
-    );
-
-  getIt
-    ..registerLazySingleton<AppointmentRemoteDataSource>(
-      () => DioAppointmentRemoteDataSource(dio),
     )
-    ..registerLazySingleton<AppointmentLocalDataSource>(
-      () => HiveAppointmentLocalDataSource(store),
-    )
+    ..registerLazySingleton<AppointmentRemoteDataSource>(() => DioAppointmentRemoteDataSource(dio))
+    ..registerLazySingleton<AppointmentLocalDataSource>(() => HiveAppointmentLocalDataSource(store))
     ..registerLazySingleton<AppointmentRepository>(
       () => AppointmentRepositoryImpl(
         remote: getIt(),
@@ -98,29 +115,65 @@ Future<void> registerFeatures() async {
     ..registerFactory(() => GetAppointmentsUseCase(getIt()))
     ..registerFactory(() => GetUpcomingAppointmentUseCase(getIt()))
     ..registerFactory(() => CancelAppointmentUseCase(getIt()))
-    ..registerLazySingleton<BookingRepository>(() => DioBookingRepository(dio));
-
-  getIt
-    ..registerLazySingleton<PatientRemoteDataSource>(
-      () => DioPatientRemoteDataSource(dio),
-    )
+    ..registerLazySingleton<BookingRepository>(() => DioBookingRepository(dio))
+    ..registerLazySingleton<PatientRemoteDataSource>(() => DioPatientRemoteDataSource(dio))
     ..registerLazySingleton<PatientRepository>(
       () => PatientRepositoryImpl(remote: getIt(), local: store),
     )
-    ..registerFactory(() => GetPatientProfileUseCase(getIt()));
-
-  getIt.registerLazySingleton<TelehealthRepository>(
-    () => DioTelehealthRepository(dio),
-  );
-
-  getIt.registerFactory(
-    () => DashboardBloc(
-      getProfile: getIt(),
-      getAppointments: getIt(),
-      getUpcoming: getIt(),
-      appointmentRepository: getIt(),
-      networkInfo: getIt(),
-      clock: getIt(),
-    ),
-  );
+    ..registerFactory(() => GetPatientProfileUseCase(getIt()))
+    ..registerLazySingleton<PatientDirectoryRemoteDataSource>(
+      () => DioPatientDirectoryRemoteDataSource(dio),
+    )
+    ..registerLazySingleton<PatientDirectoryRepository>(
+      () => PatientDirectoryRepositoryImpl(getIt()),
+    )
+    ..registerFactory(() => GetPatientDirectoryUseCase(getIt()))
+    ..registerFactory(() => PatientDirectoryCubit(getIt()))
+    ..registerLazySingleton<ClinicRemoteDataSource>(() => DioClinicRemoteDataSource(dio))
+    ..registerLazySingleton<ClinicRepository>(() => ClinicRepositoryImpl(getIt()))
+    ..registerFactory(() => GetClinicsUseCase(getIt()))
+    ..registerFactory(() => ClinicListCubit(getIt()))
+    ..registerLazySingleton<ServiceRemoteDataSource>(() => DioServiceRemoteDataSource(dio))
+    ..registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl(getIt()))
+    ..registerFactory(() => GetServicesUseCase(getIt()))
+    ..registerFactory(() => ServiceListCubit(getIt()))
+    ..registerLazySingleton<DoctorRemoteDataSource>(() => DioDoctorRemoteDataSource(dio))
+    ..registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(getIt()))
+    ..registerFactory(() => GetDoctorsUseCase(getIt()))
+    ..registerFactory(() => DoctorListCubit(getIt()))
+    ..registerLazySingleton<MedicalRecordRemoteDataSource>(
+      () => DioMedicalRecordRemoteDataSource(dio),
+    )
+    ..registerLazySingleton<MedicalRecordRepository>(
+      () => MedicalRecordRepositoryImpl(getIt()),
+    )
+    ..registerFactory(() => GetMedicalRecordUseCase(getIt()))
+    ..registerFactory(() => MedicalRecordCubit(getIt()))
+    ..registerLazySingleton<ConsultationRemoteDataSource>(
+      () => DioConsultationRemoteDataSource(dio),
+    )
+    ..registerLazySingleton<ConsultationRepository>(
+      () => ConsultationRepositoryImpl(getIt()),
+    )
+    ..registerFactory(() => GetConsultationsUseCase(getIt()))
+    ..registerFactory(() => ConsultationListCubit(getIt()))
+    ..registerLazySingleton<PrescriptionRemoteDataSource>(
+      () => DioPrescriptionRemoteDataSource(dio),
+    )
+    ..registerLazySingleton<PrescriptionRepository>(
+      () => PrescriptionRepositoryImpl(getIt()),
+    )
+    ..registerFactory(() => GetPrescriptionsUseCase(getIt()))
+    ..registerFactory(() => PrescriptionListCubit(getIt()))
+    ..registerLazySingleton<TelehealthRepository>(() => DioTelehealthRepository(dio))
+    ..registerFactory(
+      () => DashboardBloc(
+        getProfile: getIt(),
+        getAppointments: getIt(),
+        getUpcoming: getIt(),
+        appointmentRepository: getIt(),
+        networkInfo: getIt(),
+        clock: getIt(),
+      ),
+    );
 }
