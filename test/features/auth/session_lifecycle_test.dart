@@ -54,7 +54,7 @@ void main() {
         ),
       ),
     );
-    when(() => logout()).thenAnswer((_) async => const Ok(null));
+    when(() => logout()).thenAnswer((_) async => Ok(null));
   });
 
   blocTest<AuthBloc, AuthState>(
