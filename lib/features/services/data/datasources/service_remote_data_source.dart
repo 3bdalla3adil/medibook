@@ -28,7 +28,7 @@ class DioServiceRemoteDataSource implements ServiceRemoteDataSource {
   @override
   Future<MedicalServiceDto?> fetchService(String id) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      ApiEndpoints.services + '/$id',
+      '${ApiEndpoints.services}/$id',
     );
     final data = response.data?['data'];
     return data is Map<String, dynamic> ? MedicalServiceDto.fromJson(data) : null;
