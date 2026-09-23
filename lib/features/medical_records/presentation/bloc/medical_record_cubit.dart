@@ -35,9 +35,10 @@ class MedicalRecordCubit extends Cubit<MedicalRecordState> {
         emit(
           MedicalRecordState(
             status: MedicalRecordStatus.error,
-          entries: state.entries,
-          failure: failure,
-        ));
+            entries: state.entries,
+            failure: failure,
+          ),
+        );
     }
   }
 }
