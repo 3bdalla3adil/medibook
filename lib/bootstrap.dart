@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'app/app.dart';
@@ -9,18 +10,10 @@ import 'core/di/register_features.dart';
 import 'core/firebase/firebase_initializer.dart';
 import 'core/security/secure_logger.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
 Future<void> bootstrap() async {
   await runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      
-      // Inside bootstrap(), after WidgetsFlutterBinding.ensureInitialized():
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
 
       FlutterError.onError = (details) {
         SecureLogger('FlutterError').error(
@@ -32,6 +25,7 @@ Future<void> bootstrap() async {
 
       final config = ConfigLoader.load();
       if (config.enableFirebaseAuth) {
+        await Firebase.initializeApp();
         await initializeFirebase();
       }
 
@@ -45,7 +39,11 @@ Future<void> bootstrap() async {
       runApp(const MediBookApp());
     },
     (error, stack) {
-      SecureLogger('Zone').error('Uncaught async error', error: error, st: stack);
+      SecureLogger('Zone').error(
+        'Uncaught async error',
+        error: error,
+        st: stack,
+      );
     },
   );
 }
