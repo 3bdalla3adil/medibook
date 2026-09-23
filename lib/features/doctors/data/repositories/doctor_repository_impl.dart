@@ -12,7 +12,7 @@ class DoctorRepositoryImpl implements DoctorRepository {
     final result = await guard(() => _remote.fetchDoctors(
           clinicId: clinicId,
           serviceId: serviceId,
-        ));
+        ),);
     return result.map((items) => items.map((e) => e.toDomain()).toList(growable: false));
   }
 
@@ -35,5 +35,5 @@ class DoctorRepositoryImpl implements DoctorRepository {
         to: to,
         clinicId: clinicId,
         serviceId: serviceId,
-      ));
+      ),);
 }
