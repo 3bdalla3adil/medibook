@@ -18,7 +18,9 @@ class DemoAppointmentRemoteDataSource implements AppointmentRemoteDataSource {
 
   @override
   Future<AppointmentDto?> fetchAppointment(String id) async =>
-      DemoSeed.appointments().where((e) => e.json['id'].toString() == id).firstOrNull;
+      DemoSeed.appointments().where((e) => e.json['id'].toString() == id).isEmpty
+          ? null
+          : DemoSeed.appointments().where((e) => e.json['id'].toString() == id).first;
 
   @override
   Future<AppointmentDto> create(Map<String, dynamic> body, {required String idempotencyKey}) async {
