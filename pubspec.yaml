@@ -35,6 +35,11 @@ dependencies:
   cloud_firestore: ^6.7.0
   firebase_messaging: ^16.7.0
   daily_flutter: ^0.39.0
+
+# Flutter 3.47 currently exposes compileSdk 35. Keep the Daily dependency
+# compatible with that SDK until the stable Flutter toolchain exposes API 36.
+dependency_overrides:
+  flutter_plugin_android_lifecycle: 2.0.26
   
 
 dev_dependencies:
