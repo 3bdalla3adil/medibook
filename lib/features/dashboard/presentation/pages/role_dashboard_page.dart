@@ -50,28 +50,100 @@ class _DemoRoleDashboard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final items = switch (kind) {
       _DemoRole.patient => [
-          _WorkflowItem(l10n.actionBookAppointment, Icons.event_available, Routes.bookAppointment),
-          _WorkflowItem(l10n.actionSeeAppointments, Icons.calendar_month, Routes.appointments),
-          _WorkflowItem(l10n.actionServices, Icons.medical_services_outlined, Routes.services),
-          _WorkflowItem(l10n.actionMedicalRecords, Icons.folder_shared_outlined, Routes.medicalRecords),
-          _WorkflowItem(l10n.actionTelehealth, Icons.video_call_outlined, Routes.telehealthLobby),
-          _WorkflowItem(l10n.actionSettings, Icons.settings_outlined, Routes.settings),
+          _WorkflowItem(
+            l10n.actionBookAppointment,
+            Icons.event_available,
+            Routes.bookAppointment,
+          ),
+          _WorkflowItem(
+            l10n.actionSeeAppointments,
+            Icons.calendar_month,
+            Routes.appointments,
+          ),
+          _WorkflowItem(
+            l10n.actionServices,
+            Icons.medical_services_outlined,
+            Routes.services,
+          ),
+          _WorkflowItem(
+            l10n.actionMedicalRecords,
+            Icons.folder_shared_outlined,
+            Routes.medicalRecords,
+          ),
+          _WorkflowItem(
+            l10n.actionTelehealth,
+            Icons.video_call_outlined,
+            Routes.telehealthLobby,
+          ),
+          _WorkflowItem(
+            l10n.actionSettings,
+            Icons.settings_outlined,
+            Routes.settings,
+          ),
         ],
       _DemoRole.doctor => [
-          _WorkflowItem(l10n.doctorSchedule, Icons.calendar_today_outlined, Routes.appointments),
-          _WorkflowItem(l10n.doctorPatients, Icons.people_outline, Routes.doctorPatients),
-          _WorkflowItem(l10n.doctorConsultations, Icons.assignment_outlined, Routes.consultations),
-          _WorkflowItem(l10n.doctorPrescriptions, Icons.medication_outlined, Routes.prescriptions),
-          _WorkflowItem(l10n.actionTelehealth, Icons.video_call_outlined, Routes.telehealthLobby),
-          _WorkflowItem(l10n.actionSettings, Icons.settings_outlined, Routes.settings),
+          _WorkflowItem(
+            l10n.doctorSchedule,
+            Icons.calendar_today_outlined,
+            Routes.appointments,
+          ),
+          _WorkflowItem(
+            l10n.doctorPatients,
+            Icons.people_outline,
+            Routes.doctorPatients,
+          ),
+          _WorkflowItem(
+            l10n.doctorConsultations,
+            Icons.assignment_outlined,
+            Routes.consultations,
+          ),
+          _WorkflowItem(
+            l10n.doctorPrescriptions,
+            Icons.medication_outlined,
+            Routes.prescriptions,
+          ),
+          _WorkflowItem(
+            l10n.actionTelehealth,
+            Icons.video_call_outlined,
+            Routes.telehealthLobby,
+          ),
+          _WorkflowItem(
+            l10n.actionSettings,
+            Icons.settings_outlined,
+            Routes.settings,
+          ),
         ],
       _DemoRole.admin => [
-          _WorkflowItem(l10n.adminAppointments, Icons.calendar_month, Routes.appointments),
-          _WorkflowItem(l10n.adminPatients, Icons.people_outline, Routes.adminPatients),
-          _WorkflowItem(l10n.adminDoctors, Icons.medical_services_outlined, Routes.doctors),
-          _WorkflowItem(l10n.adminClinics, Icons.local_hospital_outlined, Routes.clinics),
-          _WorkflowItem(l10n.adminBilling, Icons.payments_outlined, Routes.billing),
-          _WorkflowItem(l10n.adminSettings, Icons.settings_outlined, Routes.settings),
+          _WorkflowItem(
+            l10n.adminAppointments,
+            Icons.calendar_month,
+            Routes.appointments,
+          ),
+          _WorkflowItem(
+            l10n.adminPatients,
+            Icons.people_outline,
+            Routes.adminPatients,
+          ),
+          _WorkflowItem(
+            l10n.adminDoctors,
+            Icons.medical_services_outlined,
+            Routes.doctors,
+          ),
+          _WorkflowItem(
+            l10n.adminClinics,
+            Icons.local_hospital_outlined,
+            Routes.clinics,
+          ),
+          _WorkflowItem(
+            l10n.adminBilling,
+            Icons.payments_outlined,
+            Routes.billing,
+          ),
+          _WorkflowItem(
+            l10n.adminSettings,
+            Icons.settings_outlined,
+            Routes.settings,
+          ),
         ],
     };
 
@@ -81,7 +153,8 @@ class _DemoRoleDashboard extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: l10n.actionSignOut,
-            onPressed: () => context.read<AuthBloc>().add(const AuthLogoutRequested()),
+            onPressed: () =>
+                context.read<AuthBloc>().add(const AuthLogoutRequested()),
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -95,8 +168,10 @@ class _DemoRoleDashboard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.dashboardGreeting(user.displayName),
-                        style: Theme.of(context).textTheme.headlineSmall),
+                    Text(
+                      l10n.dashboardGreeting(user.displayName),
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                     const SizedBox(height: 8),
                     Chip(
                       avatar: Icon(_roleIcon(kind), size: 18),
@@ -134,8 +209,10 @@ class _DemoRoleDashboard extends StatelessWidget {
                           children: [
                             Icon(item.icon, size: 30),
                             const Spacer(),
-                            Text(item.title,
-                                style: Theme.of(context).textTheme.titleMedium),
+                            Text(
+                              item.title,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ],
                         ),
                       ),
@@ -177,6 +254,7 @@ class _UnknownRoleDashboard extends StatelessWidget {
 
 class _WorkflowItem {
   const _WorkflowItem(this.title, this.icon, this.route);
+
   final String title;
   final IconData icon;
   final String route;
