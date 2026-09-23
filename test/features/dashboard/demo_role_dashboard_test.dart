@@ -4,10 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../lib/features/auth/domain/entities/auth_user.dart';
-import '../../../lib/features/auth/presentation/bloc/auth_bloc.dart';
-import '../../../lib/features/dashboard/presentation/pages/role_dashboard_page.dart';
-import '../../../lib/l10n/gen/app_localizations.dart';
+import 'package:medibook/features/auth/domain/entities/auth_user.dart';
+import 'package:medibook/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:medibook/features/dashboard/presentation/pages/role_dashboard_page.dart';
+import 'package:medibook/l10n/gen/app_localizations.dart';
 
 class _MockAuthBloc extends Mock implements AuthBloc {}
 
