@@ -43,7 +43,7 @@ void main() {
     logout = _MockLogout();
     restore = _MockRestore();
     repository = _MockRepository();
-    signal = SessionExpirySignal();
+    signal = const SessionExpirySignal();
 
     when(repository.watchUser).thenAnswer((_) => const Stream<AuthUser?>.empty());
     when(() => restore()).thenAnswer(
