@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../../../core/demo/demo_seed.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
 import '../../../../core/sync/sync_status.dart';
 import '../../../../core/utils/clock.dart';
