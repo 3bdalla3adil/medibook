@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../../domain/entities/patient_summary.dart';
+
 class PatientSummaryDto {
   const PatientSummaryDto(this.json);
   final Map<String, dynamic> json;
