@@ -34,10 +34,11 @@ class PrescriptionListCubit extends Cubit<PrescriptionListState> {
       case Err(:final failure):
         emit(
           PrescriptionListState(
-          status: PrescriptionListStatus.error,
-          items: state.items,
-          failure: failure,
-        ));
+            status: PrescriptionListStatus.error,
+            items: state.items,
+            failure: failure,
+          ),
+        );
     }
   }
 }
