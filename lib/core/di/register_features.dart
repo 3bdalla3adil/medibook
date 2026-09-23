@@ -74,6 +74,7 @@ import '../../features/telehealth/data/repositories/telehealth_repository_impl.d
 import '../../features/telehealth/data/repositories/telehealth_demo_repository.dart';
 import '../../features/telehealth/domain/repositories/telehealth_repository.dart';
 import '../config/app_config.dart';
+import '../security/session_expiry_signal.dart';
 import '../network/dio_client.dart';
 import '../storage/local_store.dart';
 import '../sync/sync_engine.dart';
@@ -110,6 +111,7 @@ Future<void> registerFeatures() async {
         logout: getIt(),
         restore: getIt(),
         repository: getIt(),
+        sessionExpirySignal: getIt<SessionExpirySignal>(),
       ),
     )
     ..registerLazySingleton<AppointmentRemoteDataSource>(() {
