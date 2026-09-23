@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medibook/core/demo/demo_seed.dart';
-import 'package:medibook/features/appointments/data/repositories/appointment_demo_repository.dart';
-import 'package:medibook/features/doctors/data/datasources/doctor_demo_data_source.dart';
-import 'package:medibook/features/clinics/data/datasources/clinic_demo_data_source.dart';
-import 'package:medibook/features/services/data/datasources/service_demo_data_source.dart';
-import 'package:medibook/features/patients/data/datasources/patient_demo_data_source.dart';
 import 'package:medibook/core/utils/clock.dart';
+import 'package:medibook/features/appointments/data/repositories/appointment_demo_repository.dart';
+import 'package:medibook/features/clinics/data/datasources/clinic_demo_data_source.dart';
+import 'package:medibook/features/doctors/data/datasources/doctor_demo_data_source.dart';
+import 'package:medibook/features/patients/data/datasources/patient_demo_data_source.dart';
+import 'package:medibook/features/services/data/datasources/service_demo_data_source.dart';
 
 void main() {
   test('demo seed is deterministic', () {
@@ -20,7 +20,10 @@ void main() {
     expect((await const DemoClinicRemoteDataSource().fetchClinics()).length, 1);
     expect((await const DemoServiceRemoteDataSource().fetchServices()).length, 1);
     expect((await const DemoDoctorRemoteDataSource().fetchDoctors()).length, 1);
-    expect((await const DemoPatientRemoteDataSource().fetchCurrent())?.id, DemoSeed.patientId);
+    expect(
+      (await const DemoPatientRemoteDataSource().fetchCurrent())?.json['id'],
+      DemoSeed.patientId,
+    );
   });
 
   test('demo appointment repository is deterministic and mutable in memory', () async {
