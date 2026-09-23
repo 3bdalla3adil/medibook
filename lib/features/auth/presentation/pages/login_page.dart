@@ -112,19 +112,16 @@ class _LoginViewState extends State<_LoginView> {
                                 : Text(l10n.actionSignIn),
                           ),
                         ),
-                        if (!getIt<AppConfig>().enableDemoAuth) ...[
-                          const SizedBox(height: 12),
-                          TextButton(
-                            onPressed: isLoading ? null : () => context.go('/register'),
-                            child: Text(l10n.actionCreateAccount),
-                          ),
-                        ],
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: isLoading ? null : () => context.push('/register'),
+                          child: Text(l10n.actionCreateAccount),
+                        ),
                         if (getIt<AppConfig>().enableDemoAuth) ...[
                           const SizedBox(height: 12),
-                          OutlinedButton.icon(
-                            onPressed: isLoading ? null : _useDemoAccount,
-                            icon: const Icon(Icons.play_circle_outline),
-                            label: Text(l10n.loginDemoAccount),
+                          _DemoAccountButtons(
+                            enabled: !isLoading,
+                            onSelect: _useDemoAccount,
                           ),
                         ],
                       ],
@@ -139,13 +136,13 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  void _useDemoAccount() {
-    _emailController.text = DemoAuthRemoteDataSource.email;
-    _passwordController.text = DemoAuthRemoteDataSource.password;
+  void _useDemoAccount(DemoCredentials credentials) {
+    _emailController.text = credentials.email;
+    _passwordController.text = credentials.password;
     context.read<AuthBloc>().add(
-          const AuthLoginRequested(
-            email: DemoAuthRemoteDataSource.email,
-            password: DemoAuthRemoteDataSource.password,
+          AuthLoginRequested(
+            email: credentials.email,
+            password: credentials.password,
           ),
         );
   }
@@ -167,6 +164,76 @@ class _LoginViewState extends State<_LoginView> {
       'network' || 'timeout' => l10n.errorNetwork,
       'forbidden' => l10n.errorForbidden,
       _ => l10n.errorGeneric,
+    };
+  }
+}
+
+
+class _DemoAccountButtons extends StatelessWidget {
+  const _DemoAccountButtons({
+    required this.enabled,
+    required this.onSelect,
+  });
+
+  final bool enabled;
+  final ValueChanged<DemoCredentials> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.loginDemoAccountsTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+            _button(
+              context,
+              DemoAuthRemoteDataSource.patientCredentials,
+              Icons.person_outline,
+            ),
+            _button(
+              context,
+              DemoAuthRemoteDataSource.doctorCredentials,
+              Icons.medical_services_outlined,
+            ),
+            _button(
+              context,
+              DemoAuthRemoteDataSource.adminCredentials,
+              Icons.admin_panel_settings_outlined,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _button(
+    BuildContext context,
+    DemoCredentials credentials,
+    IconData icon,
+  ) {
+    return OutlinedButton.icon(
+      onPressed: enabled ? () => onSelect(credentials) : null,
+      icon: Icon(icon),
+      label: Text(
+        l10nLabel(context, credentials.label),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  String l10nLabel(BuildContext context, String role) {
+    final l10n = AppLocalizations.of(context);
+    return switch (role) {
+      'Patient' => l10n.loginDemoPatient,
+      'Doctor' => l10n.loginDemoDoctor,
+      _ => l10n.loginDemoAdmin,
     };
   }
 }
