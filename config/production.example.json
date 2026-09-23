@@ -1,0 +1,12 @@
+{
+  "APP_ENV": "prod",
+  "API_BASE_URL": "https://api.your-production-domain.example",
+  "API_VERSION": "/v1",
+  "ENABLE_SSL_PINNING": "true",
+  "ENABLE_DEVICE_INTEGRITY": "true",
+  "ENABLE_SCREEN_GUARD": "true",
+  "ENABLE_BIOMETRICS": "true",
+  "ENABLE_DEMO_AUTH": "false",
+  "ENABLE_FIREBASE_AUTH": "true",
+  "ALLOW_CLEARTEXT": "false"
+}
