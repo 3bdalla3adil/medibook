@@ -115,35 +115,6 @@ class _SplashPage extends StatelessWidget {
       );
 }
 
-class _TelehealthLobbyPage extends StatelessWidget {
-  const _TelehealthLobbyPage();
-
-  @override
-  Widget build(BuildContext context) => const Scaffold(
-        body: Center(child: Text('Telehealth sessions require an appointment.')),
-      );
-}
-
-class _TelehealthRoutePage extends StatelessWidget {
-  const _TelehealthRoutePage({required this.appointmentId});
-  final String appointmentId;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(AppLocalizations.of(context).actionTelehealth)),
-        body: Center(child: Text(appointmentId)),
-      );
-}
-
-class _UnavailableClinicalRoutePage extends StatelessWidget {
-  const _UnavailableClinicalRoutePage();
-
-  @override
-  Widget build(BuildContext context) => const Scaffold(
-        body: Center(child: Text('This module is not implemented in Phase 2.')),
-      );
-}
-
 class _ErrorPage extends StatelessWidget {
   const _ErrorPage({required this.message});
   final String message;
