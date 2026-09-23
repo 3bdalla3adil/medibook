@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
 import '../../../../core/security/secure_logger.dart';
+import '../../../../core/security/session_expiry_signal.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login.dart';
@@ -23,11 +24,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required LogoutUseCase logout,
     required RestoreSessionUseCase restore,
     required AuthRepository repository,
+    required SessionExpirySignal sessionExpirySignal,
   })  : _login = login,
         _register = register,
         _logout = logout,
         _restore = restore,
         _repository = repository,
+        _sessionExpirySignal = sessionExpirySignal,
         super(const AuthState.unknown()) {
     on<AuthBootstrapRequested>(_onBootstrap);
     on<AuthLoginRequested>(_onLogin);
@@ -40,6 +43,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         add(const AuthSessionExpired());
       }
     });
+
+    _sessionSub = _sessionExpirySignal.stream.listen((_) {
+      if (!isClosed) add(const AuthSessionExpired());
+    });
   }
 
   final LoginUseCase _login;
@@ -47,9 +54,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogoutUseCase _logout;
   final RestoreSessionUseCase _restore;
   final AuthRepository _repository;
+  final SessionExpirySignal _sessionExpirySignal;
   final _log = SecureLogger('AuthBloc');
 
   StreamSubscription<AuthUser?>? _userSub;
+  StreamSubscription<void>? _sessionSub;
 
   Future<void> _onBootstrap(
     AuthBootstrapRequested event,
@@ -109,12 +118,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSessionExpired event,
     Emitter<AuthState> emit,
   ) async {
+    await _logout(revokeOnServer: false);
     emit(const AuthState.unauthenticated());
   }
 
   @override
   Future<void> close() async {
     await _userSub?.cancel();
+    await _sessionSub?.cancel();
     return super.close();
   }
 }
