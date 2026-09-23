@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:logging/logging.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:logging/logging.dart';
 import 'package:medibook/app/app.dart';
 import 'package:medibook/core/config/app_config.dart';
 import 'package:medibook/core/config/app_environment.dart';
@@ -8,14 +8,13 @@ import 'package:medibook/core/di/injector.dart';
 import 'package:medibook/core/di/register_core.dart';
 import 'package:medibook/core/di/register_features.dart';
 import 'package:medibook/features/dashboard/presentation/widgets/appointment_card.dart';
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('demo patient login reaches dashboard with deterministic data', (tester) async {
     await resetInjector();
 
-    final config = AppConfig(
+    const config = AppConfig(
       environment: AppEnvironment.dev,
       apiBaseUrl: 'https://api.example.com',
       apiVersion: '/v1',
