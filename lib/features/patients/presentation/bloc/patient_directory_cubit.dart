@@ -34,10 +34,11 @@ class PatientDirectoryCubit extends Cubit<PatientDirectoryState> {
       case Err(:final failure):
         emit(
           PatientDirectoryState(
-          status: PatientDirectoryStatus.error,
-          items: state.items,
-          failure: failure,
-        ));
+            status: PatientDirectoryStatus.error,
+            items: state.items,
+            failure: failure,
+          ),
+        );
     }
   }
 }
