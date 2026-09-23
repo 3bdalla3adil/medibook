@@ -6,7 +6,6 @@ import '../../../../app/router/routes.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
-import 'patient_dashboard_page.dart';
 
 /// Role-aware landing page. Demo users use local workflow navigation so the
 /// demo can be explored without a clinical backend.
@@ -18,7 +17,23 @@ class RoleDashboardPage extends StatelessWidget {
     final user = context.read<AuthBloc>().state.user;
     if (user == null) return const SizedBox.shrink();
 
-    if (user.isPatient) return const PatientDashboardPage();
+    // Demo identities must never enter the production dashboard path. The
+    // production patient dashboard loads backend data; demo users must remain
+    // fully deterministic and offline-capable after authentication.
+    if (_isDemoUser(user)) {
+      if (user.isPatient) {
+        return _DemoRoleDashboard(user: user, kind: _DemoRole.patient);
+      }
+      if (user.roles.contains(UserRole.doctor)) {
+        return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
+      }
+      if (user.roles.contains(UserRole.orgAdmin) ||
+          user.roles.contains(UserRole.clinicAdmin) ||
+          user.roles.contains(UserRole.superAdmin)) {
+        return _DemoRoleDashboard(user: user, kind: _DemoRole.admin);
+      }
+    }
+
     if (user.roles.contains(UserRole.doctor)) {
       return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
     }
@@ -30,6 +45,8 @@ class RoleDashboardPage extends StatelessWidget {
 
     return const _UnknownRoleDashboard();
   }
+
+  bool _isDemoUser(AuthUser user) => user.id.startsWith('demo-');
 }
 
 enum _DemoRole { patient, doctor, admin }
@@ -70,11 +87,6 @@ class _DemoRoleDashboard extends StatelessWidget {
             Icons.video_call_outlined,
             Routes.telehealthLobby,
           ),
-          _WorkflowItem(
-            l10n.actionSettings,
-            Icons.settings_outlined,
-            Routes.settings,
-          ),
         ],
       _DemoRole.doctor => [
           _WorkflowItem(
@@ -102,11 +114,6 @@ class _DemoRoleDashboard extends StatelessWidget {
             Icons.video_call_outlined,
             Routes.telehealthLobby,
           ),
-          _WorkflowItem(
-            l10n.actionSettings,
-            Icons.settings_outlined,
-            Routes.settings,
-          ),
         ],
       _DemoRole.admin => [
           _WorkflowItem(
@@ -128,16 +135,6 @@ class _DemoRoleDashboard extends StatelessWidget {
             l10n.adminClinics,
             Icons.local_hospital_outlined,
             Routes.clinics,
-          ),
-          _WorkflowItem(
-            l10n.adminBilling,
-            Icons.payments_outlined,
-            Routes.billing,
-          ),
-          _WorkflowItem(
-            l10n.adminSettings,
-            Icons.settings_outlined,
-            Routes.settings,
           ),
         ],
     };
