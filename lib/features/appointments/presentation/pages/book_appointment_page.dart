@@ -152,7 +152,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text('Available times', style: Theme.of(context).textTheme.titleMedium),
+                Text(l10n.availableTimes, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8, runSpacing: 8,
@@ -166,7 +166,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
                   ],
                 ),
                 if (slots.isEmpty && doctor != null)
-                  const Padding(padding: EdgeInsets.only(top: 16), child: Text('No available slots for this date.')),
+                  Padding(padding: const EdgeInsets.only(top: 16), child: Text(l10n.noAvailableSlots)),
                 if (error != null)
                   Padding(padding: const EdgeInsets.only(top: 16), child: Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error))),
                 const SizedBox(height: 24),
