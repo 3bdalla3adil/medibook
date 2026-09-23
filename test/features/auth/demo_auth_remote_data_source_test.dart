@@ -14,7 +14,10 @@ void main() {
 
     expect(response.user.id, 'demo-patient-001');
     expect(response.user.isPatient, isTrue);
-    expect(response.tokens.accessToken, 'demo-access-token');
+    expect(
+      response.tokens.accessToken,
+      'demo-access-demo-patient-001',
+    );
   });
 
   test('accepts doctor and administrator demo credentials', () async {
@@ -23,12 +26,20 @@ void main() {
       password: DemoAuthRemoteDataSource.password,
     );
     expect(doctor.user.roles, contains(UserRole.doctor));
+    expect(
+      doctor.tokens.accessToken,
+      'demo-access-demo-doctor-001',
+    );
 
     final admin = await dataSource.login(
       email: DemoAuthRemoteDataSource.adminEmail,
       password: DemoAuthRemoteDataSource.password,
     );
     expect(admin.user.roles, contains(UserRole.orgAdmin));
+    expect(
+      admin.tokens.accessToken,
+      'demo-access-demo-admin-001',
+    );
   });
 
   test('rejects incorrect demo credentials', () async {
