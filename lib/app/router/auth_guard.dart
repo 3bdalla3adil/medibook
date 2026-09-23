@@ -43,18 +43,18 @@ class AuthGuard {
   }
 
   RouteRequirement? requirementFor(String location) {
+    if (location == Routes.bookAppointment) {
+      return const RouteRequirement(
+        permissions: {Permission.bookAppointment},
+      );
+    }
+
     if (location == Routes.appointments || location.startsWith('/appointments/')) {
       return const RouteRequirement(
         permissions: {
           Permission.viewOwnAppointments,
           Permission.viewAnyAppointment,
         },
-      );
-    }
-
-    if (location == Routes.bookAppointment) {
-      return const RouteRequirement(
-        permissions: {Permission.bookAppointment},
       );
     }
 
