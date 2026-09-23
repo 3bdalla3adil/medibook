@@ -7,6 +7,7 @@ import 'package:medibook/core/config/app_environment.dart';
 import 'package:medibook/core/di/injector.dart';
 import 'package:medibook/core/di/register_core.dart';
 import 'package:medibook/core/di/register_features.dart';
+import 'package:medibook/features/dashboard/presentation/widgets/appointment_card.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,7 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
     expect(find.textContaining('Demo Patient'), findsOneWidget);
+    expect(find.byType(AppointmentCard), findsNWidgets(2));
     expect(find.text('General Consultation'), findsOneWidget);
     expect(find.text('Follow-up Consultation'), findsOneWidget);
   });
