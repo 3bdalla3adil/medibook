@@ -56,7 +56,7 @@ class _PrescriptionListView extends StatelessWidget {
                         ListTile(
                           title: Text(medication.medicationName),
                           subtitle: Text(
-                            medication.dose + ' • ' + medication.frequency,
+                            '${medication.dose} • ${medication.frequency}',
                           ),
                         ),
                     ],
