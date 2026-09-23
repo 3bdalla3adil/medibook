@@ -9,6 +9,7 @@ import '../../features/appointments/presentation/pages/book_appointment_page.dar
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/authorization/presentation/pages/forbidden_page.dart';
 import '../../features/dashboard/presentation/pages/role_dashboard_page.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
@@ -30,20 +31,21 @@ class AppRouter {
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.register, builder: (_, __) => const RegisterPage()),
+          GoRoute(path: Routes.forbidden, builder: (_, __) => const ForbiddenPage()),
           GoRoute(path: Routes.dashboard, builder: (_, __) => const RoleDashboardPage()),
           GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           GoRoute(path: Routes.bookAppointment, builder: (_, __) => const BookAppointmentPage()),
-          _stub(Routes.services, 'Services'),
-          _stub(Routes.medicalRecords, 'Medical records'),
-          _stub(Routes.telehealthLobby, 'Telehealth lobby'),
-          _stub(Routes.settings, 'Settings'),
-          _stub(Routes.doctors, 'Doctors'),
-          _stub(Routes.clinics, 'Clinics'),
-          _stub(Routes.consultations, 'Consultations'),
-          _stub(Routes.prescriptions, 'Prescriptions'),
-          _stub(Routes.doctorPatients, 'Doctor patients'),
-          _stub(Routes.adminPatients, 'Patients'),
-          _stub(Routes.billing, 'Billing'),
+          GoRoute(path: Routes.services, builder: (_, __) => const _ClinicalPage(title: 'Services')),
+          GoRoute(path: Routes.medicalRecords, builder: (_, __) => const _ClinicalPage(title: 'Medical records')),
+          GoRoute(path: Routes.telehealthLobby, builder: (_, __) => const _ClinicalPage(title: 'Telehealth')),
+          GoRoute(path: Routes.settings, builder: (_, __) => const _ClinicalPage(title: 'Settings')),
+          GoRoute(path: Routes.doctors, builder: (_, __) => const _ClinicalPage(title: 'Doctors')),
+          GoRoute(path: Routes.clinics, builder: (_, __) => const _ClinicalPage(title: 'Clinics')),
+          GoRoute(path: Routes.consultations, builder: (_, __) => const _ClinicalPage(title: 'Consultations')),
+          GoRoute(path: Routes.prescriptions, builder: (_, __) => const _ClinicalPage(title: 'Prescriptions')),
+          GoRoute(path: Routes.doctorPatients, builder: (_, __) => const _ClinicalPage(title: 'Doctor patients')),
+          GoRoute(path: Routes.adminPatients, builder: (_, __) => const _ClinicalPage(title: 'Patients')),
+          GoRoute(path: Routes.billing, builder: (_, __) => const _ClinicalPage(title: 'Billing')),
           GoRoute(
             path: '/appointments/:id',
             builder: (_, state) =>
@@ -52,15 +54,13 @@ class AppRouter {
           GoRoute(
             path: '/telehealth/:appointmentId',
             builder: (_, state) =>
-                _StubPage(title: 'Telehealth ${state.pathParameters['appointmentId']}'),
+                _ClinicalPage(title: 'Telehealth session'),
           ),
         ],
         errorBuilder: (_, state) =>
             _ErrorPage(message: state.error?.toString() ?? 'Not found'),
       );
 
-  GoRoute _stub(String path, String title) =>
-      GoRoute(path: path, builder: (_, __) => _StubPage(title: title));
 }
 
 class _AuthBlocListenable extends ChangeNotifier {
@@ -87,8 +87,8 @@ class _SplashPage extends StatelessWidget {
       );
 }
 
-class _StubPage extends StatelessWidget {
-  const _StubPage({required this.title});
+class _ClinicalPage extends StatelessWidget {
+  const _ClinicalPage({required this.title});
   final String title;
 
   @override
