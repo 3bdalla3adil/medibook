@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:medibook/app/app.dart';
 import 'package:medibook/core/config/app_config.dart';
