@@ -71,7 +71,7 @@ Future<void> _pumpDashboard(WidgetTester tester, AuthUser user) async {
     BlocProvider<AuthBloc>.value(
       value: bloc,
       child: const MaterialApp(
-        locale: const Locale('ar'),
+        locale: Locale('ar'),
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: [
           AppLocalizations.delegate,
