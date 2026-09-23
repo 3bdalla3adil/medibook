@@ -22,11 +22,17 @@ class AuthGuard {
     final isForbidden = location == Routes.forbidden;
     final isAuthEntry = isLoggingIn || isRegistering;
 
+    // While login/registration is still running, keep the user on the
+    // authentication screen. Previously AuthAuthenticating/AuthFailure fell
+    // through to the authenticated branch below, which could redirect to
+    // /dashboard before a user existed and render a blank screen.
     if (authState is AuthUnknown || authState is AuthRestoring) {
       return isSplash ? null : Routes.splash;
     }
 
-    if (authState is AuthUnauthenticated) {
+    if (authState is AuthUnauthenticated ||
+        authState is AuthAuthenticating ||
+        authState is AuthFailure) {
       return isAuthEntry ? null : Routes.login;
     }
 
