@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medibook/core/error/result.dart';
+import 'package:medibook/core/security/session_expiry_signal.dart';
 import 'package:medibook/features/auth/domain/entities/auth_user.dart';
 import 'package:medibook/features/auth/domain/repositories/auth_repository.dart';
 import 'package:medibook/features/auth/domain/usecases/login.dart';
@@ -58,6 +59,7 @@ void main() {
       logout: logout,
       restore: restore,
       repository: repository,
+      sessionExpirySignal: SessionExpirySignal(),
     ),
     seed: () => const AuthState.authenticated(user),
     act: (bloc) => bloc.add(const AuthSessionExpired()),
