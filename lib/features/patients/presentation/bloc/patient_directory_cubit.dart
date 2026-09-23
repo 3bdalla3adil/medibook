@@ -32,7 +32,8 @@ class PatientDirectoryCubit extends Cubit<PatientDirectoryState> {
       case Ok(value: final items):
         emit(PatientDirectoryState(status: PatientDirectoryStatus.ready, items: items));
       case Err(:final failure):
-        emit(PatientDirectoryState(
+        emit(
+          PatientDirectoryState(
           status: PatientDirectoryStatus.error,
           items: state.items,
           failure: failure,
