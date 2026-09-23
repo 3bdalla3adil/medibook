@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/network/api_endpoints.dart';
 import '../models/doctor_dto.dart';
-
 abstract interface class DoctorRemoteDataSource {
   Future<List<DoctorDto>> fetchDoctors({String? clinicId, String? serviceId});
   Future<DoctorDto?> fetchDoctor(String id);
@@ -30,14 +29,16 @@ class DioDoctorRemoteDataSource implements DoctorRemoteDataSource {
     );
     final data = response.data?['data'];
     if (data is! List) return const [];
-    return data.whereType<Map<String, dynamic>>()
-        .map(DoctorDto.fromJson).toList(growable: false);
+    return data
+        .whereType<Map<String, dynamic>>()
+        .map(DoctorDto.fromJson)
+        .toList(growable: false);
   }
 
   @override
   Future<DoctorDto?> fetchDoctor(String id) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      ApiEndpoints.doctors + '/' + id,
+      ApiEndpoints.doctors + '/$id',
     );
     final data = response.data?['data'];
     return data is Map<String, dynamic> ? DoctorDto.fromJson(data) : null;
@@ -52,7 +53,7 @@ class DioDoctorRemoteDataSource implements DoctorRemoteDataSource {
     String? serviceId,
   }) async {
     final response = await _dio.get<Map<String, dynamic>>(
-      ApiEndpoints.doctors + '/' + doctorId + '/availability',
+      ApiEndpoints.doctors + '/$doctorId/availability',
       queryParameters: {
         'from': from.toUtc().toIso8601String(),
         'to': to.toUtc().toIso8601String(),
