@@ -40,12 +40,17 @@ Future<void> registerCore(
     )
     ..registerLazySingleton<ScreenGuard>(() => const NoopScreenGuard())
     ..registerLazySingleton<BiometricService>(LocalAuthBiometricService.new)
-    ..registerLazySingleton<CertificatePinning>(
-      () => CertificatePinning(
+    ..registerLazySingleton<CertificatePinning>(() {
+      const pin = String.fromEnvironment('CERTIFICATE_SHA256');
+      final host = Uri.parse(config.apiBaseUrl).host;
+      if (config.isProd && config.enableSslPinning && pin.isEmpty) {
+        throw StateError('Production certificate pinning requires CERTIFICATE_SHA256.');
+      }
+      return CertificatePinning(
         enabled: config.enableSslPinning,
-        pinsByHost: const {},
-      ),
-    )
+        pinsByHost: pin.isEmpty ? const {} : {host: {pin}},
+      );
+    })
     ..registerLazySingleton<SyncEngine>(
       () => SyncEngine(
         store: getIt<LocalStore>(),
