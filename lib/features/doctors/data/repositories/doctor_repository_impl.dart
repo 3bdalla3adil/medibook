@@ -9,10 +9,12 @@ class DoctorRepositoryImpl implements DoctorRepository {
 
   @override
   Future<Result<List<Doctor>>> getDoctors({String? clinicId, String? serviceId}) async {
-    final result = await guard(() => _remote.fetchDoctors(
-          clinicId: clinicId,
-          serviceId: serviceId,
-        ),);
+    final result = await guard(
+      () => _remote.fetchDoctors(
+        clinicId: clinicId,
+        serviceId: serviceId,
+      ),
+    );
     return result.map((items) => items.map((e) => e.toDomain()).toList(growable: false));
   }
 
@@ -29,11 +31,13 @@ class DoctorRepositoryImpl implements DoctorRepository {
     required DateTime to,
     String? clinicId,
     String? serviceId,
-  }) => guard(() => _remote.fetchAvailability(
-        doctorId: doctorId,
-        from: from,
-        to: to,
-        clinicId: clinicId,
-        serviceId: serviceId,
-      ),);
+  }) => guard(
+        () => _remote.fetchAvailability(
+          doctorId: doctorId,
+          from: from,
+          to: to,
+          clinicId: clinicId,
+          serviceId: serviceId,
+        ),
+      );
 }
