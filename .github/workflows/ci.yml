@@ -95,6 +95,11 @@ jobs:
       - name: Regenerate Android platform scaffolding
         run: flutter create --platforms=android --org "$ORG" --project-name "$APP" .
 
+      - name: Set Android compile SDK for Daily/Firebase plugins
+        run: |
+          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' android/app/build.gradle.kts
+          grep -n "compileSdk" android/app/build.gradle.kts
+
       - name: Install Dependencies
         run: flutter pub get
 
