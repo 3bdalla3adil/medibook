@@ -14,6 +14,10 @@ abstract final class ApiEndpoints {
   static const consultations = '/consultations';
   static const prescriptions = '/prescriptions';
   static const medicalRecords = '/medical-records';
+  static const billingInvoices = '/billing/invoices';
+  static const billingPayments = '/billing/payments';
+  static const audit = '/audit';
+  static const reports = '/reports';
   static String appointment(String id) => '/appointments/$id';
   static String cancelAppointment(String id) => '/appointments/$id/cancel';
   static String rescheduleAppointment(String id) => '/appointments/$id/reschedule';
