@@ -1,0 +1,2 @@
+enum ConflictStrategy { serverAuthoritative, fieldMergeRequiresPrompt, humanReview }
+class ConflictPolicyRegistry{const ConflictPolicyRegistry();ConflictStrategy strategyFor(String entityType)=>switch(entityType){'appointment'=>ConflictStrategy.serverAuthoritative,'patient_profile'=>ConflictStrategy.fieldMergeRequiresPrompt,'clinical_note'=>ConflictStrategy.humanReview,'prescription'=>ConflictStrategy.serverAuthoritative,_=>ConflictStrategy.serverAuthoritative,};}
