@@ -66,6 +66,7 @@ const _admin = AuthUser(
 Future<void> _pumpDashboard(WidgetTester tester, AuthUser user) async {
   final bloc = _MockAuthBloc();
   when(() => bloc.state).thenReturn(AuthState.authenticated(user));
+  when(() => bloc.stream).thenAnswer((_) => const Stream<AuthState>.empty());
 
   await tester.pumpWidget(
     BlocProvider<AuthBloc>.value(
