@@ -103,5 +103,40 @@
   "adminDoctors": "إدارة الأطباء",
   "adminClinics": "إدارة العيادات",
   "adminBilling": "الفوترة والمدفوعات",
-  "adminSettings": "إعدادات الإدارة"
+  "adminSettings": "إعدادات الإدارة",
+  "actionBackToDashboard": "العودة إلى لوحة التحكم",
+  "clinicsTitle": "العيادات",
+  "clinicsEmpty": "لا توجد عيادات متاحة.",
+  "servicesTitle": "الخدمات الطبية",
+  "servicesEmpty": "لا توجد خدمات متاحة.",
+  "serviceDuration": "{minutes} دقيقة",
+  "@serviceDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "doctorsTitle": "الأطباء",
+  "doctorsEmpty": "لا يوجد أطباء متاحون.",
+  "patientsTitle": "المرضى",
+  "patientsEmpty": "لا يوجد مرضى متاحون.",
+  "patientNoLastVisit": "لا توجد زيارة مسجلة",
+  "patientLastVisit": "آخر زيارة: {date}",
+  "@patientLastVisit": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "medicalRecordsTitle": "السجلات الطبية",
+  "medicalRecordsEmpty": "لا توجد إدخالات في السجل الطبي.",
+  "consultationsTitle": "الاستشارات",
+  "consultationsEmpty": "لا توجد استشارات متاحة.",
+  "consultationWithoutDiagnosis": "استشارة",
+  "prescriptionsTitle": "الوصفات الطبية",
+  "prescriptionsEmpty": "لا توجد وصفات طبية متاحة.",
+  "telehealthRequiresAppointment": "جلسات الاستشارة عن بُعد تتطلب موعدًا.",
+  "notImplementedPhase2": "هذه الوحدة لم تُنفذ ضمن المرحلة الثانية."
 }
