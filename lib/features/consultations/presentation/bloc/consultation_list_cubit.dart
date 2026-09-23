@@ -32,7 +32,8 @@ class ConsultationListCubit extends Cubit<ConsultationListState> {
       case Ok(value: final items):
         emit(ConsultationListState(status: ConsultationListStatus.ready, items: items));
       case Err(:final failure):
-        emit(ConsultationListState(
+        emit(
+          ConsultationListState(
           status: ConsultationListStatus.error,
           items: state.items,
           failure: failure,
