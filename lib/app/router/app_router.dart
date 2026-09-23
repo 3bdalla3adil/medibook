@@ -12,8 +12,8 @@ import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/authorization/presentation/pages/forbidden_page.dart';
 import '../../features/clinics/presentation/pages/clinic_list_page.dart';
 import '../../features/consultations/presentation/pages/consultation_list_page.dart';
-import '../../features/doctors/presentation/pages/doctor_list_page.dart';
 import '../../features/dashboard/presentation/pages/role_dashboard_page.dart';
+import '../../features/doctors/presentation/pages/doctor_list_page.dart';
 import '../../features/medical_records/presentation/pages/patient_record_view_page.dart';
 import '../../features/patients/presentation/pages/patient_directory_page.dart';
 import '../../features/prescriptions/presentation/pages/prescription_list_page.dart';
@@ -21,7 +21,6 @@ import '../../features/services/presentation/pages/service_list_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
-
 class AppRouter {
   AppRouter(this._authBloc) {
     _guard = AuthGuard(_authBloc);
