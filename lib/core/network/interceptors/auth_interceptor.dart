@@ -46,6 +46,13 @@ class AuthInterceptor extends QueuedInterceptor {
     ErrorInterceptorHandler handler,
   ) async {
     final status = err.response?.statusCode;
+    final responseData = err.response?.data;
+    final serverCode = responseData is Map ? responseData['code']?.toString() : null;
+    if (status == 403 && serverCode == 'account_deactivated') {
+      await _tokenStore.clear();
+      await _onSessionExpired();
+      return handler.next(err);
+    }
     final isAuthError = status == 401;
     final alreadyRetried = err.requestOptions.extra['retried'] == true;
     final isRefreshCall = err.requestOptions.path == ApiEndpoints.refresh;
