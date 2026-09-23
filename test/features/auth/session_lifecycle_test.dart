@@ -54,7 +54,9 @@ void main() {
         ),
       ),
     );
-    when(() => logout()).thenAnswer((_) async => const Ok(null));
+    when(
+      () => logout(revokeOnServer: any(named: 'revokeOnServer')),
+    ).thenAnswer((_) async => const Ok(null));
   });
 
   blocTest<AuthBloc, AuthState>(
