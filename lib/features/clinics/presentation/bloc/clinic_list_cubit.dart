@@ -37,10 +37,11 @@ class ClinicListCubit extends Cubit<ClinicListState> {
       case Err(:final failure):
         emit(
           ClinicListState(
-          status: ClinicListStatus.error,
-          items: state.items,
-          failure: failure,
-        ));
+            status: ClinicListStatus.error,
+            items: state.items,
+            failure: failure,
+          ),
+        );
     }
   }
 }
