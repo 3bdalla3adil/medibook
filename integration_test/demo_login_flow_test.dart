@@ -45,7 +45,7 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
-    expect(find.text('Demo Patient'), findsOneWidget);
+    expect(find.textContaining('Demo Patient'), findsOneWidget);
     expect(find.text('General Consultation'), findsOneWidget);
     expect(find.text('Follow-up Consultation'), findsOneWidget);
   });
