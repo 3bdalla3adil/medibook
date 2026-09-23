@@ -43,7 +43,7 @@ class AuthGuard {
   }
 
   String? requirePermission(
-    BuildContext context,
+    BuildContext _,
     RouteRequirement requirement,
   ) {
     final user = _bloc.state.user;
