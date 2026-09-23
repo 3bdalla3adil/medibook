@@ -6,6 +6,7 @@ import '../../../../app/router/routes.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import 'patient_dashboard_page.dart';
 
 /// Role-aware landing page. Demo users use local workflow navigation so the
 /// demo can be explored without a clinical backend.
@@ -17,8 +18,11 @@ class RoleDashboardPage extends StatelessWidget {
     final user = context.read<AuthBloc>().state.user;
     if (user == null) return const SizedBox.shrink();
 
-    if (user.isPatient && user.id.startsWith('demo-')) {
-      return _DemoRoleDashboard(user: user, kind: _DemoRole.patient);
+    if (user.isPatient) {
+      if (user.id.startsWith('demo-')) {
+        return _DemoRoleDashboard(user: user, kind: _DemoRole.patient);
+      }
+      return const PatientDashboardPage();
     }
     if (user.roles.contains(UserRole.doctor)) {
       return _DemoRoleDashboard(user: user, kind: _DemoRole.doctor);
