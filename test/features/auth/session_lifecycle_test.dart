@@ -31,6 +31,7 @@ void main() {
   late _MockLogout logout;
   late _MockRestore restore;
   late _MockRepository repository;
+  late SessionExpirySignal signal;
 
   setUp(() {
     login = _MockLogin();
@@ -38,6 +39,7 @@ void main() {
     logout = _MockLogout();
     restore = _MockRestore();
     repository = _MockRepository();
+    signal = SessionExpirySignal();
 
     when(repository.watchUser).thenAnswer((_) => const Stream<AuthUser?>.empty());
     when(() => restore()).thenAnswer(
@@ -59,10 +61,10 @@ void main() {
       logout: logout,
       restore: restore,
       repository: repository,
-      sessionExpirySignal: SessionExpirySignal(),
+      sessionExpirySignal: signal,
     ),
     seed: () => const AuthState.authenticated(user),
-    act: (bloc) => bloc.add(const AuthSessionExpired()),
+    act: (bloc) => signal.notify(),
     expect: () => const [
       AuthState.unauthenticated(),
     ],
