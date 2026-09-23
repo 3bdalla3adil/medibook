@@ -74,7 +74,7 @@ Future<void> _pumpDashboard(WidgetTester tester, AuthUser user) async {
       child: const MaterialApp(
         locale: Locale('ar'),
         supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: [
+        localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
