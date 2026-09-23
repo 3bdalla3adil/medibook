@@ -18,9 +18,9 @@ void main() {
       environment: AppEnvironment.dev,
       apiBaseUrl: 'https://api.example.com',
       apiVersion: '/v1',
-      requestTimeout: const Duration(seconds: 2),
-      connectTimeout: const Duration(seconds: 1),
-      receiveTimeout: const Duration(seconds: 2),
+      requestTimeout: Duration(seconds: 2),
+      connectTimeout: Duration(seconds: 1),
+      receiveTimeout: Duration(seconds: 2),
       logLevel: Level.WARNING,
       enableSslPinning: false,
       enableDeviceIntegrityCheck: false,
@@ -43,7 +43,7 @@ void main() {
 
     await tester.tap(find.text('المتابعة كمريض'));
     await tester.pump();
-    await tester.pumpAndSettle(const Duration(seconds: 3));
+    await tester.pumpAndSettle(Duration(seconds: 3));
 
     expect(find.textContaining('Demo Patient'), findsOneWidget);
     expect(find.byType(AppointmentCard), findsNWidgets(2));
