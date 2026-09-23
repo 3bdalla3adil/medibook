@@ -8,6 +8,7 @@ import '../security/device_integrity.dart';
 import '../security/encryption_key_provider.dart';
 import '../security/screen_guard.dart';
 import '../security/secure_logger.dart';
+import '../security/session_expiry_signal.dart';
 import '../security/secure_storage.dart';
 import '../security/token_store.dart';
 import '../storage/hive_local_store.dart';
@@ -24,6 +25,7 @@ Future<void> registerCore(
 
   getIt
     ..registerSingleton<AppConfig>(config)
+    ..registerSingleton<SessionExpirySignal>(SessionExpirySignal())
     ..registerSingleton<Clock>(const SystemClock())
     ..registerLazySingleton<SecureStorage>(FlutterSecureStorageAdapter.new)
     ..registerLazySingleton<TokenStore>(() => TokenStore(getIt<SecureStorage>()))
@@ -63,7 +65,10 @@ Future<void> registerCore(
       tokenStore: getIt<TokenStore>(),
       networkInfo: getIt<NetworkInfo>(),
       pinning: getIt<CertificatePinning>(),
-      onSessionExpired: onSessionExpired,
+      onSessionExpired: () async {
+        getIt<SessionExpirySignal>().notify();
+        await onSessionExpired();
+      },
       firebaseTokenRefresher: config.enableFirebaseAuth
           ? const FirebaseTokenRefresher().refresh
           : null,
