@@ -43,7 +43,7 @@ void main() {
     logout = _MockLogout();
     restore = _MockRestore();
     repository = _MockRepository();
-    signal = const SessionExpirySignal();
+    signal = SessionExpirySignal();
 
     when(repository.watchUser).thenAnswer((_) => const Stream<AuthUser?>.empty());
     when(() => restore()).thenAnswer(
@@ -54,7 +54,7 @@ void main() {
         ),
       ),
     );
-    when(() => logout()).thenAnswer((_) async => Ok(null));
+    when(() => logout()).thenAnswer((_) async => const Ok(null));
   });
 
   blocTest<AuthBloc, AuthState>(
