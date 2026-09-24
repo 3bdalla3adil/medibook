@@ -7,6 +7,7 @@ import '../core/di/injector.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../l10n/gen/app_localizations.dart';
 import 'router/app_router.dart';
+import 'router/routes.dart';
 import 'theme/app_theme.dart';
 
 class MediBookApp extends StatefulWidget {
@@ -32,7 +33,26 @@ class _MediBookAppState extends State<MediBookApp> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _authBloc,
-      child: MaterialApp.router(
+      child: BlocListener<AuthBloc, AuthState>(
+        bloc: _authBloc,
+        listenWhen: (previous, current) =>
+            current is AuthAuthenticated ||
+            current is AuthUnauthenticated ||
+            current is AuthFailure,
+        listener: (context, state) {
+          final location = _router.state.matchedLocation;
+          if (state is AuthAuthenticated &&
+              (location == Routes.login ||
+                  location == Routes.register ||
+                  location == Routes.splash)) {
+            _router.go(Routes.dashboard);
+          } else if ((state is AuthUnauthenticated || state is AuthFailure) &&
+              location != Routes.login &&
+              location != Routes.register) {
+            _router.go(Routes.login);
+          }
+        },
+        child: MaterialApp.router(
         title: 'MediBook',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
