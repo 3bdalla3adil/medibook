@@ -84,7 +84,7 @@ void main() {
 
     authBloc.add(const AuthBootstrapRequested());
     await tester.pumpAndSettle();
-  }
+  },
 
   Future<void> loginAndAssertDashboard(
     WidgetTester tester, {
