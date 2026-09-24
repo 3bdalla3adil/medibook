@@ -102,8 +102,7 @@ void main() {
     required Set<UserRole> roles,
   }) async {
     await tester.tap(find.text(buttonLabel));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pumpAndSettle();
 
     expect(authBloc.state, isA<AuthAuthenticated>());
     final user = authBloc.state.user;
