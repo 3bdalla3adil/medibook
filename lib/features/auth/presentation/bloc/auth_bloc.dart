@@ -25,13 +25,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required RestoreSessionUseCase restore,
     required AuthRepository repository,
     required SessionExpirySignal sessionExpirySignal,
+    AuthState initialState = const AuthState.unknown(),
   })  : _login = login,
         _register = register,
         _logout = logout,
         _restore = restore,
         _repository = repository,
         _sessionExpirySignal = sessionExpirySignal,
-        super(const AuthState.unknown()) {
+        super(initialState) {
     on<AuthBootstrapRequested>(_onBootstrap);
     on<AuthLoginRequested>(_onLogin);
     on<AuthRegisterRequested>(_onRegister);
@@ -64,14 +65,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthBootstrapRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.restoring());
+    final showRestoring = state is AuthUnknown;
+    if (showRestoring) {
+      emit(const AuthState.restoring());
+    }
+
     final result = await _restore();
+
+    if (state is AuthAuthenticated || state is AuthAuthenticating) {
+      return;
+    }
 
     switch (result) {
       case Ok(value: final session):
         emit(AuthState.authenticated(session.user));
       case Err():
-        emit(const AuthState.unauthenticated());
+        if (showRestoring) {
+          emit(const AuthState.unauthenticated());
+        }
     }
   }
 
