@@ -75,6 +75,43 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  integration-demo:
+    name: Demo Login Integration
+    needs: analyze-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Prepare Android platform
+        run: flutter create --platforms=android --org "$ORG" --project-name "$APP" .
+
+      - name: Set Android compile SDK for Daily/Firebase plugins
+        run: |
+          sed -i -E 's/^[[:space:]]*compileSdk = .*/    compileSdk = 36/' android/app/build.gradle.kts
+          grep -n "compileSdk" android/app/build.gradle.kts
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Generate Localizations
+        run: |
+          if [ -f l10n.yaml ]; then flutter gen-l10n; fi
+
+      - name: Run demo login flow on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          script: flutter test integration_test/demo_login_flow_test.dart
+
   build-apk:
     name: Build Release APK
     needs: analyze-and-test
