@@ -26,6 +26,7 @@ import 'package:mocktail/mocktail.dart';
 void main() {
   late AuthBloc authBloc;
   late DemoAuthRepository repository;
+  late _MockLogin login;
   late _MockRestoreSession restore;
 
   setUp(() async {
@@ -52,12 +53,44 @@ void main() {
     );
 
     repository = DemoAuthRepository();
+    login = _MockLogin();
     restore = _MockRestoreSession();
     when(() => restore()).thenAnswer(
       (_) async => const Err(UnauthorizedFailure()),
     );
+    when(() => login(email: any(named: 'email'), password: any(named: 'password')))
+        .thenAnswer((invocation) async {
+      final email = invocation.namedArguments[#email] as String;
+      final user = switch (email) {
+        DemoAuthRemoteDataSource.patientEmail => const AuthUser(
+          id: 'demo-patient-001',
+          displayName: 'MediBook Demo Patient',
+          roles: {UserRole.patient},
+          permissions: {Permission.viewOwnAppointments},
+        ),
+        DemoAuthRemoteDataSource.doctorEmail => const AuthUser(
+          id: 'demo-doctor-001',
+          displayName: 'MediBook Demo Doctor',
+          roles: {UserRole.doctor},
+          permissions: {Permission.viewOwnAppointments},
+        ),
+        DemoAuthRemoteDataSource.adminEmail => const AuthUser(
+          id: 'demo-admin-001',
+          displayName: 'MediBook Demo Administrator',
+          roles: {UserRole.orgAdmin},
+          permissions: {Permission.manageOrganization},
+        ),
+        _ => throw StateError('Unexpected demo email: $email'),
+      };
+      return Ok(
+        Session(
+          user: user,
+          expiresAt: DateTime.utc(2027),
+        ),
+      );
+    });
     authBloc = AuthBloc(
-      login: LoginUseCase(repository),
+      login: login,
       register: RegisterUseCase(repository),
       logout: LogoutUseCase(repository),
       restore: restore,
@@ -155,6 +188,8 @@ void main() {
     },
   );
 }
+
+class _MockLogin extends Mock implements LoginUseCase {}
 
 class _MockRestoreSession extends Mock implements RestoreSessionUseCase {}
 
