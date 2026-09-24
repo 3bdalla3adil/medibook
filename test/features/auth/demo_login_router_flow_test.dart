@@ -5,6 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medibook/app/router/app_router.dart';
+import 'package:medibook/core/config/app_config.dart';
+import 'package:medibook/core/config/app_environment.dart';
+import 'package:medibook/core/di/injector.dart';
+import 'package:logging/logging.dart';
 import 'package:medibook/core/error/failure.dart';
 import 'package:medibook/core/error/result.dart';
 import 'package:medibook/core/security/session_expiry_signal.dart';
@@ -25,6 +29,26 @@ void main() {
   late _MockRestoreSession restore;
 
   setUp(() {
+    getIt.registerSingleton<AppConfig>(
+      const AppConfig(
+        environment: AppEnvironment.dev,
+        apiBaseUrl: 'https://api.example.com',
+        apiVersion: '/v1',
+        requestTimeout: Duration(seconds: 2),
+        connectTimeout: Duration(seconds: 1),
+        receiveTimeout: Duration(seconds: 2),
+        logLevel: Level.WARNING,
+        enableSslPinning: false,
+        enableDeviceIntegrityCheck: false,
+        enableScreenGuard: false,
+        enableBiometrics: false,
+        enableDemoAuth: true,
+        enableFirebaseAuth: false,
+        allowCleartextTraffic: false,
+        maxOutboxAttempts: 2,
+        sessionIdleTimeout: Duration(minutes: 15),
+      ),
+    );
     repository = DemoAuthRepository();
     restore = _MockRestoreSession();
 
@@ -45,6 +69,7 @@ void main() {
 
   tearDown(() async {
     await authBloc.close();
+    await resetInjector();
     await repository.dispose();
   });
 
