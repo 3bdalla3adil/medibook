@@ -85,7 +85,9 @@ void main() {
     );
 
     authBloc.add(const AuthBootstrapRequested());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('المتابعة كمريض'), findsOneWidget);
   }
 
   Future<void> loginAndAssertDashboard(
@@ -95,7 +97,8 @@ void main() {
     required Set<UserRole> roles,
   }) async {
     await tester.tap(find.text(buttonLabel));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(authBloc.state, isA<AuthAuthenticated>());
     final user = authBloc.state.user;
