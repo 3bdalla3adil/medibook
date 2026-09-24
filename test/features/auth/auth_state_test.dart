@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:medibook/core/error/failure.dart';
 import 'package:medibook/core/error/result.dart';
 import 'package:medibook/core/security/session_expiry_signal.dart';
 import 'package:medibook/features/auth/domain/entities/auth_user.dart';
