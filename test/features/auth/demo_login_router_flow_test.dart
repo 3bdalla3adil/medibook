@@ -87,6 +87,7 @@ void main() {
     authBloc.add(const AuthBootstrapRequested());
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
+    debugPrint('DEMO_FLOW location=${router.state.matchedLocation} auth=${authBloc.state.runtimeType}');
     expect(find.text('المتابعة كمريض'), findsOneWidget);
   }
 
