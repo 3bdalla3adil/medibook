@@ -115,9 +115,6 @@ Future<void> registerFeatures() async {
         restore: getIt(),
         repository: getIt(),
         sessionExpirySignal: getIt<SessionExpirySignal>(),
-        initialState: getIt<AppConfig>().enableDemoAuth
-            ? const AuthState.unauthenticated()
-            : const AuthState.unknown(),
       ),
     )
     ..registerLazySingleton<AppointmentRemoteDataSource>(() {
