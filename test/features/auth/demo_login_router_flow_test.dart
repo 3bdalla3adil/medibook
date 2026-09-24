@@ -21,10 +21,12 @@ import 'package:medibook/features/auth/domain/usecases/register.dart';
 import 'package:medibook/features/auth/domain/usecases/restore_session.dart';
 import 'package:medibook/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:medibook/l10n/gen/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
 
 void main() {
   late AuthBloc authBloc;
   late DemoAuthRepository repository;
+  late _MockRestoreSession restore;
 
   setUp(() async {
     await resetInjector();
@@ -50,11 +52,15 @@ void main() {
     );
 
     repository = DemoAuthRepository();
+    restore = _MockRestoreSession();
+    when(() => restore()).thenAnswer(
+      (_) async => const Err(UnauthorizedFailure()),
+    );
     authBloc = AuthBloc(
       login: LoginUseCase(repository),
       register: RegisterUseCase(repository),
       logout: LogoutUseCase(repository),
-      restore: RestoreSessionUseCase(repository),
+      restore: restore,
       repository: repository,
       sessionExpirySignal: SessionExpirySignal(),
     );
@@ -152,6 +158,8 @@ void main() {
     },
   );
 }
+
+class _MockRestoreSession extends Mock implements RestoreSessionUseCase {}
 
 class DemoAuthRepository implements AuthRepository {
   DemoAuthRepository()
