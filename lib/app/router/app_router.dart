@@ -44,7 +44,13 @@ class AppRouter {
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.register, builder: (_, __) => const RegisterPage()),
           GoRoute(path: Routes.forbidden, builder: (_, __) => const ForbiddenPage()),
-          GoRoute(path: Routes.dashboard, builder: (_, __) => const RoleDashboardPage()),
+          GoRoute(
+            path: Routes.dashboard,
+            builder: (_, __) => BlocBuilder<AuthBloc, AuthState>(
+              bloc: _authBloc,
+              builder: (context, state) => RoleDashboardPage(user: state.user),
+            ),
+          ),
           GoRoute(path: Routes.appointments, builder: (_, __) => const AppointmentsPage()),
           GoRoute(path: Routes.bookAppointment, builder: (_, __) => const BookAppointmentPage()),
           GoRoute(path: Routes.services, builder: (_, __) => const ServiceListPage()),
