@@ -121,7 +121,7 @@ void main() {
     // router to render a concrete dashboard, not a blank/splash page.
     expect(find.byType(Scaffold), findsOneWidget);
     expect(find.textContaining(displayName), findsOneWidget);
-    expect(find.text('تسجيل الخروج'), findsOneWidget);
+    expect(find.byTooltip('تسجيل الخروج'), findsOneWidget);
   }
 
   testWidgets('patient demo login reaches a rendered local dashboard', (tester) async {
