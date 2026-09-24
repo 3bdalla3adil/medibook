@@ -60,7 +60,7 @@ void main() {
     when(() => login(
           email: any(named: 'email'),
           password: any(named: 'password'),
-        )).thenAnswer((invocation) async {
+        ),).thenAnswer((invocation) async {
       final email = invocation.namedArguments[#email] as String;
       final user = switch (email) {
         DemoAuthRemoteDataSource.patientEmail => const AuthUser(
