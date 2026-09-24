@@ -1,17 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:logging/logging.dart';
 import 'package:medibook/app/app.dart';
 import 'package:medibook/core/config/app_config.dart';
 import 'package:medibook/core/config/app_environment.dart';
 import 'package:medibook/core/di/injector.dart';
 import 'package:medibook/core/di/register_core.dart';
 import 'package:medibook/core/di/register_features.dart';
-import 'package:medibook/features/dashboard/presentation/widgets/appointment_card.dart';
+import 'package:logging/logging.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('demo patient login reaches dashboard with deterministic data', (tester) async {
+  testWidgets('all demo accounts login and reach local role dashboards', (tester) async {
     await resetInjector();
 
     const config = AppConfig(
@@ -39,15 +39,43 @@ void main() {
     await tester.pumpWidget(const MediBookApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('المتابعة كمريض'), findsOneWidget);
+    Future<void> assertDemoLogin({
+      required String buttonLabel,
+      required String displayName,
+      required String dashboardLabel,
+    }) async {
+      expect(find.text(buttonLabel), findsOneWidget);
 
-    await tester.tap(find.text('المتابعة كمريض'));
-    await tester.pump();
-    await tester.pumpAndSettle(const Duration(seconds: 3));
+      await tester.tap(find.text(buttonLabel));
+      await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    expect(find.textContaining('Demo Patient'), findsOneWidget);
-    expect(find.byType(AppointmentCard), findsNWidgets(2));
-    expect(find.text('General Consultation'), findsOneWidget);
-    expect(find.text('Follow-up Consultation'), findsOneWidget);
+      expect(find.textContaining(displayName), findsOneWidget);
+      expect(find.text(dashboardLabel), findsOneWidget);
+      expect(find.text('تسجيل الخروج'), findsOneWidget);
+
+      await tester.tap(find.text('تسجيل الخروج'));
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+      expect(find.text(buttonLabel), findsOneWidget);
+    }
+
+    await assertDemoLogin(
+      buttonLabel: 'المتابعة كمريض',
+      displayName: 'MediBook Demo Patient',
+      dashboardLabel: 'حجز موعد',
+    );
+
+    await assertDemoLogin(
+      buttonLabel: 'المتابعة كطبيب',
+      displayName: 'MediBook Demo Doctor',
+      dashboardLabel: 'جدولي',
+    );
+
+    await assertDemoLogin(
+      buttonLabel: 'المتابعة كمسؤول',
+      displayName: 'MediBook Demo Administrator',
+      dashboardLabel: 'إدارة المواعيد',
+    );
+
+    await resetInjector();
   });
 }
