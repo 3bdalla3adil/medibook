@@ -108,6 +108,7 @@ void main() {
       () => Future<void>.delayed(const Duration(milliseconds: 10)),
     );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     final state = authBloc.state;
     expect(state, isA<AuthAuthenticated>());
