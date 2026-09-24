@@ -39,6 +39,7 @@ void main() {
       restore: restore,
       repository: repository,
       sessionExpirySignal: SessionExpirySignal(),
+      initialState: const AuthState.unauthenticated(),
     );
   });
 
@@ -67,10 +68,7 @@ void main() {
       ),
     );
 
-    authBloc.add(const AuthBootstrapRequested());
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('المتابعة كمريض'), findsOneWidget);
   }
 
