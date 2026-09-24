@@ -16,7 +16,7 @@ sealed class AuthState extends Equatable {
   const factory AuthState.failed(Failure failure, {AuthUser? previous}) = AuthFailure;
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [runtimeType, user];
 }
 
 final class AuthUnknown extends AuthState {
@@ -46,5 +46,5 @@ final class AuthFailure extends AuthState {
   final Failure failure;
   final AuthUser? previous;
   @override
-  List<Object?> get props => [failure.code, previous];
+  List<Object?> get props => [runtimeType, failure.code, previous];
 }
