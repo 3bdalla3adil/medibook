@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 import 'package:medibook/app/router/app_router.dart';
 import 'package:medibook/core/config/app_config.dart';
 import 'package:medibook/core/config/app_environment.dart';
-import 'package:medibook/core/di/injector.dart';
 import 'package:medibook/core/error/failure.dart';
 import 'package:medibook/core/error/result.dart';
 import 'package:medibook/core/security/session_expiry_signal.dart';
@@ -26,90 +25,34 @@ import 'package:mocktail/mocktail.dart';
 void main() {
   late AuthBloc authBloc;
   late DemoAuthRepository repository;
-  late _MockLogin login;
   late _MockRestoreSession restore;
 
-  setUp(() async {
-    await resetInjector();
-    getIt.registerSingleton<AppConfig>(
-      const AppConfig(
-        environment: AppEnvironment.dev,
-        apiBaseUrl: 'https://api.example.com',
-        apiVersion: '/v1',
-        requestTimeout: Duration(seconds: 2),
-        connectTimeout: Duration(seconds: 1),
-        receiveTimeout: Duration(seconds: 2),
-        logLevel: Level.WARNING,
-        enableSslPinning: false,
-        enableDeviceIntegrityCheck: false,
-        enableScreenGuard: false,
-        enableBiometrics: false,
-        enableDemoAuth: true,
-        enableFirebaseAuth: false,
-        allowCleartextTraffic: false,
-        maxOutboxAttempts: 2,
-        sessionIdleTimeout: Duration(minutes: 15),
-      ),
-    );
-
+  setUp(() {
     repository = DemoAuthRepository();
-    login = _MockLogin();
     restore = _MockRestoreSession();
+
     when(() => restore()).thenAnswer(
       (_) async => const Err(UnauthorizedFailure()),
     );
-    when(() => login(email: any(named: 'email'), password: any(named: 'password')))
-        .thenAnswer((invocation) async {
-      final email = invocation.namedArguments[#email] as String;
-      final user = switch (email) {
-        DemoAuthRemoteDataSource.patientEmail => const AuthUser(
-          id: 'demo-patient-001',
-          displayName: 'MediBook Demo Patient',
-          roles: {UserRole.patient},
-          permissions: {Permission.viewOwnAppointments},
-          organizationId: 'demo-organization',
-        ),
-        DemoAuthRemoteDataSource.doctorEmail => const AuthUser(
-          id: 'demo-doctor-001',
-          displayName: 'MediBook Demo Doctor',
-          roles: {UserRole.doctor},
-          permissions: {Permission.viewOwnAppointments},
-          organizationId: 'demo-organization',
-        ),
-        DemoAuthRemoteDataSource.adminEmail => const AuthUser(
-          id: 'demo-admin-001',
-          displayName: 'MediBook Demo Administrator',
-          roles: {UserRole.orgAdmin},
-          permissions: {Permission.manageOrganization},
-          organizationId: 'demo-organization',
-        ),
-        _ => throw StateError('Unexpected demo email: $email'),
-      };
-      return Ok(
-        Session(
-          user: user,
-          expiresAt: DateTime.utc(2027),
-        ),
-      );
-    });
+
     authBloc = AuthBloc(
-      login: login,
+      login: LoginUseCase(repository),
       register: RegisterUseCase(repository),
       logout: LogoutUseCase(repository),
       restore: restore,
       repository: repository,
       sessionExpirySignal: SessionExpirySignal(),
-      initialState: const AuthState.unauthenticated(),
     );
   });
 
   tearDown(() async {
     await authBloc.close();
-    await resetInjector();
+    await repository.dispose();
   });
 
   Future<void> pumpApp(WidgetTester tester) async {
     final router = AppRouter(authBloc).router;
+
     await tester.pumpWidget(
       BlocProvider.value(
         value: authBloc,
@@ -127,7 +70,10 @@ void main() {
       ),
     );
 
+    authBloc.add(const AuthBootstrapRequested());
     await tester.pump();
+    await tester.pumpAndSettle();
+
     expect(find.text('المتابعة كمريض'), findsOneWidget);
   }
 
@@ -140,59 +86,53 @@ void main() {
     await tester.tap(find.text(buttonLabel));
     await tester.pumpAndSettle();
 
-    expect(authBloc.state, isA<AuthAuthenticated>());
-    final user = authBloc.state.user;
+    final state = authBloc.state;
+    expect(state, isA<AuthAuthenticated>());
+    final user = state.user;
     expect(user, isNotNull);
     expect(user!.displayName, displayName);
     expect(user.roles, roles);
+
+    // This is the important regression check: authentication must cause the
+    // router to render a concrete dashboard, not a blank/splash page.
+    expect(find.byType(Scaffold), findsOneWidget);
     expect(find.textContaining(displayName), findsOneWidget);
     expect(find.text('تسجيل الخروج'), findsOneWidget);
   }
 
-  testWidgets(
-    'patient demo login reaches a rendered local dashboard',
-    (tester) async {
-      await pumpApp(tester);
+  testWidgets('patient demo login reaches a rendered local dashboard', (tester) async {
+    await pumpApp(tester);
 
-      await loginAndAssertDashboard(
-        tester,
-        buttonLabel: 'المتابعة كمريض',
-        displayName: 'MediBook Demo Patient',
-        roles: {UserRole.patient},
-      );
-    },
-  );
+    await loginAndAssertDashboard(
+      tester,
+      buttonLabel: 'المتابعة كمريض',
+      displayName: 'MediBook Demo Patient',
+      roles: {UserRole.patient},
+    );
+  });
 
-  testWidgets(
-    'doctor demo login reaches a rendered local dashboard',
-    (tester) async {
-      await pumpApp(tester);
+  testWidgets('doctor demo login reaches a rendered local dashboard', (tester) async {
+    await pumpApp(tester);
 
-      await loginAndAssertDashboard(
-        tester,
-        buttonLabel: 'المتابعة كطبيب',
-        displayName: 'MediBook Demo Doctor',
-        roles: {UserRole.doctor},
-      );
-    },
-  );
+    await loginAndAssertDashboard(
+      tester,
+      buttonLabel: 'المتابعة كطبيب',
+      displayName: 'MediBook Demo Doctor',
+      roles: {UserRole.doctor},
+    );
+  });
 
-  testWidgets(
-    'administrator demo login reaches a rendered local dashboard',
-    (tester) async {
-      await pumpApp(tester);
+  testWidgets('administrator demo login reaches a rendered local dashboard', (tester) async {
+    await pumpApp(tester);
 
-      await loginAndAssertDashboard(
-        tester,
-        buttonLabel: 'المتابعة كمسؤول',
-        displayName: 'MediBook Demo Administrator',
-        roles: {UserRole.orgAdmin},
-      );
-    },
-  );
+    await loginAndAssertDashboard(
+      tester,
+      buttonLabel: 'المتابعة كمسؤول',
+      displayName: 'MediBook Demo Administrator',
+      roles: {UserRole.orgAdmin},
+    );
+  });
 }
-
-class _MockLogin extends Mock implements LoginUseCase {}
 
 class _MockRestoreSession extends Mock implements RestoreSessionUseCase {}
 
@@ -241,4 +181,6 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   Stream<AuthUser?> watchUser() => _userController.stream;
+
+  Future<void> dispose() => _userController.close();
 }
