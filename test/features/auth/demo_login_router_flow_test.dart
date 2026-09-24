@@ -69,8 +69,8 @@ void main() {
 
     authBloc.add(const AuthBootstrapRequested());
     await tester.pump();
-    await tester.pumpAndSettle();
-
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('المتابعة كمريض'), findsOneWidget);
   }
 
@@ -81,7 +81,11 @@ void main() {
     required Set<UserRole> roles,
   }) async {
     await tester.tap(find.text(buttonLabel));
-    await tester.pumpAndSettle();
+    // Do not use pumpAndSettle here: Material route transitions and the
+    // adaptive progress indicator can keep the test binding non-idle.
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
 
     final state = authBloc.state;
     expect(state, isA<AuthAuthenticated>());
