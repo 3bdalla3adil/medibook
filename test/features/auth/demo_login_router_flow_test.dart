@@ -103,12 +103,16 @@ void main() {
     required String displayName,
     required Set<UserRole> roles,
   }) async {
+    final authenticated = authBloc.stream.firstWhere(
+      (state) => state is AuthAuthenticated,
+    );
     await tester.tap(find.text(buttonLabel));
-    // Do not use pumpAndSettle here: Material route transitions and the
-    // adaptive progress indicator can keep the test binding non-idle.
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 100));
-    }
+    await authenticated;
+    // Let the router consume the AuthAuthenticated state and render the
+    // destination. Do not use pumpAndSettle because route/indicator animations
+    // can keep the test binding non-idle.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     final state = authBloc.state;
     expect(state, isA<AuthAuthenticated>());
