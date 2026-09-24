@@ -57,7 +57,7 @@ class _LoginViewState extends State<_LoginView> {
             // never depend on a timing-sensitive redirect to leave /login.
             if (state is AuthAuthenticated) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted && GoRouterState.of(context).uri.path == '/login') {
+                if (mounted) {
                   context.go('/');
                 }
               });
@@ -128,7 +128,7 @@ class _LoginViewState extends State<_LoginView> {
                           onPressed: isLoading ? null : () => context.push('/register'),
                           child: Text(l10n.actionCreateAccount),
                         ),
-                        if (getIt<AppConfig>().enableDemoAuth) ...[
+                        if (_demoAuthEnabled) ...[
                           const SizedBox(height: 12),
                           _DemoAccountButtons(
                             enabled: !isLoading,
@@ -146,6 +146,9 @@ class _LoginViewState extends State<_LoginView> {
       ),
     );
   }
+
+  bool get _demoAuthEnabled =>
+      getIt.isRegistered<AppConfig>() && getIt<AppConfig>().enableDemoAuth;
 
   void _useDemoAccount(DemoCredentials credentials) {
     _emailController.text = credentials.email;
