@@ -28,7 +28,8 @@ void main() {
 
   setUp(() async {
     await resetInjector();
-    getIt.registerSingleton<AppConfig>(const AppConfig(
+    getIt.registerSingleton<AppConfig>(
+      const AppConfig(
       environment: AppEnvironment.dev,
       apiBaseUrl: 'https://api.example.com',
       apiVersion: '/v1',
@@ -44,8 +45,9 @@ void main() {
       enableFirebaseAuth: false,
       allowCleartextTraffic: false,
       maxOutboxAttempts: 2,
-      sessionIdleTimeout: Duration(minutes: 15),
-    ));
+        sessionIdleTimeout: Duration(minutes: 15),
+      ),
+    );
 
     repository = DemoAuthRepository();
     authBloc = AuthBloc(
@@ -84,7 +86,7 @@ void main() {
 
     authBloc.add(const AuthBootstrapRequested());
     await tester.pumpAndSettle();
-  },
+  }
 
   Future<void> loginAndAssertDashboard(
     WidgetTester tester, {
