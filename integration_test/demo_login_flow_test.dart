@@ -37,7 +37,9 @@ void main() {
     await registerFeatures();
 
     await tester.pumpWidget(const MediBookApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('المتابعة كمريض'), findsOneWidget);
 
     Future<void> assertDemoLogin({
       required String buttonLabel,
@@ -47,14 +49,16 @@ void main() {
       expect(find.text(buttonLabel), findsOneWidget);
 
       await tester.tap(find.text(buttonLabel));
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.textContaining(displayName), findsOneWidget);
       expect(find.text(dashboardLabel), findsOneWidget);
       expect(find.text('تسجيل الخروج'), findsOneWidget);
 
       await tester.tap(find.text('تسجيل الخروج'));
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text(buttonLabel), findsOneWidget);
     }
 
