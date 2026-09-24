@@ -79,6 +79,7 @@ class _MediBookAppState extends State<MediBookApp> {
             child: child!,
           );
         },
+        ),
       ),
     );
   }
