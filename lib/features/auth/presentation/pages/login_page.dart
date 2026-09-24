@@ -52,6 +52,17 @@ class _LoginViewState extends State<_LoginView> {
           builder: (context, state) {
             final isLoading = state is AuthAuthenticating;
 
+            // Make the successful login transition explicit. The router still
+            // has the authorization guard, but the auth screen itself should
+            // never depend on a timing-sensitive redirect to leave /login.
+            if (state is AuthAuthenticated) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && GoRouterState.of(context).uri.path == '/login') {
+                  context.go('/');
+                }
+              });
+            }
+
             return Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsetsDirectional.all(24),
