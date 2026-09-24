@@ -19,7 +19,7 @@ class RoleDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = user ?? context.read<AuthBloc>().state.user;
-    if (currentUser == null) return const SizedBox.shrink();
+    if (currentUser == null) return const _DashboardAuthLoading();
 
     // Demo identities must never enter the production dashboard path. The
     // production patient dashboard loads backend data; demo users must remain
@@ -252,6 +252,27 @@ class _DemoRoleDashboard extends StatelessWidget {
         _DemoRole.doctor => l10n.roleDoctor,
         _DemoRole.admin => l10n.roleAdmin,
       };
+}
+
+class _DashboardAuthLoading extends StatelessWidget {
+  const _DashboardAuthLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator.adaptive(),
+            const SizedBox(height: 16),
+            Text(l10n.stateLoading),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _UnknownRoleDashboard extends StatelessWidget {
