@@ -3,9 +3,17 @@ name: CI
 on:
   push:
     branches: [main]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      build_production:
+        description: 'Build production artifacts'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -20,23 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # Enhanced persistent caching structure
-          
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+
       - name: Install Dependencies
         run: flutter pub get
 
-      # Resolves local l10n compilation generation constraints safely if files are missing or initializing
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then
             flutter gen-l10n
-          else
-            echo "Skipping gen-l10n: No l10n.yaml file declared yet."
           fi
 
       - name: Static Analysis
@@ -47,10 +52,7 @@ jobs:
 
       - name: Layer Boundary Guardrail
         run: |
-          violations=$(grep -rn --include="*.dart" \
-            -E "package:(dio|hive_ce|hive_ce_flutter|flutter_secure_storage|isar|isar_flutter_libs)/" \
-            lib/features/*/presentation lib/features/*/domain lib/app lib/core/widgets \
-            || true)
+          violations=$(grep -rn --include="*.dart"             -E "package:(dio|hive_ce|hive_ce_flutter|flutter_secure_storage|isar|isar_flutter_libs)/"             lib/features/*/presentation lib/features/*/domain lib/app lib/core/widgets             || true)
           if [ -n "$violations" ]; then
             echo "::error::Forbidden infrastructure imports in presentation/domain layers:"
             echo "$violations"
@@ -59,7 +61,7 @@ jobs:
 
       - name: No hardcoded user-facing strings
         run: |
-          hits=$(grep -rn --include="*.dart" -E "(Text|TextSpan)\\(\\s*['\"][A-Z]" lib/features/*/presentation || true)
+          hits=$(grep -rn --include="*.dart" -E "(Text|TextSpan)\(\s*['\"][A-Z]" lib/features/*/presentation || true)
           if [ -n "$hits" ]; then
             echo "::error::Hardcoded user-facing strings found:"
             echo "$hits"
@@ -76,10 +78,12 @@ jobs:
           retention-days: 7
 
   integration-demo:
-    name: Demo Login Integration
+    name: Demo Login Integration (Staging)
     needs: analyze-and-test
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    environment: staging
     steps:
       - uses: actions/checkout@v5
 
@@ -99,6 +103,17 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Inject Staging Configuration
+        env:
+          DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
+        run: |
+          test -n "$DART_DEFINE_JSON" || {
+            echo "::error::STAGING_DART_DEFINE_JSON is required in the staging environment."
+            exit 1
+          }
+          mkdir -p config
+          printf '%s' "$DART_DEFINE_JSON" > config/staging.json
+
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
@@ -116,21 +131,22 @@ jobs:
           script: |
             adb wait-for-device
             adb shell getprop sys.boot_completed | grep -m 1 '1'
-            flutter test integration_test/demo_login_flow_test.dart
+            flutter test integration_test/demo_login_flow_test.dart --dart-define-from-file=config/staging.json
 
-
-  build-apk:
-    name: Build Release APK
+  build-staging-apk:
+    name: Build Staging APK
     needs: analyze-and-test
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - uses: actions/checkout@v5
-      
+
       - uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: '17'
-          
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -142,84 +158,247 @@ jobs:
       - name: Set Android compile SDK for Daily/Firebase plugins
         run: |
           sed -i -E 's/^[[:space:]]*compileSdk = .*/    compileSdk = 36/' android/app/build.gradle.kts
-          grep -n "compileSdk" android/app/build.gradle.kts
 
       - name: Install Dependencies
         run: flutter pub get
 
-      # Security & Pipeline Hardening: Generates missing staging configuration securely to avoid build failures
-      - name: Inject Secure Staging Configuration
+      - name: Inject Staging Configuration
+        env:
+          DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
         run: |
+          test -n "$DART_DEFINE_JSON" || {
+            echo "::error::STAGING_DART_DEFINE_JSON is required in the staging environment."
+            exit 1
+          }
           mkdir -p config
-          if [ -n "${{ secrets.STAGING_DART_DEFINE_JSON }}" ]; then
-            echo '${{ secrets.STAGING_DART_DEFINE_JSON }}' > config/staging.json
-          else
-            echo '{"API_BASE_URL": "https://medibook.com", "ENCRYPTION_KEY_FALLBACK": "CI_STUB"}' > config/staging.json
-          fi
+          printf '%s' "$DART_DEFINE_JSON" > config/staging.json
 
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
 
-      - name: Build Release APK
+      - name: Build Staging APK
         run: flutter build apk --release --dart-define-from-file=config/staging.json
 
-      - name: Verify APK
+      - name: Verify Staging APK
         run: test -f build/app/outputs/flutter-apk/app-release.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: medibook-release-apk
+          name: medibook-staging-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 30
 
-  build-ipa:
-    name: Build Unsigned IPA
+  build-staging-ipa:
+    name: Build Staging Unsigned IPA
     needs: analyze-and-test
+    if: github.event_name != 'pull_request'
     runs-on: macos-latest
+    environment: staging
     steps:
       - uses: actions/checkout@v5
-      
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-          
+
       - name: Regenerate iOS platform scaffolding
         run: flutter create --platforms=ios --org "$ORG" --project-name "$APP" .
 
       - name: Install Dependencies
         run: flutter pub get
 
-      # Re-generate configuration inside isolated macOS runner matching structural target paths
-      - name: Inject Secure Staging Configuration
+      - name: Inject Staging Configuration
+        env:
+          DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
         run: |
+          test -n "$DART_DEFINE_JSON" || {
+            echo "::error::STAGING_DART_DEFINE_JSON is required in the staging environment."
+            exit 1
+          }
           mkdir -p config
-          if [ -n "${{ secrets.STAGING_DART_DEFINE_JSON }}" ]; then
-            echo '${{ secrets.STAGING_DART_DEFINE_JSON }}' > config/staging.json
-          else
-            echo '{"API_BASE_URL": "https://medibook.com", "ENCRYPTION_KEY_FALLBACK": "CI_STUB"}' > config/staging.json
-          fi
+          printf '%s' "$DART_DEFINE_JSON" > config/staging.json
 
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
 
-      - name: Build iOS without Codesign
+      - name: Build Staging iOS without Codesign
         run: flutter build ios --release --no-codesign --dart-define-from-file=config/staging.json
 
-      - name: Package Unsigned IPA
+      - name: Package Staging Unsigned IPA
         run: |
-          rm -rf Payload app-release-unsigned.ipa
+          rm -rf Payload medibook-staging-unsigned.ipa
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
-          zip -r -X -q app-release-unsigned.ipa Payload
-          test -f app-release-unsigned.ipa
-          
+          zip -r -X -q medibook-staging-unsigned.ipa Payload
+          test -f medibook-staging-unsigned.ipa
+
       - uses: actions/upload-artifact@v4
         with:
-          name: medibook-release-ipa-unsigned
-          path: app-release-unsigned.ipa
+          name: medibook-staging-ipa-unsigned
+          path: medibook-staging-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+  build-production-apk:
+    name: Build Production APK
+    needs: analyze-and-test
+    if: >
+      github.event_name == 'workflow_dispatch' && inputs.build_production == true
+      || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Regenerate Android platform scaffolding
+        run: flutter create --platforms=android --org "$ORG" --project-name "$APP" .
+
+      - name: Set Android compile SDK for Daily/Firebase plugins
+        run: |
+          sed -i -E 's/^[[:space:]]*compileSdk = .*/    compileSdk = 36/' android/app/build.gradle.kts
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Inject Production Configuration
+        env:
+          DART_DEFINE_JSON: ${{ secrets.PRODUCTION_DART_DEFINE_JSON }}
+        run: |
+          test -n "$DART_DEFINE_JSON" || {
+            echo "::error::PRODUCTION_DART_DEFINE_JSON is required in the production environment."
+            exit 1
+          }
+          mkdir -p config
+          printf '%s' "$DART_DEFINE_JSON" > config/production.json
+
+      - name: Validate Production Configuration
+        run: |
+          python3 - <<'PY'
+          import json
+          with open("config/production.json", encoding="utf-8") as f:
+              c = json.load(f)
+          required = {
+              "APP_ENV": "prod",
+              "ENABLE_DEMO_AUTH": "false",
+              "ALLOW_CLEARTEXT": "false",
+          }
+          for key, value in required.items():
+              actual = str(c.get(key, "")).lower()
+              if actual != value:
+                  raise SystemExit(f"{key} must be {value}, got {actual!r}")
+          url = str(c.get("API_BASE_URL", ""))
+          if not url.startswith("https://") or "example.com" in url:
+              raise SystemExit("Production API_BASE_URL must be a real HTTPS endpoint.")
+          if not c.get("CERTIFICATE_SHA256"):
+              raise SystemExit("Production CERTIFICATE_SHA256 is required.")
+          print("Production configuration validated.")
+          PY
+
+      - name: Generate Localizations
+        run: |
+          if [ -f l10n.yaml ]; then flutter gen-l10n; fi
+
+      - name: Build Production APK
+        run: flutter build apk --release --dart-define-from-file=config/production.json
+
+      - name: Verify Production APK
+        run: test -f build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: medibook-production-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
+
+  build-production-ipa:
+    name: Build Production Unsigned IPA
+    needs: analyze-and-test
+    if: >
+      github.event_name == 'workflow_dispatch' && inputs.build_production == true
+      || startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Regenerate iOS platform scaffolding
+        run: flutter create --platforms=ios --org "$ORG" --project-name "$APP" .
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Inject Production Configuration
+        env:
+          DART_DEFINE_JSON: ${{ secrets.PRODUCTION_DART_DEFINE_JSON }}
+        run: |
+          test -n "$DART_DEFINE_JSON" || {
+            echo "::error::PRODUCTION_DART_DEFINE_JSON is required in the production environment."
+            exit 1
+          }
+          mkdir -p config
+          printf '%s' "$DART_DEFINE_JSON" > config/production.json
+
+      - name: Validate Production Configuration
+        run: |
+          python3 - <<'PY'
+          import json
+          with open("config/production.json", encoding="utf-8") as f:
+              c = json.load(f)
+          required = {
+              "APP_ENV": "prod",
+              "ENABLE_DEMO_AUTH": "false",
+              "ALLOW_CLEARTEXT": "false",
+          }
+          for key, value in required.items():
+              actual = str(c.get(key, "")).lower()
+              if actual != value:
+                  raise SystemExit(f"{key} must be {value}, got {actual!r}")
+          url = str(c.get("API_BASE_URL", ""))
+          if not url.startswith("https://") or "example.com" in url:
+              raise SystemExit("Production API_BASE_URL must be a real HTTPS endpoint.")
+          if not c.get("CERTIFICATE_SHA256"):
+              raise SystemExit("Production CERTIFICATE_SHA256 is required.")
+          print("Production configuration validated.")
+          PY
+
+      - name: Generate Localizations
+        run: |
+          if [ -f l10n.yaml ]; then flutter gen-l10n; fi
+
+      - name: Build Production iOS without Codesign
+        run: flutter build ios --release --no-codesign --dart-define-from-file=config/production.json
+
+      - name: Package Production Unsigned IPA
+        run: |
+          rm -rf Payload medibook-production-unsigned.ipa
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -r -X -q medibook-production-unsigned.ipa Payload
+          test -f medibook-production-unsigned.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: medibook-production-ipa-unsigned
+          path: medibook-production-unsigned.ipa
           if-no-files-found: error
           retention-days: 30
