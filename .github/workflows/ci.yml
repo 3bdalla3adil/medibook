@@ -99,6 +99,9 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Verify Flutter integration test binary can build
+        run: flutter test integration_test/demo_login_flow_test.dart --device-id=none
+
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
@@ -110,7 +113,14 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          script: flutter test integration_test/demo_login_flow_test.dart
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          disable-animations: true
+          force-avd-creation: true
+          script: |
+            adb wait-for-device
+            adb shell getprop sys.boot_completed | grep -m 1 '1'
+            flutter test integration_test/demo_login_flow_test.dart
+
 
   build-apk:
     name: Build Release APK
