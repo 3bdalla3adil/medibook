@@ -1,0 +1,12 @@
+{
+  "APP_ENV": "dev",
+  "API_BASE_URL": "https://demo.invalid",
+  "API_VERSION": "/v1",
+  "ENABLE_SSL_PINNING": "false",
+  "ENABLE_DEVICE_INTEGRITY": "false",
+  "ENABLE_SCREEN_GUARD": "false",
+  "ENABLE_BIOMETRICS": "false",
+  "ENABLE_DEMO_AUTH": "true",
+  "ENABLE_FIREBASE_AUTH": "false",
+  "ALLOW_CLEARTEXT": "false"
+}
