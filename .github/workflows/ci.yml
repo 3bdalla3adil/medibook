@@ -122,16 +122,10 @@ jobs:
           test -f lib/firebase_options.dart
           test -f android/app/google-services.json
 
-      - name: Inject Staging Configuration
-        env:
-          DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
+      - name: Use isolated demo configuration
         run: |
-          test -n "$DART_DEFINE_JSON" || {
-            echo "::error::STAGING_DART_DEFINE_JSON is required in the staging environment."
-            exit 1
-          }
-          mkdir -p config
-          printf '%s' "$DART_DEFINE_JSON" > config/staging.json
+          test -f config/ci-demo.json
+          cp config/ci-demo.json config/staging.json
 
       - name: Generate Localizations
         run: |
@@ -155,7 +149,9 @@ jobs:
   build-staging-apk:
     name: Build Staging APK
     needs: analyze-and-test
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && env.STAGING_CONFIG != ''
+    env:
+      STAGING_CONFIG: ${{ secrets.STAGING_DART_DEFINE_JSON }}
     runs-on: ubuntu-latest
     environment: staging
     steps:
@@ -269,7 +265,9 @@ jobs:
   build-staging-ipa:
     name: Build Staging Unsigned IPA
     needs: analyze-and-test
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && env.STAGING_CONFIG != ''
+    env:
+      STAGING_CONFIG: ${{ secrets.STAGING_DART_DEFINE_JSON }}
     runs-on: macos-latest
     environment: staging
     steps:
