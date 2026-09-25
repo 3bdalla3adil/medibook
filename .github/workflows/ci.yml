@@ -110,12 +110,11 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
-          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
-          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
           test -f lib/firebase_options.dart
           test -f android/app/google-services.json
@@ -186,12 +185,11 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
-          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
-          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
           test -f lib/firebase_options.dart
           test -f android/app/google-services.json
@@ -285,12 +283,11 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
-          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
-          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=ios --yes
           test -f lib/firebase_options.dart
           test -f ios/Runner/GoogleService-Info.plist
