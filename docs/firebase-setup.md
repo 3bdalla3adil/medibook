@@ -14,7 +14,7 @@ and demo authentication takes precedence when:
 
 `ENABLE_DEMO_AUTH=true`
 
-Do not enable both for the same build.
+For a demo-only build, keep `ENABLE_DEMO_AUTH=true` and `ENABLE_FIREBASE_AUTH=false`. For a Firebase build, use `ENABLE_DEMO_AUTH=false` and `ENABLE_FIREBASE_AUTH=true`. This keeps startup deterministic and prevents an unconfigured Firebase SDK from breaking the demo APK.
 
 ## 1. Create the Firebase project
 
@@ -25,7 +25,7 @@ Then enable:
 - **Authentication → Sign-in method → Email/Password**
 - **Firestore Database**
 
-Firebase's current Flutter documentation recommends the Firebase CLI plus FlutterFire CLI for configuring Flutter applications. The CLI generates the platform configuration and `firebase_options.dart`.
+The reference repository uses a legacy web-only Firebase JavaScript configuration in `src/web/index.html`. We are **not copying that pattern** into MediBook because MediBook is a native Android/iOS Flutter app and the current FlutterFire workflow is safer and more maintainable. Firebase's current Flutter documentation recommends the Firebase CLI plus FlutterFire CLI; FlutterFire registers the platform apps and generates `firebase_options.dart`. citeturn0search0
 
 ## 2. Install the CLIs
 
@@ -47,11 +47,9 @@ FlutterFire creates the Firebase app registrations and generates `lib/firebase_o
 
 ## 3. Android and iOS configuration
 
-For Android, FlutterFire registers the Android app and provides the native Firebase configuration.
+For Android, FlutterFire registers the Android app and produces the native Firebase configuration. For iOS, it registers the iOS app and produces the Apple configuration. For Web, it generates the Dart options used by `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)`. citeturn0search0turn0search3
 
-For iOS, FlutterFire registers the iOS app and provides the Apple configuration.
-
-Do not manually invent Firebase project IDs, application IDs, or API keys. Let `flutterfire configure` generate the correct configuration for the Firebase project.
+Do not manually invent Firebase project IDs, application IDs, or API keys. Let `flutterfire configure` generate the correct configuration for the Firebase project. The repository intentionally does not contain fake Firebase credentials. Firebase configuration values identify the Firebase app; authorization must still be enforced by Firebase Authentication and Firestore Security Rules. citeturn0search3
 
 Firebase configuration identifiers are not passwords; however, access control must come from Firebase Authentication and Firestore Security Rules, not from hiding the client configuration.
 
@@ -65,7 +63,7 @@ After Firebase configuration has been generated, edit the staging configuration:
 }
 ```
 
-The repository currently keeps this flag **false** so CI and local builds do not accidentally start Firebase before a real Firebase project is configured.
+The repository keeps this flag **false** in the demo/staging configuration until a real Firebase project has been configured. This is intentional: enabling Firebase without valid native configuration can prevent the application from starting.
 
 Then run:
 
