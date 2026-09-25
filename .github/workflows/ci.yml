@@ -103,6 +103,23 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install Firebase CLI and FlutterFire CLI
+        run: |
+          npm install --global firebase-tools
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Firebase for CI
+        env:
+          FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
+          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
+          flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
+          test -f lib/firebase_options.dart
+          test -f android/app/google-services.json
+
       - name: Inject Staging Configuration
         env:
           DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
@@ -162,6 +179,23 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install Firebase CLI and FlutterFire CLI
+        run: |
+          npm install --global firebase-tools
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Firebase for CI
+        env:
+          FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
+          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
+          flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
+          test -f lib/firebase_options.dart
+          test -f android/app/google-services.json
+
       - name: Inject Staging Configuration
         env:
           DART_DEFINE_JSON: ${{ secrets.STAGING_DART_DEFINE_JSON }}
@@ -212,6 +246,18 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Install Firebase CLI for App Distribution
+        if: ${{ secrets.STAGING_FIREBASE_APP_ID != '' && secrets.STAGING_FIREBASE_TOKEN != '' }}
+        run: npm install --global firebase-tools
+
+      - name: Upload staging APK to Firebase App Distribution
+        if: ${{ secrets.STAGING_FIREBASE_APP_ID != '' && secrets.STAGING_FIREBASE_TOKEN != '' }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
+          FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk             --app "$FIREBASE_APP_ID"             --release-notes "MediBook staging build $GITHUB_SHA"
+
   build-staging-ipa:
     name: Build Staging Unsigned IPA
     needs: analyze-and-test
@@ -231,6 +277,23 @@ jobs:
 
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Install Firebase CLI and FlutterFire CLI
+        run: |
+          npm install --global firebase-tools
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Firebase for CI
+        env:
+          FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_TOKEN" || { echo "::error::STAGING_FIREBASE_TOKEN is required in the staging environment."; exit 1; }
+          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::STAGING_FIREBASE_PROJECT_ID is required in the staging environment."; exit 1; }
+          flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=ios --yes
+          test -f lib/firebase_options.dart
+          test -f ios/Runner/GoogleService-Info.plist
 
       - name: Inject Staging Configuration
         env:
@@ -317,6 +380,23 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install Firebase CLI and FlutterFire CLI
+        run: |
+          npm install --global firebase-tools
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Firebase for CI
+        env:
+          FIREBASE_TOKEN: ${{ secrets.PRODUCTION_FIREBASE_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_TOKEN" || { echo "::error::PRODUCTION_FIREBASE_TOKEN is required in the production environment."; exit 1; }
+          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::PRODUCTION_FIREBASE_PROJECT_ID is required in the production environment."; exit 1; }
+          flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
+          test -f lib/firebase_options.dart
+          test -f android/app/google-services.json
+
       - name: Inject Production Configuration
         env:
           DART_DEFINE_JSON: ${{ secrets.PRODUCTION_DART_DEFINE_JSON }}
@@ -368,6 +448,18 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Install Firebase CLI for App Distribution
+        if: ${{ secrets.PRODUCTION_FIREBASE_APP_ID != '' && secrets.PRODUCTION_FIREBASE_TOKEN != '' }}
+        run: npm install --global firebase-tools
+
+      - name: Upload production APK to Firebase App Distribution
+        if: ${{ secrets.PRODUCTION_FIREBASE_APP_ID != '' && secrets.PRODUCTION_FIREBASE_TOKEN != '' }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.PRODUCTION_FIREBASE_TOKEN }}
+          FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk             --app "$FIREBASE_APP_ID"             --release-notes "MediBook production build $GITHUB_SHA"
+
   build-production-ipa:
     name: Build Production Unsigned IPA
     needs: analyze-and-test
@@ -389,6 +481,23 @@ jobs:
 
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Install Firebase CLI and FlutterFire CLI
+        run: |
+          npm install --global firebase-tools
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Firebase for CI
+        env:
+          FIREBASE_TOKEN: ${{ secrets.PRODUCTION_FIREBASE_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_TOKEN" || { echo "::error::PRODUCTION_FIREBASE_TOKEN is required in the production environment."; exit 1; }
+          test -n "$FIREBASE_PROJECT_ID" || { echo "::error::PRODUCTION_FIREBASE_PROJECT_ID is required in the production environment."; exit 1; }
+          flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=ios --yes
+          test -f lib/firebase_options.dart
+          test -f ios/Runner/GoogleService-Info.plist
 
       - name: Inject Production Configuration
         env:
