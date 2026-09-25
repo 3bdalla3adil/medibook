@@ -173,6 +173,28 @@ jobs:
           mkdir -p config
           printf '%s' "$DART_DEFINE_JSON" > config/staging.json
 
+      - name: Validate Staging Configuration
+        run: |
+          python3 - <<'PY'
+          import json
+          with open("config/staging.json", encoding="utf-8") as f:
+              c = json.load(f)
+          required = {
+              "APP_ENV": "staging",
+              "ENABLE_DEMO_AUTH": "true",
+              "ALLOW_CLEARTEXT": "false",
+              "ENABLE_SSL_PINNING": "true",
+          }
+          for key, value in required.items():
+              actual = str(c.get(key, "")).lower()
+              if actual != value:
+                  raise SystemExit(f"{key} must be {value}, got {actual!r}")
+          url = str(c.get("API_BASE_URL", ""))
+          if not url.startswith("https://") or "example.com" in url:
+              raise SystemExit("Staging API_BASE_URL must be a real HTTPS endpoint.")
+          print("Staging configuration validated.")
+          PY
+
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
@@ -220,6 +242,27 @@ jobs:
           }
           mkdir -p config
           printf '%s' "$DART_DEFINE_JSON" > config/staging.json
+
+      - name: Validate Staging Configuration
+        run: |
+          python3 - <<'PY'
+          import json
+          with open("config/staging.json", encoding="utf-8") as f:
+              c = json.load(f)
+          required = {
+              "APP_ENV": "staging",
+              "ENABLE_DEMO_AUTH": "true",
+              "ALLOW_CLEARTEXT": "false",
+          }
+          for key, value in required.items():
+              actual = str(c.get(key, "")).lower()
+              if actual != value:
+                  raise SystemExit(f"{key} must be {value}, got {actual!r}")
+          url = str(c.get("API_BASE_URL", ""))
+          if not url.startswith("https://") or "example.com" in url:
+              raise SystemExit("Staging API_BASE_URL must be a real HTTPS endpoint.")
+          print("Staging configuration validated.")
+          PY
 
       - name: Generate Localizations
         run: |
