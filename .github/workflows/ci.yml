@@ -110,11 +110,14 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
-        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
+          if [ -z "$FIREBASE_TOKEN" ] || [ -z "$FIREBASE_PROJECT_ID" ]; then
+            echo "Firebase CI secrets are not configured; keeping this job demo-only."
+            exit 0
+          fi
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
           test -f lib/firebase_options.dart
           test -f android/app/google-services.json
@@ -185,11 +188,14 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
-        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
+          if [ -z "$FIREBASE_TOKEN" ] || [ -z "$FIREBASE_PROJECT_ID" ]; then
+            echo "Firebase CI secrets are not configured; keeping this job demo-only."
+            exit 0
+          fi
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=android --yes
           test -f lib/firebase_options.dart
           test -f android/app/google-services.json
@@ -249,11 +255,15 @@ jobs:
         run: npm install --global firebase-tools
 
       - name: Upload staging APK to Firebase App Distribution
-        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
         run: |
+          if [ -z "$FIREBASE_APP_ID" ] || [ -z "$FIREBASE_TOKEN" ]; then
+            echo "Firebase App Distribution secrets are not configured; artifact remains available in GitHub Actions."
+            exit 0
+          fi
+          npm install --global firebase-tools
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk             --app "$FIREBASE_APP_ID"             --release-notes "MediBook staging build $GITHUB_SHA"
 
   build-staging-ipa:
@@ -283,11 +293,14 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Configure Firebase for CI
-        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
         run: |
+          if [ -z "$FIREBASE_TOKEN" ] || [ -z "$FIREBASE_PROJECT_ID" ]; then
+            echo "Firebase CI secrets are not configured; keeping this job demo-only."
+            exit 0
+          fi
           flutterfire configure --project="$FIREBASE_PROJECT_ID" --platforms=ios --yes
           test -f lib/firebase_options.dart
           test -f ios/Runner/GoogleService-Info.plist
@@ -450,7 +463,6 @@ jobs:
         run: npm install --global firebase-tools
 
       - name: Upload production APK to Firebase App Distribution
-        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.PRODUCTION_FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
