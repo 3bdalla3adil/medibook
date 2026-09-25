@@ -247,11 +247,11 @@ jobs:
           retention-days: 30
 
       - name: Install Firebase CLI for App Distribution
-        if: ${{ secrets.STAGING_FIREBASE_APP_ID != '' && secrets.STAGING_FIREBASE_TOKEN != '' }}
+        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         run: npm install --global firebase-tools
 
       - name: Upload staging APK to Firebase App Distribution
-        if: ${{ secrets.STAGING_FIREBASE_APP_ID != '' && secrets.STAGING_FIREBASE_TOKEN != '' }}
+        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.STAGING_FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
@@ -449,11 +449,11 @@ jobs:
           retention-days: 30
 
       - name: Install Firebase CLI for App Distribution
-        if: ${{ secrets.PRODUCTION_FIREBASE_APP_ID != '' && secrets.PRODUCTION_FIREBASE_TOKEN != '' }}
+        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         run: npm install --global firebase-tools
 
       - name: Upload production APK to Firebase App Distribution
-        if: ${{ secrets.PRODUCTION_FIREBASE_APP_ID != '' && secrets.PRODUCTION_FIREBASE_TOKEN != '' }}
+        if: env.FIREBASE_APP_ID != '' && env.FIREBASE_TOKEN != ''
         env:
           FIREBASE_TOKEN: ${{ secrets.PRODUCTION_FIREBASE_TOKEN }}
           FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
