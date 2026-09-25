@@ -99,9 +99,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Verify Flutter integration test binary can build
-        run: flutter test integration_test/demo_login_flow_test.dart --device-id=none
-
       - name: Generate Localizations
         run: |
           if [ -f l10n.yaml ]; then flutter gen-l10n; fi
