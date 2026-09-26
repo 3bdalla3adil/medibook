@@ -24,7 +24,7 @@ class AuthInterceptor extends QueuedInterceptor {
 
   Completer<AuthTokens?>? _refreshInFlight;
 
-  static const _anonymous = {ApiEndpoints.login, ApiEndpoints.register, ApiEndpoints.refresh};
+  static const _anonymous = {ApiEndpoints.firebaseExchange, ApiEndpoints.login, ApiEndpoints.register, ApiEndpoints.refresh};
 
   @override
   Future<void> onRequest(
@@ -100,7 +100,7 @@ class AuthInterceptor extends QueuedInterceptor {
         final refreshed = await firebaseTokenRefresher!();
         if (refreshed != null) {
           await _tokenStore.write(refreshed);
-          _log.info('Firebase access token refreshed');
+          _log.info('Odoo access token refreshed through Firebase identity exchange');
         }
         return refreshed;
       } catch (_) {
