@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:medibook/features/auth/data/repositories/demo_auth_repository.dart';
 import 'package:medibook/features/auth/data/datasources/demo_auth_remote_data_source.dart';
+import 'package:medibook/features/auth/data/repositories/demo_auth_repository.dart';
 
 void main() {
   test('demo session is restored while the repository stays alive', () async {
