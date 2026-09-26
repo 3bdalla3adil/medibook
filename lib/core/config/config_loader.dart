@@ -20,7 +20,7 @@ abstract final class ConfigLoader {
     final config = AppConfig(
       environment: environment,
       apiBaseUrl: baseUrl,
-      apiVersion: const String.fromEnvironment('API_VERSION', defaultValue: '/v1'),
+      apiVersion: const String.fromEnvironment('API_VERSION', defaultValue: ''),
       requestTimeout: const Duration(seconds: 30),
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 30),
