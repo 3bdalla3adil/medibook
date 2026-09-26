@@ -56,6 +56,34 @@ void main() {
       expect(find.text(dashboardLabel), findsOneWidget);
       expect(find.byTooltip('تسجيل الخروج'), findsOneWidget);
 
+      Future<void> openAndCheck(String card, String content) async {
+        await tester.tap(find.text(card).first);
+        await tester.pumpAndSettle();
+        expect(find.text(content), findsWidgets);
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+      }
+
+      if (buttonLabel == 'المتابعة كمريض') {
+        await openAndCheck('حجز موعد', 'عيادة ميديبوك التجريبية');
+        await openAndCheck('المواعيد', 'Dr. Demo');
+        await openAndCheck('الخدمات', 'General Consultation');
+        await openAndCheck('السجلات الطبية', 'Demo consultation note');
+        await openAndCheck('استشارة عن بُعد', 'ردهة الاستشارة عن بُعد');
+      } else if (buttonLabel == 'المتابعة كطبيب') {
+        await openAndCheck('جدولي', 'Dr. Demo');
+        await openAndCheck('مرضاي', 'Demo Patient');
+        await openAndCheck('الاستشارات', 'Demo consultation');
+        await openAndCheck('الوصفات الطبية', 'Demo Medication');
+        await openAndCheck('استشارة عن بُعد', 'ردهة الاستشارة عن بُعد');
+      } else {
+        await openAndCheck('إدارة المواعيد', 'Dr. Demo');
+        await openAndCheck('إدارة المرضى', 'Demo Patient');
+        await openAndCheck('إدارة الأطباء', 'Dr. Demo');
+        await openAndCheck('إدارة العيادات', 'MediBook Demo Clinic');
+        await openAndCheck('الفوترة والمدفوعات', 'INV-1001');
+      }
+
       await tester.tap(find.text('تسجيل الخروج'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
