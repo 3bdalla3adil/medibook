@@ -40,9 +40,9 @@ class AuthGuard {
     if (isForbidden) return null;
 
     final user = authState.user;
-    final isDemo = user != null && DemoRoute.isDemoUser(user);
-    if (isDemo) {
-      return location == Routes.demo ? null : Routes.demo;
+    if (user != null) {
+      final demoRedirect = DemoRoute.redirectFor(user, location);
+      if (demoRedirect != null) return demoRedirect;
     }
     if (isAuthEntry || isSplash) return Routes.dashboard;
 
