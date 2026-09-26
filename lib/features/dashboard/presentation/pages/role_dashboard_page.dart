@@ -73,7 +73,8 @@ class _DemoRoleDashboard extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: l10n.actionSignOut,
-            onPressed: () => context.read<AuthBloc>().add(const AuthLogoutRequested()),
+            onPressed: () =>
+                context.read<AuthBloc>().add(const AuthLogoutRequested()),
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -87,8 +88,10 @@ class _DemoRoleDashboard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.dashboardGreeting(user.displayName),
-                        style: Theme.of(context).textTheme.headlineSmall),
+                    Text(
+                      l10n.dashboardGreeting(user.displayName),
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                     const SizedBox(height: 8),
                     Chip(
                       avatar: Icon(_roleIcon(kind), size: 18),
@@ -244,7 +247,9 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
           FilledButton.icon(
             onPressed: cancelled ? null : () => setState(() => cancelled = true),
             icon: const Icon(Icons.cancel_outlined),
-            label: Text(cancelled ? l10n.demoAppointmentCancelled : l10n.demoActionCancel),
+            label: Text(
+              cancelled ? l10n.demoAppointmentCancelled : l10n.demoActionCancel,
+            ),
           ),
         ];
       case Routes.bookAppointment:
@@ -322,7 +327,9 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
           FilledButton.icon(
             onPressed: completed ? null : () => setState(() => completed = true),
             icon: const Icon(Icons.check_circle_outline),
-            label: Text(completed ? l10n.statusCompleted : l10n.demoActionComplete),
+            label: Text(
+              completed ? l10n.statusCompleted : l10n.demoActionComplete,
+            ),
           ),
         ];
       case Routes.prescriptions:
@@ -334,7 +341,9 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
           FilledButton.icon(
             onPressed: signed ? null : () => setState(() => signed = true),
             icon: const Icon(Icons.draw_outlined),
-            label: Text(signed ? l10n.statusCompleted : l10n.demoActionSign),
+            label: Text(
+              signed ? l10n.statusCompleted : l10n.demoActionSign,
+            ),
           ),
         ];
       case Routes.billing:
@@ -413,7 +422,9 @@ class _UnknownRoleDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Scaffold(body: Center(child: Text(AppLocalizations.of(context).errorForbidden)));
+      Scaffold(
+        body: Center(child: Text(AppLocalizations.of(context).errorForbidden)),
+      ),
 }
 
 class _WorkflowItem {
