@@ -73,6 +73,7 @@ import '../../features/services/domain/repositories/service_repository.dart';
 import '../../features/services/domain/usecases/get_services.dart';
 import '../../features/services/presentation/bloc/service_list_cubit.dart';
 import '../../features/telehealth/data/repositories/daily_call_service_impl.dart';
+import '../../features/telehealth/data/repositories/demo_call_service.dart';
 import '../../features/telehealth/data/repositories/daily_telehealth_repository.dart';
 import '../../features/telehealth/data/repositories/telehealth_demo_repository.dart';
 import '../../features/telehealth/domain/repositories/daily_call_service.dart';
@@ -229,7 +230,8 @@ Future<void> registerFeatures() async {
           ? const DemoTelehealthRepository()
           : DailyTelehealthRepository(dio),
     )
-    ..registerLazySingleton<DailyCallService>(DailyCallServiceImpl.new)
+    ..registerLazySingleton<DailyCallService>(() =>
+        getIt<AppConfig>().enableDemoAuth ? DemoCallService() : DailyCallServiceImpl())
     ..registerFactory(
       () => TelehealthSessionBloc(
         repository: getIt(),
