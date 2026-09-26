@@ -11,6 +11,7 @@ abstract final class ApiEndpoints {
   static const doctors = '/doctors';
   static const availability = '/appointments/availability';
   static const patients = '/patients';
+  static String patient(String id) => '/patients/$id';
   static const consultations = '/consultations';
   static const prescriptions = '/prescriptions';
   static const medicalRecords = '/medical-records';
