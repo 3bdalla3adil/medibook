@@ -6,6 +6,7 @@ import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/authorization/domain/entities/route_requirement.dart';
 import '../../features/authorization/domain/services/route_authorizer.dart';
 import 'routes.dart';
+import 'demo_route.dart';
 
 class AuthGuard {
   const AuthGuard(this._bloc);
@@ -37,6 +38,12 @@ class AuthGuard {
     }
 
     if (isForbidden) return null;
+
+    final user = authState.user;
+    final isDemo = user != null && DemoRoute.isDemoUser(user);
+    if (isDemo) {
+      return location == Routes.demo ? null : Routes.demo;
+    }
     if (isAuthEntry || isSplash) return Routes.dashboard;
 
     final requirement = requirementFor(location);
