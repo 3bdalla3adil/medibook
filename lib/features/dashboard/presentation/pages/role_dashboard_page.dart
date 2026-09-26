@@ -135,8 +135,10 @@ class _DemoRoleDashboard extends StatelessWidget {
                           children: [
                             Icon(item.icon, size: 30),
                             const Spacer(),
-                            Text(item.title,
-                                style: Theme.of(context).textTheme.titleMedium),
+                            Text(
+                              item.title,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ],
                         ),
                       ),
@@ -240,9 +242,11 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
         return [
           _section(l10n.demoAppointmentDetails, [
             _item(l10n.demoAppointmentOneDoctor, l10n.demoAppointmentOneService,
-                l10n.demoAppointmentOneDate),
+                l10n.demoAppointmentOneDate,
+            ),
             _item(l10n.demoAppointmentTwoDoctor, l10n.demoAppointmentTwoService,
-                l10n.demoAppointmentTwoDate),
+                l10n.demoAppointmentTwoDate,
+            ),
           ]),
           FilledButton.icon(
             onPressed: cancelled ? null : () => setState(() => cancelled = true),
@@ -277,14 +281,16 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
       case Routes.medicalRecords:
         return [
           _section(l10n.demoRecordDetails, [
-            _item(l10n.demoRecordDiagnosis, l10n.demoRecordMedication, l10n.demoRecordNote),
+            _item(l10n.demoRecordDiagnosis, l10n.demoRecordMedication, l10n.demoRecordNote,
+            ),
           ]),
         ];
       case Routes.telehealthLobby:
         return [
           _section(l10n.telehealthLobbyTitle, [
             _item(l10n.demoAppointmentOneDoctor, l10n.appointmentTelehealth,
-                l10n.demoAppointmentOneDate),
+                l10n.demoAppointmentOneDate,
+            ),
           ]),
           FilledButton.icon(
             onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
@@ -349,7 +355,8 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
       case Routes.billing:
         return [
           _section(l10n.adminBilling, [
-            _item(l10n.demoBillingInvoice, l10n.demoBillingAmount, l10n.demoBillingPaid),
+            _item(l10n.demoBillingInvoice, l10n.demoBillingAmount, l10n.demoBillingPaid,
+            ),
           ]),
           FilledButton.icon(
             onPressed: paid ? null : () => setState(() => paid = true),
@@ -424,7 +431,7 @@ class _UnknownRoleDashboard extends StatelessWidget {
   Widget build(BuildContext context) =>
       Scaffold(
         body: Center(child: Text(AppLocalizations.of(context).errorForbidden)),
-      ),
+      );
 }
 
 class _WorkflowItem {
