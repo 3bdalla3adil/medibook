@@ -12,7 +12,7 @@ class DemoCallService implements DailyCallService {
   @override
   Future<void> initialize() async {
     if (!_states.isClosed) {
-      _states.add(TelehealthConnectionState.disconnected);
+      _states.add(TelehealthConnectionState.idle);
     }
   }
 
@@ -31,7 +31,7 @@ class DemoCallService implements DailyCallService {
     if (!_joined) return;
     _joined = false;
     if (!_states.isClosed) {
-      _states.add(TelehealthConnectionState.disconnected);
+      _states.add(TelehealthConnectionState.ended);
     }
   }
 
