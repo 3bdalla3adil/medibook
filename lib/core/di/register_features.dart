@@ -94,10 +94,10 @@ Future<void> registerFeatures() async {
       final config = getIt<AppConfig>();
       if (config.enableDemoAuth) {
         return DemoAuthRemoteDataSource(
-          firebase: config.enableFirebaseAuth ? FirebaseAuthRemoteDataSource() : null,
+          firebase: config.enableFirebaseAuth ? FirebaseAuthRemoteDataSource(dio: dio) : null,
         );
       }
-      if (config.enableFirebaseAuth) return FirebaseAuthRemoteDataSource();
+      if (config.enableFirebaseAuth) return FirebaseAuthRemoteDataSource(dio: dio);
       return DioAuthRemoteDataSource(dio);
     })
     ..registerLazySingleton<AuthLocalDataSource>(() => SecureAuthLocalDataSource(getIt()))
