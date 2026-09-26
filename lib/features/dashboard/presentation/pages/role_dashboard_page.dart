@@ -86,7 +86,6 @@ class _DemoRoleDashboard extends StatelessWidget {
             Icons.folder_shared_outlined,
             Routes.medicalRecords,
           ),
-          _WorkflowItem(
         ],
       _DemoRole.doctor => [
           _WorkflowItem(
