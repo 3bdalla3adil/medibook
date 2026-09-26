@@ -6,4 +6,7 @@ abstract final class DemoRoute {
   static bool isDemoUser(AuthUser user) => user.id.startsWith('demo-');
 
   static String pathFor(AuthUser user) => path;
+
+  static String? redirectFor(AuthUser user, String location) =>
+      isDemoUser(user) && location != path ? path : null;
 }
