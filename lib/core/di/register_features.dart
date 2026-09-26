@@ -230,8 +230,11 @@ Future<void> registerFeatures() async {
           ? const DemoTelehealthRepository()
           : DailyTelehealthRepository(dio),
     )
-    ..registerLazySingleton<DailyCallService>(() =>
-        getIt<AppConfig>().enableDemoAuth ? DemoCallService() : DailyCallServiceImpl(),
+    ..registerLazySingleton<DailyCallService>(
+      () => getIt<AppConfig>().enableDemoAuth
+          ? DemoCallService()
+          : DailyCallServiceImpl(),
+    )
     ..registerFactory(
       () => TelehealthSessionBloc(
         repository: getIt(),
