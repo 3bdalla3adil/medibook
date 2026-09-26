@@ -53,8 +53,8 @@ import '../../features/patients/data/datasources/patient_directory_demo_data_sou
 import '../../features/patients/data/datasources/patient_directory_remote_data_source.dart';
 import '../../features/patients/data/datasources/patient_remote_data_source.dart';
 import '../../features/patients/data/repositories/patient_directory_repository_impl.dart';
-import '../../features/patients/data/repositories/patient_repository_impl.dart';
 import '../../features/patients/data/repositories/demo_patient_repository.dart';
+import '../../features/patients/data/repositories/patient_repository_impl.dart';
 import '../../features/patients/domain/repositories/patient_directory_repository.dart';
 import '../../features/patients/domain/repositories/patient_repository.dart';
 import '../../features/patients/domain/usecases/get_patient_directory.dart';
