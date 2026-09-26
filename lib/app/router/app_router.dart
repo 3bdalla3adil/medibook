@@ -25,6 +25,7 @@ import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart'
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
 import 'routes.dart';
+import 'demo_route.dart';
 
 class AppRouter {
   AppRouter(this._authBloc) {
