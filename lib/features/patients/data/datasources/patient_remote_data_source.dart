@@ -18,7 +18,7 @@ class DioPatientRemoteDataSource implements PatientRemoteDataSource {
   @override
   Future<PatientDto?> fetchCurrent() async {
     try {
-      final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.me);
+      final res = await _dio.get<Map<String, dynamic>>(ApiEndpoints.patient(id));
       final data = res.data?['data'] as Map<String, dynamic>?;
       return data == null ? null : PatientDto.fromJson(data);
     } on DioException catch (e) {
