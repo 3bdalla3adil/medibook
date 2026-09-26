@@ -24,6 +24,7 @@ import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart
 import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
+import 'demo_route.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -44,6 +45,16 @@ class AppRouter {
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
           GoRoute(path: Routes.register, builder: (_, __) => const RegisterPage()),
           GoRoute(path: Routes.forbidden, builder: (_, __) => const ForbiddenPage()),
+          GoRoute(
+            path: Routes.demo,
+            builder: (_, __) {
+              final user = _authBloc.state.user;
+              if (user == null || !DemoRoute.isDemoUser(user)) {
+                return const _ErrorPage(message: 'Demo session is unavailable');
+              }
+              return RoleDashboardPage(user: user);
+            },
+          ),
           GoRoute(
             path: Routes.dashboard,
             builder: (_, __) => BlocBuilder<AuthBloc, AuthState>(
