@@ -5,8 +5,8 @@ import '../../features/auth/domain/entities/auth_user.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/authorization/domain/entities/route_requirement.dart';
 import '../../features/authorization/domain/services/route_authorizer.dart';
-import 'routes.dart';
 import 'demo_route.dart';
+import 'routes.dart';
 
 class AuthGuard {
   const AuthGuard(this._bloc);
