@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
 import '../../../../core/security/token_store.dart';
 import '../../domain/entities/auth_user.dart';
