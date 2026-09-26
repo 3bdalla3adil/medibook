@@ -16,6 +16,7 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/datasources/demo_auth_remote_data_source.dart';
 import '../../features/auth/data/datasources/firebase_auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/data/repositories/demo_auth_repository.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login.dart';
 import '../../features/auth/domain/usecases/logout.dart';
@@ -100,9 +101,13 @@ Future<void> registerFeatures() async {
       return DioAuthRemoteDataSource(dio);
     })
     ..registerLazySingleton<AuthLocalDataSource>(() => SecureAuthLocalDataSource(getIt()))
-    ..registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(remote: getIt(), local: getIt(), store: store),
-    )
+    ..registerLazySingleton<AuthRepository>(() {
+      final config = getIt<AppConfig>();
+      if (config.enableDemoAuth) {
+        return DemoAuthRepository(getIt<AuthRemoteDataSource>());
+      }
+      return AuthRepositoryImpl(remote: getIt(), local: getIt(), store: store);
+    })
     ..registerFactory(() => LoginUseCase(getIt()))
     ..registerFactory(() => RegisterUseCase(getIt()))
     ..registerFactory(() => LogoutUseCase(getIt()))
