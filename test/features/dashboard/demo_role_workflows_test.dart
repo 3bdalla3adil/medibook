@@ -80,8 +80,8 @@ Future<void> openCard(
 
 void main() {
   testWidgets('patient can open every local demo workflow', (tester) async {
-    final l10n = _l10n(tester);
     await pumpDemo(tester, patient);
+    final l10n = _l10n(tester);
 
     await openCard(tester, l10n.actionBookAppointment, l10n.demoClinicOne);
     await tester.pageBack();
@@ -103,8 +103,8 @@ void main() {
   });
 
   testWidgets('doctor can open every local demo workflow', (tester) async {
-    final l10n = AppLocalizations('ar');
     await pumpDemo(tester, doctor);
+    final l10n = _l10n(tester);
 
     await openCard(tester, l10n.doctorSchedule, l10n.demoAppointmentOneDoctor);
     await tester.pageBack();
@@ -126,8 +126,8 @@ void main() {
   });
 
   testWidgets('administrator can open every local demo workflow', (tester) async {
-    final l10n = _l10n(tester);
     await pumpDemo(tester, admin);
+    final l10n = _l10n(tester);
 
     await openCard(tester, l10n.adminAppointments, l10n.demoAppointmentOneDoctor);
     await tester.pageBack();
