@@ -54,7 +54,7 @@ void main() {
 
       expect(find.textContaining(displayName), findsOneWidget);
       expect(find.text(dashboardLabel), findsOneWidget);
-      expect(find.text('تسجيل الخروج'), findsOneWidget);
+      expect(find.byTooltip('تسجيل الخروج'), findsOneWidget);
 
       await tester.tap(find.text('تسجيل الخروج'));
       await tester.pump();
