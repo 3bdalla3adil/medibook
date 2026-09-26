@@ -1,34 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../../core/error/error_mapper.dart';
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failure.dart';
+import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/security/token_store.dart';
 import '../../domain/entities/auth_user.dart';
 import 'auth_remote_data_source.dart';
 
-/// Firebase Authentication + Cloud Firestore implementation.
-///
-/// Authentication is handled by Firebase Auth. The `users/{uid}` document
-/// stores the application profile and authorization metadata used by MediBook.
+/// Firebase provides identity only. Odoo is the authoritative profile,
+/// authorization, session and clinical-data backend.
 class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
   FirebaseAuthRemoteDataSource({
+    required Dio dio,
     FirebaseAuth? auth,
-    FirebaseFirestore? firestore,
-  })  : _auth = auth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  })  : _dio = dio,
+        _auth = auth ?? FirebaseAuth.instance;
 
+  final Dio _dio;
   final FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
-
-  static const _defaultOrganizationId = 'default';
-
-  static const _patientPermissions = <Permission>{
-    Permission.viewOwnAppointments,
-    Permission.bookAppointment,
-    Permission.cancelOwnAppointment,
-    Permission.viewOwnMedicalRecord,
-    Permission.joinTelehealth,
-  };
 
   @override
   Future<LoginResponse> login({
@@ -44,14 +35,13 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
       if (user == null) {
         throw const AuthException('unauthorized');
       }
-
-      return await _responseFor(user);
+      return _exchangeFirebaseIdentity(user);
     } on FirebaseAuthException catch (e) {
       throw _mapAuthException(e);
     } on AuthException {
       rethrow;
-    } catch (e) {
-      throw ServerException('firebase_auth', payload: {'error': e.toString()});
+    } on DioException catch (e) {
+      throw _asException(e);
     }
   }
 
@@ -75,116 +65,107 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
       await user.reload();
 
       final currentUser = _auth.currentUser ?? user;
-      await _writeDefaultProfile(
-        currentUser,
-        displayName: displayName.trim(),
-      );
-
-      // Email verification is enabled as part of the registration flow, but
-      // account verification is not enforced by the client.
       try {
         await currentUser.sendEmailVerification();
       } on FirebaseAuthException {
-        // Registration itself remains successful if the verification email
-        // cannot be sent; the user can request verification again later.
+        // Verification delivery is independent from the Odoo account exchange.
       }
 
-      return await _responseFor(currentUser);
+      return _exchangeFirebaseIdentity(currentUser);
     } on FirebaseAuthException catch (e) {
       throw _mapAuthException(e);
     } on AuthException {
       rethrow;
-    } catch (e) {
-      throw ServerException('firebase_registration', payload: {'error': e.toString()});
+    } on DioException catch (e) {
+      throw _asException(e);
     }
   }
 
   @override
   Future<AuthUser> me() async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw const AuthException('unauthorized');
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(ApiEndpoints.me);
+      final data = response.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw const AuthException('invalid_session');
+      }
+      return _mapUser(data);
+    } on DioException catch (e) {
+      throw _asException(e);
     }
-
-    final snapshot = await _firestore.collection('users').doc(user.uid).get();
-    if (!snapshot.exists || snapshot.data() == null) {
-      await _writeDefaultProfile(user, displayName: user.displayName ?? '');
-      return _profileFrom(user, const {});
-    }
-
-    return _profileFrom(user, snapshot.data()!);
   }
 
   @override
-  Future<void> logout() => _auth.signOut();
+  Future<void> logout() async {
+    try {
+      await _dio.post<void>(ApiEndpoints.logout);
+    } on DioException {
+      // Server logout is best-effort; local/Firebase sign-out must still happen.
+    } finally {
+      await _auth.signOut();
+    }
+  }
 
-  Future<LoginResponse> _responseFor(User user) async {
-    final snapshot = await _firestore.collection('users').doc(user.uid).get();
-    final profile = snapshot.data() ?? <String, dynamic>{};
-
-    if (!snapshot.exists) {
-      await _writeDefaultProfile(user, displayName: user.displayName ?? '');
+  Future<LoginResponse> _exchangeFirebaseIdentity(User user) async {
+    final idToken = await user.getIdToken(true);
+    if (idToken == null || idToken.isEmpty) {
+      throw const AuthException('firebase_token_unavailable');
     }
 
-    final tokenResult = await user.getIdTokenResult(true);
-    final now = DateTime.now().toUtc();
-    final expiresAt = tokenResult.expirationTime ?? now.add(const Duration(hours: 1));
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.firebaseExchange,
+        data: {'id_token': idToken},
+      );
+      final body = response.data?['data'];
+      if (body is! Map<String, dynamic>) {
+        throw const AuthException('invalid_exchange_response');
+      }
 
-    return LoginResponse(
-      tokens: AuthTokens(
-        accessToken: tokenResult.token ?? await user.getIdToken() ?? '',
-        refreshToken: null,
-        accessExpiresAt: expiresAt.toUtc(),
-        refreshExpiresAt: now.add(const Duration(days: 30)),
-        sessionId: user.uid,
-      ),
-      user: _profileFrom(user, profile),
-    );
+      final accessToken = body['access_token']?.toString();
+      final accessExpiresAt = body['access_expires_at']?.toString();
+      if (accessToken == null || accessToken.isEmpty || accessExpiresAt == null) {
+        throw const AuthException('invalid_exchange_response');
+      }
+
+      final tokens = AuthTokens(
+        accessToken: accessToken,
+        refreshToken: body['refresh_token']?.toString(),
+        accessExpiresAt: DateTime.parse(accessExpiresAt).toUtc(),
+        refreshExpiresAt: body['refresh_expires_at'] == null
+            ? null
+            : DateTime.parse(body['refresh_expires_at'].toString()).toUtc(),
+        sessionId: body['session_id']?.toString(),
+      );
+
+      final rawUser = body['user'];
+      if (rawUser is! Map<String, dynamic>) {
+        throw const AuthException('invalid_exchange_response');
+      }
+
+      return LoginResponse(tokens: tokens, user: _mapUser(rawUser));
+    } on DioException catch (e) {
+      throw _asException(e);
+    }
   }
 
-  Future<void> _writeDefaultProfile(
-    User user, {
-    required String displayName,
-  }) async {
-    await _firestore.collection('users').doc(user.uid).set(
-      {
-        'id': user.uid,
-        'display_name': displayName,
-        'email': user.email,
-        'roles': ['patient'],
-        'permissions': _patientPermissions.map((p) => p.name).toList(),
-        'organization_id': _defaultOrganizationId,
-        'clinic_ids': <String>[],
-        'locale': 'ar',
-        'email_verified': user.emailVerified,
-        'updated_at': FieldValue.serverTimestamp(),
-        'created_at': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
-  }
-
-  AuthUser _profileFrom(User user, Map<String, dynamic> json) {
-    final roleNames = (json['roles'] as List?)?.whereType<String>() ?? const <String>[];
-    final permissionNames =
+  AuthUser _mapUser(Map<String, dynamic> json) {
+    final roleStrings = (json['roles'] as List?)?.whereType<String>() ?? const <String>[];
+    final permStrings =
         (json['permissions'] as List?)?.whereType<String>() ?? const <String>[];
 
-    final roles = roleNames.map(_parseRole).whereType<UserRole>().toSet();
-    final permissions =
-        permissionNames.map(_parsePermission).whereType<Permission>().toSet();
-
     return AuthUser(
-      id: user.uid,
-      displayName: (json['display_name'] as String?)?.trim().isNotEmpty == true
-          ? json['display_name'] as String
-          : (user.displayName ?? ''),
-      roles: roles.isEmpty ? {UserRole.patient} : roles,
-      permissions: permissions.isEmpty ? _patientPermissions : permissions,
-      organizationId: json['organization_id'] as String? ?? _defaultOrganizationId,
-      clinicIds: ((json['clinic_ids'] as List?)?.whereType<String>() ?? const <String>[]).toSet(),
-      avatarUrl: json['avatar_url'] as String?,
-      email: user.email,
-      localeCode: json['locale'] as String? ?? 'ar',
+      id: json['id'].toString(),
+      displayName: json['display_name']?.toString() ?? '',
+      roles: roleStrings.map(_parseRole).whereType<UserRole>().toSet(),
+      permissions: permStrings.map(_parsePermission).whereType<Permission>().toSet(),
+      organizationId: json['organization_id']?.toString() ?? '',
+      clinicIds: ((json['clinic_ids'] as List?)?.map((e) => e.toString()) ??
+              const <String>[])
+          .toSet(),
+      avatarUrl: json['avatar_url']?.toString(),
+      email: json['email']?.toString(),
+      localeCode: json['locale']?.toString(),
     );
   }
 
@@ -200,6 +181,18 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
       if (permission.name == value) return permission;
     }
     return null;
+  }
+
+  AppException _asException(DioException e) {
+    final failure = ErrorMapper.fromDio(e);
+    return switch (failure) {
+      UnauthorizedFailure(:final expired) =>
+        AuthException('unauthorized', expired: expired),
+      NetworkFailure() || TimeoutFailure() => const NetworkException('network'),
+      ForbiddenFailure() => const ServerException('forbidden', statusCode: 403),
+      ValidationFailure() => const ServerException('validation', statusCode: 422),
+      _ => const ServerException('unknown'),
+    };
   }
 
   AppException _mapAuthException(FirebaseAuthException e) {
