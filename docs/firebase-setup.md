@@ -1,193 +1,107 @@
-# Firebase + Firestore setup for MediBook
+# Firebase identity setup for MediBook + Odoo 19
 
-This project supports three authentication modes:
+MediBook uses Firebase Authentication as the identity provider. Odoo 19 is the authoritative application backend for user profiles, authorization, appointments, clinics, doctors, medical records and other clinical workflows.
 
-1. **Demo authentication** for local/staging demonstrations.
-2. **Firebase Authentication + Cloud Firestore** for a serverless mobile foundation.
-3. **REST/Odoo-compatible authentication** for a future or existing MediBook backend.
+## Authentication flow
 
-Firebase is selected with:
+```text
+Flutter
+  ↓
+Firebase Authentication
+  ↓ Firebase ID token
+POST /medibook/api/auth/exchange
+  ↓
+Odoo verifies Firebase JWT
+  ↓
+Odoo issues short-lived MediBook JWT
+  ↓
+Flutter stores MediBook JWT in secure storage
+  ↓
+Authorization: Bearer <MediBook JWT>
+  ↓
+Odoo protected APIs
+```
 
-`ENABLE_FIREBASE_AUTH=true`
+The Firebase ID token must not be used as the bearer token for Odoo clinical APIs.
 
-and demo authentication takes precedence when:
+## 1. Configure Firebase
 
-`ENABLE_DEMO_AUTH=true`
+Create a Firebase project and enable:
+- Authentication → Email/Password
+- Android and/or iOS application registration
 
-For a demo-only build, keep `ENABLE_DEMO_AUTH=true` and `ENABLE_FIREBASE_AUTH=false`. For a Firebase build, use `ENABLE_DEMO_AUTH=false` and `ENABLE_FIREBASE_AUTH=true`. This keeps startup deterministic and prevents an unconfigured Firebase SDK from breaking the demo APK.
-
-## 1. Create the Firebase project
-
-Open the Firebase console and create a project for MediBook.
-
-Then enable:
-
-- **Authentication → Sign-in method → Email/Password**
-- **Firestore Database**
-
-The reference repository uses a legacy web-only Firebase JavaScript configuration in `src/web/index.html`. We are **not copying that pattern** into MediBook because MediBook is a native Android/iOS Flutter app and the current FlutterFire workflow is safer and more maintainable. Firebase's current Flutter documentation recommends the Firebase CLI plus FlutterFire CLI; FlutterFire registers the platform apps and generates `firebase_options.dart`. citeturn0search0
-
-## 2. Install the CLIs
-
-From the MediBook project directory:
-
+Use FlutterFire to configure the native applications:
 ```bash
 firebase login
 dart pub global activate flutterfire_cli
 flutterfire configure
 ```
 
-During `flutterfire configure`:
+The repository intentionally does not contain production Firebase credentials.
 
-- select your Firebase project;
-- select Android and iOS;
-- select Web too if you intend to run MediBook on Web.
+## 2. Configure MediBook
 
-FlutterFire creates the Firebase app registrations and generates `lib/firebase_options.dart`. Re-run it whenever you add a supported platform or a Firebase product that requires updated configuration. citeturn0search0
-
-## 3. Android and iOS configuration
-
-For Android, FlutterFire registers the Android app and produces the native Firebase configuration. For iOS, it registers the iOS app and produces the Apple configuration. For Web, it generates the Dart options used by `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)`. citeturn0search0turn0search3
-
-Do not manually invent Firebase project IDs, application IDs, or API keys. Let `flutterfire configure` generate the correct configuration for the Firebase project. The repository intentionally does not contain fake Firebase credentials. Firebase configuration values identify the Firebase app; authorization must still be enforced by Firebase Authentication and Firestore Security Rules. citeturn0search3
-
-Firebase configuration identifiers are not passwords; however, access control must come from Firebase Authentication and Firestore Security Rules, not from hiding the client configuration.
-
-## 4. Enable Firebase authentication in MediBook
-
-After Firebase configuration has been generated, edit the staging configuration:
-
-```json
-{
-  "ENABLE_FIREBASE_AUTH": "true"
-}
-```
-
-The repository keeps this flag **false** in the demo/staging configuration until a real Firebase project has been configured. This is intentional: enabling Firebase without valid native configuration can prevent the application from starting.
-
-Then run:
-
-```bash
-flutter pub get
-flutterfire configure
-flutter run --dart-define-from-file=config/staging.json
-```
-
-## 5. Registration flow implemented in MediBook
-
-The new registration flow is:
-
+For an Odoo-backed build:
 ```text
-Register screen
-      ↓
-AuthBloc
-      ↓
-RegisterUseCase
-      ↓
-AuthRepository
-      ↓
-FirebaseAuthRemoteDataSource
-      ├── Firebase Auth: createUserWithEmailAndPassword()
-      ├── update Firebase display name
-      ├── send verification email
-      └── Firestore users/{uid}: create patient profile
+ENABLE_FIREBASE_AUTH=true
+ENABLE_DEMO_AUTH=false
+API_VERSION=
+API_BASE_URL=https://<your-odoo-domain>
 ```
 
-Firebase Auth creates the account and signs the user in after successful password registration. The app then creates a patient profile in Firestore. Firebase documents the same email/password creation flow and recommends handling errors such as weak passwords and existing email addresses.
+API_VERSION should remain empty because the Odoo controller routes already contain /medibook/api.
 
-## 6. Firestore data model
+## 3. Configure Odoo
 
-Registration creates:
+Install the medibook_api module from the MediBook Odoo 19 backend package.
 
-`users/{firebaseUid}`
+Configure these Odoo system parameters:
+- medibook.jwt_secret — long random secret
+- medibook.firebase_project_id — Firebase project ID
 
-with fields similar to:
+Never commit either secret to source control.
 
-```text
-id
-display_name
-email
-roles: ["patient"]
-permissions:
-  - viewOwnAppointments
-  - bookAppointment
-  - cancelOwnAppointment
-  - viewOwnMedicalRecord
-  - joinTelehealth
-organization_id: "default"
-clinic_ids: []
-locale: "ar"
-email_verified
-created_at
-updated_at
-```
+## 4. Registration and login
 
-The application treats the Firebase UID as the stable identity key.
+The Flutter auth datasource:
+1. Creates or authenticates the Firebase user.
+2. Obtains a fresh Firebase ID token.
+3. Sends it to Odoo /medibook/api/auth/exchange.
+4. Receives a short-lived Odoo MediBook JWT.
+5. Stores that Odoo token using the existing secure TokenStore.
+6. Uses Odoo /medibook/api/auth/me for the authoritative user profile.
 
-## 7. Firestore Security Rules
+There is no longer a Firestore users/{uid} profile dependency in the authentication flow.
 
-The repository includes:
+## 5. Token refresh
 
-```text
-firestore.rules
-```
+When Odoo returns HTTP 401, the Flutter interceptor refreshes the Firebase ID token, exchanges it again with Odoo, stores the newly issued Odoo JWT, and retries the failed API request once.
 
-The initial rules allow a signed-in user to read their own `users/{uid}` profile, allow creation of a patient profile with the fixed default organization and patient permissions, and prevent the user from changing their role/permissions/organization through client-side updates.
+A Firebase token is never written into the Odoo TokenStore as an application access token.
 
-Everything else is denied until its authorization model is explicitly implemented.
+## 6. Logout
 
-Deploy with:
+Logout attempts to revoke the Odoo server-side session and then signs out of Firebase locally.
 
-```bash
-firebase deploy --only firestore
-```
+## 7. Clinical-data boundary
 
-Do **not** use `allow read, write: if true` in a deployed medical application. Firebase explicitly warns that open Firestore rules can expose or allow modification of the database. Security Rules should use Firebase Authentication and data-based authorization.
+Do not move clinical records, appointments, prescriptions, or authorization decisions into Firestore as a parallel source of truth.
 
-## 8. Fixing the existing login flow
+Odoo is the authoritative backend for these domains. Firebase can still be used for platform services such as push delivery where separately configured.
 
-The previous login page created its own `AuthBloc`, while the router/auth guard used another instance. That could make a successful login invisible to the router.
+## 8. Production checklist
 
-The login screen now uses the application's shared `AuthBloc` from the widget tree.
+- configure HTTPS and production certificates;
+- configure Firebase project ID in Odoo;
+- configure a high-entropy Odoo JWT secret;
+- enable Firebase Auth and disable demo auth;
+- verify organization/clinic access rules;
+- verify doctor/patient clinical authorization;
+- test appointment concurrency and idempotency;
+- test token expiry and 401 recovery;
+- enable backups and restore testing;
+- configure monitoring and rate limiting;
+- perform penetration/security testing;
+- define privacy, retention, consent and incident-response procedures.
 
-The same shared bloc handles:
-
-- login;
-- registration;
-- session restoration;
-- logout;
-- session expiration.
-
-## 9. Testing Firebase registration
-
-In Firebase Console:
-
-1. Authentication → Users.
-2. Create a test user manually if desired, or use MediBook's registration screen.
-3. Register from the app.
-4. Confirm the Firebase Auth user exists.
-5. Confirm `Firestore → users → <UID>` contains the patient profile.
-6. Sign out.
-7. Sign back in with the registered account.
-
-For automated/local testing, Firebase also provides the Local Emulator Suite.
-
-## 10. Important architecture boundary
-
-Firebase is currently an authentication/profile backend option, not a replacement for every MediBook backend service.
-
-Appointments, doctors, clinics, medical records, billing, telehealth, and other clinical workflows can continue using the existing REST/Odoo-compatible repositories.
-
-This gives MediBook this deployment shape:
-
-```text
-                    ┌── Firebase Auth
-Flutter App ─ Auth ─┤
-                    └── REST/Odoo Auth
-
-Flutter App ─ Clinical APIs ─ Odoo / REST backend
-
-Flutter App ─ User Profile ─ Firestore
-```
-
-For a production medical deployment, authorization, audit logging, data retention, encryption/key management, backups, incident response, and privacy/legal requirements still need to be implemented and reviewed. Firebase configuration alone does not make an application HIPAA/GDPR/PDPL compliant.
+This architecture is an engineering implementation foundation; it is not by itself a declaration of HIPAA, GDPR, PDPL, PCI DSS, or other regulatory compliance.
