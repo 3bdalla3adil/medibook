@@ -197,24 +197,15 @@ class _DemoRoleDashboard extends StatelessWidget {
 }
 
 class _DemoWorkflowPage extends StatefulWidget {
-  const _DemoWorkflowPage({
-    required this.title,
-    required this.route,
-    required this.role,
-  });
+  const _DemoWorkflowPage({required this.title});
 
   final String title;
-  final String route;
-  final _DemoRole role;
 
   @override
   State<_DemoWorkflowPage> createState() => _DemoWorkflowPageState();
 }
 
 class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
-  bool cancelled = false;
-  bool completed = false;
-  bool signed = false;
   bool paid = false;
 
   @override
@@ -262,27 +253,12 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
 
   Widget _item(String title, String subtitle, String detail) => Card(
         child: ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.medical_services_outlined)),
+          leading: const CircleAvatar(child: Icon(Icons.payments_outlined)),
           title: Text(title),
           subtitle: Text('$subtitle\n$detail'),
           isThreeLine: true,
         ),
       );
-
-  IconData _iconFor(String route) => switch (route) {
-        Routes.appointments => Icons.calendar_month,
-        Routes.bookAppointment => Icons.event_available,
-        Routes.services => Icons.medical_services_outlined,
-        Routes.medicalRecords => Icons.folder_shared_outlined,
-        Routes.telehealthLobby => Icons.video_call_outlined,
-        Routes.doctorPatients || Routes.adminPatients => Icons.people_outline,
-        Routes.doctors => Icons.medical_information_outlined,
-        Routes.clinics => Icons.local_hospital_outlined,
-        Routes.consultations => Icons.assignment_outlined,
-        Routes.prescriptions => Icons.medication_outlined,
-        Routes.billing => Icons.payments_outlined,
-        _ => Icons.dashboard_outlined,
-      };
 }
 
 class _DashboardAuthLoading extends StatelessWidget {
