@@ -50,14 +50,24 @@ class TelehealthSessionBloc extends Bloc<TelehealthSessionEvent, TelehealthSessi
     if(result case Err(:final failure)){emit(TelehealthSessionState(status:TelehealthSessionStatus.error,message:failure.code));return;}
     final session=(result as Ok<TelehealthSession>).value;
     if(session.isExpired(_clock.now()) || session.expiresAt.difference(_clock.now()) > const Duration(minutes:15)){emit(const TelehealthSessionState(status:TelehealthSessionStatus.error,message:'invalid_join_token_expiration'));return;}
-    emit(TelehealthSessionState(status:TelehealthSessionStatus.connecting,session:session));
+    emit(
+      TelehealthSessionState(
+        status: TelehealthSessionStatus.connecting,
+        session: session,
+      ),
+    );
+    await _sub?.cancel();
+    // Subscribe before join: providers may emit connected immediately after
+    // the join promise resolves, and missing that event leaves the UI stuck
+    // in the connecting state forever.
+    _sub = _call.connectionStates.listen(
+      (s) => add(TelehealthConnectionChanged(s)),
+    );
     await _screenGuard.enable();
     try {
       await _call.join(session);
       await _repository.markJoined(session.id);
       await _consultations.startConsultation(session.appointmentId);
-      await _sub?.cancel();
-      _sub=_call.connectionStates.listen((s)=>add(TelehealthConnectionChanged(s)));
     } catch(e) {
       await _screenGuard.disable();
       emit(TelehealthSessionState(status:TelehealthSessionStatus.error,session:session,message:e.toString()));
