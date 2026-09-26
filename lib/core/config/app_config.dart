@@ -63,6 +63,10 @@ class AppConfig {
       throw StateError('Demo authentication must be disabled in production.');
     }
 
+    if (!enableFirebaseAuth) {
+      throw StateError('Firebase authentication must be enabled for the Odoo MediBook backend.');
+    }
+
     if (maxOutboxAttempts < 1) {
       throw StateError('maxOutboxAttempts must be greater than zero.');
     }
