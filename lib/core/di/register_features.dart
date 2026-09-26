@@ -54,6 +54,7 @@ import '../../features/patients/data/datasources/patient_directory_remote_data_s
 import '../../features/patients/data/datasources/patient_remote_data_source.dart';
 import '../../features/patients/data/repositories/patient_directory_repository_impl.dart';
 import '../../features/patients/data/repositories/patient_repository_impl.dart';
+import '../../features/patients/data/repositories/demo_patient_repository.dart';
 import '../../features/patients/domain/repositories/patient_directory_repository.dart';
 import '../../features/patients/domain/repositories/patient_repository.dart';
 import '../../features/patients/domain/usecases/get_patient_directory.dart';
@@ -154,9 +155,10 @@ Future<void> registerFeatures() async {
           ? const DemoPatientRemoteDataSource()
           : DioPatientRemoteDataSource(dio),
     )
-    ..registerLazySingleton<PatientRepository>(
-      () => PatientRepositoryImpl(remote: getIt(), local: store),
-    )
+    ..registerLazySingleton<PatientRepository>(() {
+      if (getIt<AppConfig>().enableDemoAuth) return const DemoPatientRepository();
+      return PatientRepositoryImpl(remote: getIt(), local: store);
+    })
     ..registerFactory(() => GetPatientProfileUseCase(getIt()))
     ..registerLazySingleton<PatientDirectoryRemoteDataSource>(
       () => getIt<AppConfig>().enableDemoAuth
