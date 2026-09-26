@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -190,6 +191,7 @@ class _DemoRoleDashboard extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return Card(
+                    color: _cardColor(index, kind),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () => context.push(item.route),
@@ -216,6 +218,32 @@ class _DemoRoleDashboard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _cardColor(int index, _DemoRole role) {
+    final palette = switch (role) {
+      _DemoRole.patient => const [
+          AppColors.appointmentCard,
+          AppColors.patientCard,
+          AppColors.servicesCard,
+          AppColors.recordsCard,
+          AppColors.telehealthCard,
+        ],
+      _DemoRole.doctor => const [
+          AppColors.doctorCard,
+          AppColors.patientsCard,
+          AppColors.consultationCard,
+          AppColors.prescriptionCard,
+          AppColors.telehealthCard,
+        ],
+      _DemoRole.admin => const [
+          AppColors.appointmentCard,
+          AppColors.patientsCard,
+          AppColors.doctorCard,
+          AppColors.adminCard,
+        ],
+    };
+    return palette[index % palette.length];
   }
 
   IconData _roleIcon(_DemoRole role) => switch (role) {
