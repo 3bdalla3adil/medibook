@@ -12,7 +12,7 @@ class DemoTelehealthRepository implements TelehealthRepository {
           appointmentId: appointmentId,
           provider: 'demo',
           joinToken: 'demo-join-token',
-          expiresAt: DateTime.utc(2026, 12, 31, 23, 59),
+          expiresAt: DateTime.now().toUtc().add(const Duration(minutes: 10)),
           roomUrl: 'https://demo.medibook.app/room/$appointmentId',
           roomId: 'demo-room-$appointmentId',
           hostUserId: 'demo-doctor-001',
