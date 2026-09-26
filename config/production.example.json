@@ -1,7 +1,7 @@
 {
   "APP_ENV": "prod",
   "API_BASE_URL": "https://api.your-production-domain.example",
-  "API_VERSION": "/v1",
+  "API_VERSION": "",
   "ENABLE_SSL_PINNING": "true",
   "ENABLE_DEVICE_INTEGRITY": "true",
   "ENABLE_SCREEN_GUARD": "true",
