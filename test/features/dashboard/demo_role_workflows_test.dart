@@ -103,7 +103,7 @@ void main() {
   });
 
   testWidgets('doctor can open every local demo workflow', (tester) async {
-    final l10n = await _l10n();
+    final l10n = AppLocalizations('ar');
     await pumpDemo(tester, doctor);
 
     await openCard(tester, l10n.doctorSchedule, l10n.demoAppointmentOneDoctor);
