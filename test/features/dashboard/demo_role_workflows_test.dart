@@ -80,7 +80,7 @@ Future<void> openCard(
 
 void main() {
   testWidgets('patient can open every local demo workflow', (tester) async {
-    final l10n = AppLocalizations(const Locale('ar'));
+    final l10n = AppLocalizations('ar');
     await pumpDemo(tester, patient);
 
     await openCard(tester, l10n.actionBookAppointment, l10n.demoClinicOne);
