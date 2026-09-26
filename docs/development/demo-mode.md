@@ -41,3 +41,10 @@ The integration test also configures the demo dependency graph directly, so it d
 ## Production rule
 
 Never enable demo authentication in a production build. The production configuration template sets ENABLE_DEMO_AUTH to false, and AppConfig.validate() rejects demo mode when APP_ENV=prod.
+
+
+## Current end-to-end guarantee
+
+Demo authentication is intentionally isolated from the production business backend. When ENABLE_DEMO_AUTH=true, the dependency graph uses the in-memory demo authentication repository and demo data sources for the patient, doctor, and administrator workflows. The role dashboard therefore renders immediately after authentication and does not require a reachable API to paint the first screen.
+
+The regression suite covers the three demo credentials, role-specific authentication, role dashboard rendering, router transitions, and the Android integration flow. The Android integration test uses the real application dependency graph and runs against an emulator in CI when the analysis job succeeds.
