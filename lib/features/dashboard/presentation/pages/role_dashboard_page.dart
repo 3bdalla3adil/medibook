@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -49,7 +50,7 @@ class _DemoRoleDashboard extends StatelessWidget {
           _WorkflowItem(l10n.actionSeeAppointments, Icons.calendar_month, Routes.appointments),
           _WorkflowItem(l10n.actionServices, Icons.medical_services_outlined, Routes.services),
           _WorkflowItem(l10n.actionMedicalRecords, Icons.folder_shared_outlined, Routes.medicalRecords),
-          _WorkflowItem(l10n.actionTelehealth, Icons.video_call_outlined, Routes.telehealthLobby),
+          _WorkflowItem(l10n.actionTelehealth, Icons.video_call_outlined, Routes.telehealthSession('demo-appointment-001')),
         ],
       _DemoRole.doctor => [
           _WorkflowItem(l10n.doctorSchedule, Icons.calendar_today_outlined, Routes.appointments),
@@ -119,15 +120,17 @@ class _DemoRoleDashboard extends StatelessWidget {
                     color: _cardColor(index, kind),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => _DemoWorkflowPage(
-                            title: item.title,
-                            route: item.route,
-                            role: kind,
-                          ),
-                        ),
-                      ),
+                      onTap: () {
+                        if (item.route == Routes.billing) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => _DemoWorkflowPage(title: item.title),
+                            ),
+                          );
+                          return;
+                        }
+                        context.push(item.route);
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -224,138 +227,17 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
         children: [
           Card(
             child: ListTile(
-              leading: Icon(_iconFor(widget.route), size: 32),
+              leading: const Icon(Icons.payments_outlined, size: 32),
               title: Text(widget.title),
               subtitle: Text(l10n.demoWorkflowReady),
             ),
           ),
           const SizedBox(height: 12),
-          ..._content(context, l10n),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _content(BuildContext context, AppLocalizations l10n) {
-    switch (widget.route) {
-      case Routes.appointments:
-        return [
-          _section(l10n.demoAppointmentDetails, [
-            _item(l10n.demoAppointmentOneDoctor, l10n.demoAppointmentOneService,
-                l10n.demoAppointmentOneDate,
-            ),
-            _item(l10n.demoAppointmentTwoDoctor, l10n.demoAppointmentTwoService,
-                l10n.demoAppointmentTwoDate,
-            ),
-          ]),
-          FilledButton.icon(
-            onPressed: cancelled ? null : () => setState(() => cancelled = true),
-            icon: const Icon(Icons.cancel_outlined),
-            label: Text(
-              cancelled ? l10n.demoAppointmentCancelled : l10n.demoActionCancel,
-            ),
-          ),
-        ];
-      case Routes.bookAppointment:
-        return [
-          _section(l10n.demoAppointmentDetails, [
-            _item(l10n.demoClinicOne, l10n.demoServiceOne, l10n.demoDoctorOne),
-            _item(l10n.demoClinicTwo, l10n.demoServiceTwo, l10n.demoDoctorTwo),
-          ]),
-          FilledButton.icon(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.demoAppointmentOneService)),
-            ),
-            icon: const Icon(Icons.event_available),
-            label: Text(l10n.actionBookAppointment),
-          ),
-        ];
-      case Routes.services:
-        return [
-          _section(l10n.servicesTitle, [
-            _item(l10n.demoServiceOne, l10n.serviceDuration(30), l10n.demoClinicOne),
-            _item(l10n.demoServiceTwo, l10n.serviceDuration(45), l10n.demoClinicTwo),
-            _item(l10n.demoServiceThree, l10n.serviceDuration(30), l10n.demoClinicOne),
-          ]),
-        ];
-      case Routes.medicalRecords:
-        return [
-          _section(l10n.demoRecordDetails, [
-            _item(l10n.demoRecordDiagnosis, l10n.demoRecordMedication, l10n.demoRecordNote,
-            ),
-          ]),
-        ];
-      case Routes.telehealthLobby:
-        return [
-          _section(l10n.telehealthLobbyTitle, [
-            _item(l10n.demoAppointmentOneDoctor, l10n.appointmentTelehealth,
-                l10n.demoAppointmentOneDate,
-            ),
-          ]),
-          FilledButton.icon(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.telehealthConnected)),
-            ),
-            icon: const Icon(Icons.video_call_outlined),
-            label: Text(l10n.telehealthJoin),
-          ),
-        ];
-      case Routes.doctorPatients:
-      case Routes.adminPatients:
-        return [
-          _section(l10n.patientsTitle, [
-            _item(l10n.demoPatientOne, l10n.patientNoLastVisit, l10n.demoPatientDetails),
-            _item(l10n.demoPatientTwo, l10n.patientNoLastVisit, l10n.demoPatientDetails),
-            _item(l10n.demoPatientThree, l10n.patientNoLastVisit, l10n.demoPatientDetails),
-          ]),
-        ];
-      case Routes.doctors:
-        return [
-          _section(l10n.doctorsTitle, [
-            _item(l10n.demoDoctorOne, l10n.demoServiceOne, l10n.demoDoctorDetails),
-            _item(l10n.demoDoctorTwo, l10n.demoServiceTwo, l10n.demoDoctorDetails),
-            _item(l10n.demoDoctorThree, l10n.demoServiceThree, l10n.demoDoctorDetails),
-          ]),
-        ];
-      case Routes.clinics:
-        return [
-          _section(l10n.clinicsTitle, [
-            _item(l10n.demoClinicOne, l10n.demoServiceOne, l10n.demoClinicDetails),
-            _item(l10n.demoClinicTwo, l10n.demoServiceTwo, l10n.demoClinicDetails),
-          ]),
-        ];
-      case Routes.consultations:
-        return [
-          _section(l10n.consultationsTitle, [
-            _item(l10n.demoConsultationOne, l10n.demoPatientOne, l10n.demoConsultationDetails),
-            _item(l10n.demoConsultationTwo, l10n.demoPatientTwo, l10n.demoConsultationDetails),
-          ]),
-          FilledButton.icon(
-            onPressed: completed ? null : () => setState(() => completed = true),
-            icon: const Icon(Icons.check_circle_outline),
-            label: Text(
-              completed ? l10n.statusCompleted : l10n.demoActionComplete,
-            ),
-          ),
-        ];
-      case Routes.prescriptions:
-        return [
-          _section(l10n.prescriptionsTitle, [
-            _item(l10n.demoPrescriptionOne, l10n.demoPatientOne, l10n.demoPrescriptionDetails),
-            _item(l10n.demoPrescriptionTwo, l10n.demoPatientTwo, l10n.demoPrescriptionDetails),
-          ]),
-          FilledButton.icon(
-            onPressed: signed ? null : () => setState(() => signed = true),
-            icon: const Icon(Icons.draw_outlined),
-            label: Text(
-              signed ? l10n.statusCompleted : l10n.demoActionSign,
-            ),
-          ),
-        ];
-      case Routes.billing:
-        return [
           _section(l10n.adminBilling, [
-            _item(l10n.demoBillingInvoice, l10n.demoBillingAmount, l10n.demoBillingPaid,
+            _item(
+              l10n.demoBillingInvoice,
+              l10n.demoBillingAmount,
+              l10n.demoBillingPaid,
             ),
           ]),
           FilledButton.icon(
@@ -363,12 +245,9 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
             icon: const Icon(Icons.payments_outlined),
             label: Text(paid ? l10n.demoBillingPaid : l10n.demoActionPay),
           ),
-        ];
-      default:
-        return [_section(widget.title, [
-          _item(widget.title, l10n.demoWorkflowReady, widget.route),
-        ]),];
-    }
+        ],
+      ),
+    );
   }
 
   Widget _section(String title, List<Widget> children) => Column(
