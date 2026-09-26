@@ -367,7 +367,7 @@ class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
       default:
         return [_section(widget.title, [
           _item(widget.title, l10n.demoWorkflowReady, widget.route),
-        ])];
+        ]),];
     }
   }
 
