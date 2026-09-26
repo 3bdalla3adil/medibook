@@ -5,6 +5,7 @@ abstract final class Routes {
   static const forbidden = '/forbidden';
 
   static const dashboard = '/';
+  static const demo = '/demo';
   static const appointments = '/appointments';
   static const bookAppointment = '/appointments/book';
   static const services = '/services';
