@@ -673,3 +673,21 @@ class MediBookApi(http.Controller):
             recs=request.env["medibook.audit.entry"].sudo().search(domain,limit=200)
             return self._json([{"event_id":x.event_id,"actor_id":str(x.actor_id.id),"organization_id":str(x.organization_id.id),"action":x.action,"entity_type":x.entity_type,"entity_id":x.entity_id,"timestamp":x.timestamp.isoformat()+"Z","outcome":x.outcome,"correlation_id":x.correlation_id} for x in recs])
         except AccessDenied:return self._error("unauthorized",401)
+
+
+    @http.route("/doctors/<int:doctor_id>/availability",type="http",auth="none",methods=["GET","POST"],csrf=False)
+    def doctor_availability(self,doctor_id,**kw):
+        try:
+            user=self._require_user(); doctor=request.env["medibook.practitioner"].sudo().browse(doctor_id); org=self._org(user)
+            if not doctor.exists() or doctor.organization_id.id!=org.id:return self._error("not_found",404)
+            Schedule=request.env["medibook.schedule"].sudo()
+            if request.httprequest.method=="GET":
+                recs=Schedule.search([("doctor_id","=",doctor.id),("active","=",True)])
+                return self._json([{"id":str(x.id),"doctor_id":str(doctor.id),"clinic_id":str(x.clinic_id.id),"weekday":x.weekday,"start_time":x.start_time,"end_time":x.end_time} for x in recs])
+            if not self._admin_allowed(user):return self._error("forbidden",403)
+            body=self._body()
+            rec=Schedule.create({"name":body.get("name") or doctor.name,"doctor_id":doctor.id,"clinic_id":int(body["clinic_id"]),"weekday":int(body["weekday"]),"start_time":float(body["start_time"]),"end_time":float(body["end_time"])})
+            self._audit("doctor_schedule_created","schedule",rec.id)
+            return self._json({"id":str(rec.id),"doctor_id":str(doctor.id),"clinic_id":str(rec.clinic_id.id),"weekday":rec.weekday,"start_time":rec.start_time,"end_time":rec.end_time},201)
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,KeyError,ValueError) as e:return self._error("validation_error",422,str(e))
