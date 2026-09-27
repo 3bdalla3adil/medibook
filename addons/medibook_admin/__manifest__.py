@@ -1,0 +1,1 @@
+{"name":"MediBook Admin","version":"19.0.1.0.0","depends":["medibook_billing","medibook_prescription"],"data":["security/ir.model.access.csv","views/admin_menus.xml"],"installable":true}
