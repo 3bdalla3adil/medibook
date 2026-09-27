@@ -80,7 +80,7 @@ class MediBookApi(http.Controller):
           ("manageOrganization","manageOrganization"),
         ]
         out=[]
-        groups=user.groups_id
+        groups=user.group_ids
         if groups.filtered(lambda g:g.id==request.env.ref("medibook_base.group_medibook_patient").id):
             out += ["viewOwnAppointments","bookAppointment","cancelOwnAppointment","viewOwnMedicalRecord","joinTelehealth"]
         if groups.filtered(lambda g:g.id==request.env.ref("medibook_base.group_medibook_doctor").id):
