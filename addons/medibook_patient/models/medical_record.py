@@ -1,4 +1,5 @@
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 class MediBookMedicalRecord(models.Model):
     _name="medibook.medical.record"
@@ -19,5 +20,5 @@ class MediBookMedicalRecord(models.Model):
     def write(self,vals):
         for rec in self:
             if rec.signed_at and any(k in vals for k in ("record_type","title","content","recorded_at","patient_id")):
-                raise models.UserError("Signed medical records are append-only; create a superseding record.")
+                raise UserError("Signed medical records are append-only; create a superseding record.")
         return super().write(vals)
