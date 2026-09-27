@@ -231,8 +231,12 @@ class MediBookApi(http.Controller):
             patient=request.env["medibook.patient"].sudo().sudo().search([("user_id","=",user.id)],limit=1)
             if not patient: return self._error("patient_profile_required",403)
             if not user.has_group("medibook_base.group_medibook_patient"): return self._error("forbidden",403)
+            existing=Model.search([("idempotency_key","=",idempotency_key)],limit=1) if idempotency_key else Model.browse()
+            if existing:
+                return self._json(self._appointment_json(existing))
             vals={
               "name":body.get("id") or str(uuid.uuid4()),
+              "idempotency_key":idempotency_key,
               "clinic_id":int(body["clinic_id"]),"patient_id":patient.id,"doctor_id":int(body["doctor_id"]),
               "service_id":int(body["service_id"]),"starts_at":body["starts_at"],
               "duration_minutes":int(body.get("duration_minutes") or request.env["medibook.medical.service"].sudo().browse(int(body["service_id"])).duration_minutes),
