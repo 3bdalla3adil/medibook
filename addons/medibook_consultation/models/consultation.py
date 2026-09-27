@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 class MediBookConsultation(models.Model):
     _name="medibook.consultation"
@@ -23,7 +24,7 @@ class MediBookConsultation(models.Model):
 
     def action_start(self):
         self.ensure_one()
-        if self.state != "draft": raise models.UserError("Only draft consultations can start.")
+        if self.state != "draft": raise UserError("Only draft consultations can start.")
         self.write({"state":"in_progress","started_at":fields.Datetime.now()})
         self.appointment_id.write({"status":"in_consultation"})
         return True
