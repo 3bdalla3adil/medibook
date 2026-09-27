@@ -1,5 +1,8 @@
+import hashlib
 import json
 import uuid
+
+import requests
 
 from odoo import fields
 from datetime import datetime, timedelta
@@ -440,3 +443,128 @@ class MediBookApi(http.Controller):
             if not user.has_group("medibook_base.group_medibook_org_admin"):return self._error("forbidden",403)
             return self._json([])
         except AccessDenied:return self._error("unauthorized",401)
+
+
+    def _audit(self, action, entity_type, entity_id, outcome="success", correlation_id=None, metadata=None):
+        org=self._org(request.env.user)
+        if not org:return
+        request.env["medibook.audit.entry"].sudo().create({
+            "event_id":str(uuid.uuid4()),"actor_id":request.env.user.id,"organization_id":org.id,
+            "action":action,"entity_type":entity_type,"entity_id":str(entity_id),
+            "outcome":outcome,"correlation_id":correlation_id or str(uuid.uuid4()),
+            "metadata":metadata or {},
+        })
+
+    def _daily_request(self, path, payload):
+        key=request.env["ir.config_parameter"].sudo().get_param("medibook.daily_api_key")
+        domain=request.env["ir.config_parameter"].sudo().get_param("medibook.daily_domain")
+        if not key or not domain:
+            raise ValidationError("Daily telehealth is not configured.")
+        response=requests.post("https://api.daily.co/v1"+path,json=payload,headers={"Authorization":"Bearer "+key,"Content-Type":"application/json"},timeout=10)
+        if response.status_code >= 400:
+            raise ValidationError("Daily provider request failed.")
+        return response.json()
+
+    def _daily_token(self, room_name, user):
+        exp=int((datetime.utcnow()+timedelta(minutes=10)).timestamp())
+        data=self._daily_request("/meeting-tokens",{
+          "properties":{"room_name":room_name,"user_id":str(user.id),"user_name":user.name,"exp":exp,"eject_at_token_exp":True}
+        })
+        return data["token"],datetime.utcfromtimestamp(exp)
+
+    @http.route("/telehealth/sessions",type="http",auth="none",methods=["POST"],csrf=False)
+    def create_telehealth_session(self,**kw):
+        try:
+            user=self._require_user(); body=self._body()
+            appointment=request.env["medibook.appointment"].browse(int(body["appointment_id"]))
+            if not appointment.exists():return self._error("not_found",404)
+            patient=request.env["medibook.patient"].sudo().search([("user_id","=",user.id)],limit=1)
+            practitioner=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==practitioner.id)):
+                return self._error("forbidden",403)
+            if not appointment.is_telehealth:return self._error("not_telehealth",422)
+            if appointment.status not in ("scheduled","checked_in"):return self._error("invalid_state",409)
+            Session=request.env["medibook.telehealth.session"]
+            existing=Session.search([("appointment_id","=",appointment.id),("ended_at","=",False)],limit=1)
+            if existing:
+                return self._error("session_exists",409)
+            room=self._daily_request("/rooms",{"name":"medibook-"+str(appointment.id)+"-"+uuid.uuid4().hex[:12],"properties":{"privacy":"private","enable_prejoin_ui":False}}) 
+            room_name=room["name"]; room_url=room["url"]
+            token,expires=self._daily_token(room_name,user)
+            session=Session.create({"name":"TH-"+str(appointment.id),"appointment_id":appointment.id,"room_id":room_name,"room_url":room_url,"token_expires_at":expires,"join_token_hash":hashlib.sha256(token.encode()).hexdigest()})
+            self._audit("telehealth_session_created","appointment",appointment.id)
+            return self._json({"id":str(session.id),"appointment_id":str(appointment.id),"provider":"daily","join_token":token,"expires_at":expires.isoformat()+"Z","room_url":room_url,"room_id":room_name,"host_user_id":str(appointment.doctor_id.user_id.id) if appointment.doctor_id.user_id else None},201)
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,KeyError,ValueError) as e:return self._error("telehealth_error",422,str(e))
+
+    @http.route("/telehealth/sessions/<int:session_id>/join",type="http",auth="none",methods=["POST"],csrf=False)
+    def refresh_telehealth_token(self,session_id,**kw):
+        try:
+            user=self._require_user(); session=request.env["medibook.telehealth.session"].browse(session_id)
+            if not session.exists() or session.ended_at:return self._error("not_found",404)
+            appointment=session.appointment_id
+            patient=request.env["medibook.patient"].sudo().search([("user_id","=",user.id)],limit=1)
+            practitioner=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==practitioner.id)):return self._error("forbidden",403)
+            if session.token_consumed:return self._error("token_already_consumed",409)
+            token,expires=self._daily_token(session.room_id,user)
+            session.write({"token_expires_at":expires,"join_token_hash":hashlib.sha256(token.encode()).hexdigest()})
+            return self._json({"join_token":token,"expires_at":expires.isoformat()+"Z"})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/telehealth/sessions/<int:session_id>/joined",type="http",auth="none",methods=["POST"],csrf=False)
+    def mark_telehealth_joined(self,session_id,**kw):
+        try:
+            user=self._require_user(); session=request.env["medibook.telehealth.session"].browse(session_id)
+            if not session.exists() or session.ended_at:return self._error("not_found",404)
+            if session.joined_at:return self._error("already_joined",409)
+            appointment=session.appointment_id
+            patient=request.env["medibook.patient"].sudo().search([("user_id","=",user.id)],limit=1)
+            practitioner=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==practitioner.id)):return self._error("forbidden",403)
+            session.write({"joined_at":fields.Datetime.now(),"token_consumed":True})
+            if practitioner:
+                consultation=request.env["medibook.consultation"].search([("appointment_id","=",appointment.id)],limit=1)
+                if not consultation:consultation=request.env["medibook.consultation"].create({"name":"CONS-"+str(appointment.id),"appointment_id":appointment.id})
+                if consultation.state=="draft":consultation.action_start()
+            self._audit("telehealth_joined","telehealth.session",session.id)
+            return self._json({})
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,AccessError) as e:return self._error("telehealth_error",422,str(e))
+
+    @http.route("/telehealth/sessions/<int:session_id>/end",type="http",auth="none",methods=["POST"],csrf=False)
+    def end_telehealth(self,session_id,**kw):
+        try:
+            user=self._require_user(); session=request.env["medibook.telehealth.session"].browse(session_id)
+            if not session.exists():return self._error("not_found",404)
+            appointment=session.appointment_id
+            patient=request.env["medibook.patient"].sudo().search([("user_id","=",user.id)],limit=1)
+            practitioner=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==doctor.id if False else practitioner and appointment.doctor_id.id==practitioner.id)):return self._error("forbidden",403)
+            session.write({"ended_at":fields.Datetime.now()})
+            key=request.env["ir.config_parameter"].sudo().get_param("medibook.daily_api_key")
+            if key:
+                requests.delete("https://api.daily.co/v1/rooms/"+session.room_id,headers={"Authorization":"Bearer "+key},timeout=10)
+            self._audit("telehealth_ended","telehealth.session",session.id)
+            return self._json({})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/consultations/<int:consultation_id>/start",type="http",auth="none",methods=["POST"],csrf=False)
+    def start_consultation(self,consultation_id,**kw):
+        try:
+            user=self._require_user(); c=request.env["medibook.consultation"].browse(consultation_id)
+            doctor=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not doctor or c.doctor_id.id!=doctor.id:return self._error("forbidden",403)
+            c.action_start(); self._audit("consultation_started","consultation",c.id); return self._json(self._consultation_json(c))
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,AccessError) as e:return self._error("validation_error",422,str(e))
+
+    @http.route("/consultations/<int:consultation_id>/sign",type="http",auth="none",methods=["POST"],csrf=False)
+    def sign_consultation(self,consultation_id,**kw):
+        try:
+            user=self._require_user(); c=request.env["medibook.consultation"].browse(consultation_id)
+            doctor=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
+            if not doctor or c.doctor_id.id!=doctor.id:return self._error("forbidden",403)
+            c.action_sign(); self._audit("consultation_signed","consultation",c.id); return self._json(self._consultation_json(c))
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,AccessError) as e:return self._error("validation_error",422,str(e))
