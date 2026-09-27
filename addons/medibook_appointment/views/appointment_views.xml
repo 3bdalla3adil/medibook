@@ -1,0 +1,4 @@
+<odoo>
+ <record id="view_medibook_appointment_list" model="ir.ui.view"><field name="name">medibook.appointment.list</field><field name="model">medibook.appointment</field><field name="arch" type="xml"><list><field name="name"/><field name="patient_id"/><field name="doctor_id"/><field name="clinic_id"/><field name="starts_at"/><field name="status"/></list></field></record>
+ <record id="view_medibook_schedule_list" model="ir.ui.view"><field name="name">medibook.schedule.list</field><field name="model">medibook.schedule</field><field name="arch" type="xml"><list><field name="name"/><field name="doctor_id"/><field name="clinic_id"/><field name="weekday"/><field name="start_time"/><field name="end_time"/></list></field></record>
+</odoo>
