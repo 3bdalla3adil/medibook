@@ -1,0 +1,42 @@
+from odoo import api, fields, models
+
+class MediBookAppointment(models.Model):
+    _name="medibook.appointment"
+    _description="MediBook Appointment"
+    _rec_name="name"
+    _order="starts_at asc"
+
+    name=fields.Char(required=True,index=True)
+    clinic_id=fields.Many2one("medibook.clinic",required=True,index=True,ondelete="restrict")
+    patient_id=fields.Many2one("medibook.patient",required=True,index=True,ondelete="restrict")
+    doctor_id=fields.Many2one("medibook.practitioner",required=True,index=True,ondelete="restrict")
+    service_id=fields.Many2one("medibook.medical.service",required=True,index=True,ondelete="restrict")
+    starts_at=fields.Datetime(required=True,index=True)
+    duration_minutes=fields.Integer(required=True,default=30)
+    status=fields.Selection([
+      ("scheduled","Scheduled"),("checked_in","Checked In"),("in_consultation","In Consultation"),
+      ("completed","Completed"),("cancelled","Cancelled"),("no_show","No Show")
+    ],required=True,default="scheduled",index=True)
+    is_telehealth=fields.Boolean(default=False)
+    room_label=fields.Char()
+    cancellation_reason=fields.Text()
+    cancelled_at=fields.Datetime()
+    notes=fields.Text()
+    organization_id=fields.Many2one(related="clinic_id.organization_id",store=True,index=True)
+
+    _duration_check=models.Constraint("CHECK(duration_minutes > 0)","Appointment duration must be positive.")
+
+    @api.model
+    def _slot_domain(self, doctor_id, starts_at, duration_minutes, exclude_id=False):
+        end = fields.Datetime.to_datetime(starts_at) + __import__("datetime").timedelta(minutes=duration_minutes)
+        domain=[("doctor_id","=",doctor_id),("status","in",["scheduled","checked_in","in_consultation"]),
+                ("starts_at","<",end)]
+        if exclude_id: domain.append(("id","!=",exclude_id))
+        return domain
+
+    @api.constrains("doctor_id","starts_at","duration_minutes","status")
+    def _check_overlap(self):
+        for rec in self:
+            if rec.status in ("completed","cancelled","no_show"): continue
+            if self.search_count(self._slot_domain(rec.doctor_id.id,rec.starts_at,rec.duration_minutes,rec.id)):
+                raise models.ValidationError("The doctor already has an overlapping appointment.")
