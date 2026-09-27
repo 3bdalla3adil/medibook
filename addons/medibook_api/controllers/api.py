@@ -540,7 +540,7 @@ class MediBookApi(http.Controller):
             appointment=session.appointment_id
             patient=request.env["medibook.patient"].sudo().search([("user_id","=",user.id)],limit=1)
             practitioner=request.env["medibook.practitioner"].sudo().search([("user_id","=",user.id)],limit=1)
-            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==doctor.id if False else practitioner and appointment.doctor_id.id==practitioner.id)):return self._error("forbidden",403)
+            if not ((patient and appointment.patient_id.id==patient.id) or (practitioner and appointment.doctor_id.id==practitioner.id)):return self._error("forbidden",403)
             session.write({"ended_at":fields.Datetime.now()})
             key=request.env["ir.config_parameter"].sudo().get_param("medibook.daily_api_key")
             if key:
@@ -568,3 +568,109 @@ class MediBookApi(http.Controller):
             c.action_sign(); self._audit("consultation_signed","consultation",c.id); return self._json(self._consultation_json(c))
         except AccessDenied:return self._error("unauthorized",401)
         except (ValidationError,AccessError) as e:return self._error("validation_error",422,str(e))
+
+
+    def _admin_allowed(self,user):
+        return user.has_group("medibook_base.group_medibook_clinic_admin") or user.has_group("medibook_base.group_medibook_org_admin") or user.has_group("medibook_base.group_medibook_super_admin")
+
+    @http.route("/clinics",type="http",auth="none",methods=["POST"],csrf=False)
+    def create_clinic(self,**kw):
+        try:
+            user=self._require_user()
+            if not self._admin_allowed(user):return self._error("forbidden",403)
+            body=self._body(); org=self._org(user)
+            rec=request.env["medibook.clinic"].create({"name":body["name"],"code":body["code"],"organization_id":org.id,"timezone":body.get("timezone") or "UTC","address":body.get("address")})
+            self._audit("clinic_created","clinic",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"code":rec.code,"organization_id":str(org.id),"timezone":rec.timezone},201)
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,KeyError) as e:return self._error("validation_error",422,str(e))
+
+    @http.route("/clinics/<int:clinic_id>",type="http",auth="none",methods=["GET","PATCH"],csrf=False)
+    def clinic_detail(self,clinic_id,**kw):
+        try:
+            user=self._require_user(); rec=request.env["medibook.clinic"].browse(clinic_id); org=self._org(user)
+            if not rec.exists() or rec.organization_id.id!=org.id:return self._error("not_found",404)
+            if request.httprequest.method=="PATCH":
+                if not self._admin_allowed(user):return self._error("forbidden",403)
+                body=self._body(); allowed={k:body[k] for k in ("name","code","timezone","address","active") if k in body}; rec.write(allowed); self._audit("clinic_updated","clinic",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"code":rec.code,"organization_id":str(org.id),"timezone":rec.timezone,"address":rec.address,"active":rec.active})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/doctors",type="http",auth="none",methods=["POST"],csrf=False)
+    def create_doctor(self,**kw):
+        try:
+            user=self._require_user()
+            if not self._admin_allowed(user):return self._error("forbidden",403)
+            body=self._body(); org=self._org(user)
+            rec=request.env["medibook.practitioner"].create({"name":body["name"],"organization_id":org.id,"specialty":body.get("specialty"),"avatar_url":body.get("avatar_url"),"clinic_ids":[(6,0,[int(x) for x in body.get("clinic_ids",[])])]})
+            self._audit("doctor_created","practitioner",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"specialty":rec.specialty,"avatar_url":rec.avatar_url,"clinic_ids":[str(x.id) for x in rec.clinic_ids]},201)
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,KeyError,ValueError) as e:return self._error("validation_error",422,str(e))
+
+    @http.route("/doctors/<int:doctor_id>",type="http",auth="none",methods=["GET","PATCH"],csrf=False)
+    def doctor_detail(self,doctor_id,**kw):
+        try:
+            user=self._require_user(); rec=request.env["medibook.practitioner"].browse(doctor_id); org=self._org(user)
+            if not rec.exists() or rec.organization_id.id!=org.id:return self._error("not_found",404)
+            if request.httprequest.method=="PATCH":
+                if not self._admin_allowed(user):return self._error("forbidden",403)
+                body=self._body(); vals={k:body[k] for k in ("name","specialty","avatar_url","active") if k in body}
+                if "clinic_ids" in body:vals["clinic_ids"]=[(6,0,[int(x) for x in body["clinic_ids"]])]
+                rec.write(vals); self._audit("doctor_updated","practitioner",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"specialty":rec.specialty,"avatar_url":rec.avatar_url,"clinic_ids":[str(x.id) for x in rec.clinic_ids],"active":rec.active})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/medical-services",type="http",auth="none",methods=["POST"],csrf=False)
+    def create_service(self,**kw):
+        try:
+            user=self._require_user()
+            if not self._admin_allowed(user):return self._error("forbidden",403)
+            body=self._body(); org=self._org(user)
+            rec=request.env["medibook.medical.service"].create({"name":body["name"],"code":body["code"],"organization_id":org.id,"duration_minutes":int(body.get("duration_minutes",30)),"price":float(body.get("price",0)),"clinic_ids":[(6,0,[int(x) for x in body.get("clinic_ids",[])])]})
+            self._audit("service_created","medical.service",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"code":rec.code,"duration_minutes":rec.duration_minutes,"price":rec.price,"currency":rec.currency_id.name},201)
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,KeyError,ValueError) as e:return self._error("validation_error",422,str(e))
+
+    @http.route("/medical-services/<int:service_id>",type="http",auth="none",methods=["GET","PATCH"],csrf=False)
+    def service_detail(self,service_id,**kw):
+        try:
+            user=self._require_user(); rec=request.env["medibook.medical.service"].browse(service_id); org=self._org(user)
+            if not rec.exists() or rec.organization_id.id!=org.id:return self._error("not_found",404)
+            if request.httprequest.method=="PATCH":
+                if not self._admin_allowed(user):return self._error("forbidden",403)
+                body=self._body(); vals={k:body[k] for k in ("name","code","active") if k in body}
+                if "duration_minutes" in body:vals["duration_minutes"]=int(body["duration_minutes"])
+                if "price" in body:vals["price"]=float(body["price"])
+                if "clinic_ids" in body:vals["clinic_ids"]=[(6,0,[int(x) for x in body["clinic_ids"]])]
+                rec.write(vals); self._audit("service_updated","medical.service",rec.id)
+            return self._json({"id":str(rec.id),"name":rec.name,"code":rec.code,"duration_minutes":rec.duration_minutes,"price":rec.price,"currency":rec.currency_id.name,"active":rec.active})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/reports",type="http",auth="none",methods=["GET"],csrf=False)
+    def reports(self,**kw):
+        try:
+            user=self._require_user()
+            if not self._admin_allowed(user):return self._error("forbidden",403)
+            org=self._org(user); domain=[("organization_id","=",org.id)]
+            date_from=request.httprequest.args.get("from"); date_to=request.httprequest.args.get("to")
+            if date_from:domain.append(("starts_at",">=",date_from))
+            if date_to:domain.append(("starts_at","<=",date_to))
+            appointments=request.env["medibook.appointment"].search(domain)
+            by_status={s:len(appointments.filtered(lambda x:x.status==s)) for s in ("scheduled","checked_in","in_consultation","completed","cancelled","no_show")}
+            return self._json({"appointment_volume":len(appointments),"appointment_status":by_status})
+        except AccessDenied:return self._error("unauthorized",401)
+
+    @http.route("/audit",type="http",auth="none",methods=["GET"],csrf=False)
+    def audit_entries(self,**kw):
+        try:
+            user=self._require_user()
+            if not user.has_group("medibook_base.group_medibook_org_admin"):return self._error("forbidden",403)
+            org=self._org(user); domain=[("organization_id","=",org.id)]
+            entity_type=request.httprequest.args.get("entity_type"); entity_id=request.httprequest.args.get("entity_id")
+            if entity_type:domain.append(("entity_type","=",entity_type))
+            if entity_id:domain.append(("entity_id","=",entity_id))
+            recs=request.env["medibook.audit.entry"].search(domain,limit=200)
+            return self._json([{"event_id":x.event_id,"actor_id":str(x.actor_id.id),"organization_id":str(x.organization_id.id),"action":x.action,"entity_type":x.entity_type,"entity_id":x.entity_id,"timestamp":x.timestamp.isoformat()+"Z","outcome":x.outcome,"correlation_id":x.correlation_id} for x in recs])
+        except AccessDenied:return self._error("unauthorized",401)
