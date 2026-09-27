@@ -24,7 +24,7 @@ const realUser = AuthUser(
 
 void main() {
   test('demo identities enter the isolated demo route from auth entry points', () {
-    expect(DemoRoute.redirectFor(patient, '/'), isNull);
+    expect(DemoRoute.redirectFor(patient, '/'), DemoRoute.path);
     expect(DemoRoute.redirectFor(patient, '/dashboard'), DemoRoute.path);
     expect(DemoRoute.redirectFor(patient, '/login'), DemoRoute.path);
     expect(DemoRoute.redirectFor(patient, '/splash'), DemoRoute.path);
