@@ -10,7 +10,6 @@ class MediBookOrganization(models.Model):
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", required=True, default=lambda self: self.env.company, index=True)
     clinic_ids = fields.One2many("medibook.clinic", "organization_id")
-    patient_ids = fields.One2many("medibook.patient", "organization_id")
 
     _code_unique = models.Constraint(
         "UNIQUE(code)",
