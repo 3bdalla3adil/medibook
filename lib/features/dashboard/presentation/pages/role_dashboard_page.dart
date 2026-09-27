@@ -7,6 +7,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import 'patient_dashboard_page.dart';
 
 class RoleDashboardPage extends StatelessWidget {
   const RoleDashboardPage({super.key, this.user});
@@ -17,6 +18,15 @@ class RoleDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = user ?? context.read<AuthBloc>().state.user;
     if (currentUser == null) return const _DashboardAuthLoading();
+
+    final isDemo = currentUser.id.startsWith('demo-');
+
+    // Real patients keep the established patient dashboard, which is backed
+    // by the configured production repositories. Demo users use the local
+    // role dashboard so a demo APK never depends on a business API.
+    if (!isDemo && currentUser.isPatient) {
+      return const PatientDashboardPage();
+    }
 
     final role = currentUser.isPatient
         ? _DemoRole.patient
@@ -29,17 +39,22 @@ class RoleDashboardPage extends StatelessWidget {
                 : null;
 
     if (role == null) return const _UnknownRoleDashboard();
-    return _DemoRoleDashboard(user: currentUser, kind: role);
+    return _DemoRoleDashboard(user: currentUser, kind: role, demo: isDemo);
   }
 }
 
 enum _DemoRole { patient, doctor, admin }
 
 class _DemoRoleDashboard extends StatelessWidget {
-  const _DemoRoleDashboard({required this.user, required this.kind});
+  const _DemoRoleDashboard({
+    required this.user,
+    required this.kind,
+    required this.demo,
+  });
 
   final AuthUser user;
   final _DemoRole kind;
+  final bool demo;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +136,7 @@ class _DemoRoleDashboard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        if (item.route == Routes.billing) {
+                        if (demo && item.route == Routes.billing) {
                           Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (_) => _DemoWorkflowPage(title: item.title),
