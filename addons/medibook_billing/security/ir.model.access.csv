@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_invoice_staff,invoice staff,model_medibook_invoice,medibook_base.group_medibook_receptionist,1,0,0,0
+access_invoice_line_staff,invoice line staff,model_medibook_invoice_line,medibook_base.group_medibook_receptionist,1,0,0,0
+access_payment_staff,payment staff,model_medibook_payment,medibook_base.group_medibook_receptionist,1,0,0,0
+access_refund_staff,refund staff,model_medibook_refund,medibook_base.group_medibook_receptionist,1,0,0,0
+access_method_staff,payment method staff,model_medibook_payment_method,medibook_base.group_medibook_receptionist,1,0,0,0
