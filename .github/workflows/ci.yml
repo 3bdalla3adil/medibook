@@ -578,3 +578,32 @@ jobs:
           path: medibook-production-unsigned.ipa
           if-no-files-found: error
           retention-days: 30
+
+
+  odoo-tests:
+    name: Odoo 19 Backend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U odoo -d postgres"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Python syntax check
+        run: python3 -m compileall -q addons
+
+      - name: Run Odoo 19 module tests
+        run: |
+          docker run --rm             --network host             --add-host host.docker.internal:host-gateway             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0             odoo               --db_host=127.0.0.1               --db_port=5432               --db_user=odoo               --db_password=odoo               --database=medibook_test               --init=medibook_admin               --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons               --test-enable               --stop-after-init               --without-demo=all               --log-level=test
