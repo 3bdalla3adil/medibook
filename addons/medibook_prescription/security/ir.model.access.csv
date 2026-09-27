@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_medication_doctor,medication doctor,model_medibook_medication,medibook_base.group_medibook_doctor,1,1,1,0
+access_prescription_doctor,prescription doctor,model_medibook_prescription,medibook_base.group_medibook_doctor,1,1,1,0
+access_prescription_line_doctor,prescription line doctor,model_medibook_prescription_line,medibook_base.group_medibook_doctor,1,1,1,0
