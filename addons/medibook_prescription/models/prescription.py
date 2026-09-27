@@ -1,4 +1,5 @@
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 class MediBookMedication(models.Model):
     _name="medibook.medication"
@@ -23,7 +24,7 @@ class MediBookPrescription(models.Model):
 
     def action_issue(self):
         for rec in self:
-            if rec.state != "draft": raise models.UserError("Only draft prescriptions can be issued.")
+            if rec.state != "draft": raise UserError("Only draft prescriptions can be issued.")
             if rec.consultation_id.state != "in_progress": raise models.UserError("Prescription requires an active consultation.")
             if not rec.line_ids: raise models.UserError("Prescription must contain at least one medication.")
             rec.write({"state":"issued","issued_at":fields.Datetime.now()})
