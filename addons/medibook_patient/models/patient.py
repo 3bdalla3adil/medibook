@@ -12,5 +12,6 @@ class MediBookPatient(models.Model):
     preferred_locale = fields.Char()
     date_of_birth = fields.Date()
     active = fields.Boolean(default=True)
+    appointment_ids = fields.One2many("medibook.appointment", "patient_id")
 
     _user_unique = models.Constraint("UNIQUE(user_id)", "A user can be linked to only one patient.")
