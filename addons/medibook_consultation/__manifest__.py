@@ -1,1 +1,1 @@
-{"name":"MediBook Consultation","version":"19.0.1.0.0","depends":["medibook_appointment"],"data":["security/ir.model.access.csv","views/consultation_views.xml"],"installable":true}
+{"name":"MediBook Consultation","version":"19.0.1.0.0","depends":["medibook_appointment"],"data":["security/ir.model.access.csv","security/record_rules.xml","views/consultation_views.xml"],"installable":true}
