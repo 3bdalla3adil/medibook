@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_admin_org,admin organizations,model_medibook_organization,medibook_base.group_medibook_org_admin,1,1,1,1
+access_admin_clinic,admin clinics,model_medibook_clinic,medibook_base.group_medibook_clinic_admin,1,1,1,1
+access_admin_doctor,admin practitioners,model_medibook_practitioner,medibook_base.group_medibook_clinic_admin,1,1,1,1
+access_admin_service,admin services,model_medibook_medical_service,medibook_base.group_medibook_clinic_admin,1,1,1,1
