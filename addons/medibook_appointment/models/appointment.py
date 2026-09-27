@@ -23,6 +23,7 @@ class MediBookAppointment(models.Model):
     cancellation_reason=fields.Text()
     cancelled_at=fields.Datetime()
     notes=fields.Text()
+    version=fields.Integer(required=True,default=1,index=True)
     organization_id=fields.Many2one(related="clinic_id.organization_id",store=True,index=True)
 
     _duration_check=models.Constraint("CHECK(duration_minutes > 0)","Appointment duration must be positive.")
@@ -36,6 +37,14 @@ class MediBookAppointment(models.Model):
         return domain
 
     @api.constrains("doctor_id","starts_at","duration_minutes","status")
+    def write(self, vals):
+        for rec in self:
+            values=dict(vals)
+            if not self.env.context.get("_skip_version"):
+                values["version"]=rec.version+1
+            super(MediBookAppointment, rec).write(values)
+        return True
+
     def _check_overlap(self):
         for rec in self:
             if rec.status in ("completed","cancelled","no_show"): continue
