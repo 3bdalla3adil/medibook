@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_appointment_doctor,appointment doctor,model_medibook_appointment,medibook_base.group_medibook_doctor,1,1,1,0
+access_appointment_reception,appointment reception,model_medibook_appointment,medibook_base.group_medibook_receptionist,1,1,1,0
+access_schedule_doctor,schedule doctor,model_medibook_schedule,medibook_base.group_medibook_doctor,1,1,1,0
+access_schedule_admin,schedule admin,model_medibook_schedule,medibook_base.group_medibook_clinic_admin,1,1,1,1
