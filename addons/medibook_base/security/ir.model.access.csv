@@ -3,3 +3,4 @@ access_medibook_org_admin,medibook.organization admin,model_medibook_organizatio
 access_medibook_clinic_admin,medibook.clinic admin,model_medibook_clinic,medibook_base.group_medibook_clinic_admin,1,1,1,1
 access_medibook_practitioner_staff,medibook.practitioner staff,model_medibook_practitioner,medibook_base.group_medibook_receptionist,1,0,0,0
 access_medibook_service_staff,medibook.service staff,model_medibook_medical_service,medibook_base.group_medibook_receptionist,1,0,0,0
+access_audit_org_admin,audit organization admin,model_medibook_audit_entry,medibook_base.group_medibook_org_admin,1,0,0,0
