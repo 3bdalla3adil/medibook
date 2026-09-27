@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_consult_doctor,consultation doctor,model_medibook_consultation,medibook_base.group_medibook_doctor,1,1,1,0
+access_consult_admin,consultation admin,model_medibook_consultation,medibook_base.group_medibook_clinic_admin,1,1,1,0
