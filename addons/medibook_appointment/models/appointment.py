@@ -24,9 +24,11 @@ class MediBookAppointment(models.Model):
     cancelled_at=fields.Datetime()
     notes=fields.Text()
     version=fields.Integer(required=True,default=1,index=True)
+    idempotency_key=fields.Char(index=True,copy=False)
     organization_id=fields.Many2one(related="clinic_id.organization_id",store=True,index=True)
 
     _duration_check=models.Constraint("CHECK(duration_minutes > 0)","Appointment duration must be positive.")
+    _idempotency_unique=models.Constraint("UNIQUE(idempotency_key)","Idempotency key must be unique when provided.")
 
     @api.model
     def _slot_domain(self, doctor_id, starts_at, duration_minutes, exclude_id=False):
