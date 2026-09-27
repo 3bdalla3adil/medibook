@@ -179,7 +179,7 @@ class MediBookApi(http.Controller):
               "group_ids":[(6,0,[portal.id,patient_group.id])],
               "medibook_organization_id":org.id,
             })
-            request.session.authenticate(request.db,{"login":login,"password":password,"type":"password"})
+            request.session.authenticate(request.env,{"login":login,"password":password,"type":"password"})
             patient=request.env["medibook.patient"].sudo().sudo().create({
               "name":name,"user_id":user.id,"organization_id":org.id,"preferred_locale":"ar",
             })
