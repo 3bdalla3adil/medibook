@@ -5,6 +5,7 @@
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
+        "security/record_rules.xml",
         "views/medibook_base_views.xml",
     ],
     "installable": True,
