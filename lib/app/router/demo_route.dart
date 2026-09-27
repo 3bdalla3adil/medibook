@@ -1,4 +1,5 @@
 import '../../features/auth/domain/entities/auth_user.dart';
+import 'routes.dart';
 
 abstract final class DemoRoute {
   static const path = '/demo';
@@ -13,19 +14,12 @@ abstract final class DemoRoute {
   /// unreachable.
   static String? redirectFor(AuthUser user, String location) {
     if (!isDemoUser(user)) return null;
-    if (location == RoutesPlaceholder.dashboard ||
-        location == RoutesPlaceholder.splash ||
-        location == RoutesPlaceholder.login ||
-        location == RoutesPlaceholder.register) {
+    if (location == Routes.dashboard ||
+        location == Routes.splash ||
+        location == Routes.login ||
+        location == Routes.register) {
       return path;
     }
     return null;
   }
-}
-
-abstract final class RoutesPlaceholder {
-  static const dashboard = '/dashboard';
-  static const splash = '/splash';
-  static const login = '/login';
-  static const register = '/register';
 }
