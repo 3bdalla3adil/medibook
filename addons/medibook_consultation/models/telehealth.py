@@ -10,7 +10,7 @@ class MediBookTelehealthSession(models.Model):
     provider=fields.Selection([("daily","Daily")],required=True,default="daily")
     room_id=fields.Char(required=True,index=True)
     room_url=fields.Char(required=True)
-    join_token=fields.Char(required=True,copy=False)
+    join_token_hash=fields.Char(copy=False)
     token_expires_at=fields.Datetime(required=True,index=True)
     token_consumed=fields.Boolean(default=False,index=True)
     joined_at=fields.Datetime()
