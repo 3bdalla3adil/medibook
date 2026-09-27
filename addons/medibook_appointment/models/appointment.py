@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 class MediBookAppointment(models.Model):
     _name="medibook.appointment"
@@ -39,4 +40,4 @@ class MediBookAppointment(models.Model):
         for rec in self:
             if rec.status in ("completed","cancelled","no_show"): continue
             if self.search_count(self._slot_domain(rec.doctor_id.id,rec.starts_at,rec.duration_minutes,rec.id)):
-                raise models.ValidationError("The doctor already has an overlapping appointment.")
+                raise ValidationError("The doctor already has an overlapping appointment.")
