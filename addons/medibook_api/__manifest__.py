@@ -1,0 +1,1 @@
+{"name":"MediBook API","version":"19.0.1.0.0","depends":["medibook_base","medibook_patient","medibook_appointment","medibook_consultation","medibook_prescription","medibook_billing"],"data":["security/ir.model.access.csv"],"installable":true}
