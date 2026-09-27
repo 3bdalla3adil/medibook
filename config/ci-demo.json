@@ -1,6 +1,6 @@
 {
   "APP_ENV": "dev",
-  "API_BASE_URL": "https://demo.invalid",
+  "API_BASE_URL": "https://marasimmadina-ai-marasimmadina-app-eg-pos-font-size-38732646.dev.odoo.com",
   "API_VERSION": "/v1",
   "ENABLE_SSL_PINNING": "false",
   "ENABLE_DEVICE_INTEGRITY": "false",
