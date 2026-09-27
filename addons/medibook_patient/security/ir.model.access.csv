@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_patient_admin,patient admin,model_medibook_patient,medibook_base.group_medibook_org_admin,1,1,1,0
 access_patient_staff,patient staff,model_medibook_patient,medibook_base.group_medibook_receptionist,1,0,0,0
 access_history_doctor,history doctor,model_medibook_medical_history,medibook_base.group_medibook_doctor,1,1,1,0
+access_medical_record_doctor,medical record doctor,model_medibook_medical_record,medibook_base.group_medibook_doctor,1,1,1,0
+access_medical_record_admin,medical record admin,model_medibook_medical_record,medibook_base.group_medibook_org_admin,1,0,0,0
