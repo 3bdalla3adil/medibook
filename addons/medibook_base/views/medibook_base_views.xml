@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_medibook_organization_list" model="ir.ui.view">
+        <field name="name">medibook.organization.list</field>
+        <field name="model">medibook.organization</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="code"/><field name="company_id"/><field name="active"/></list></field>
+    </record>
+    <record id="view_medibook_clinic_list" model="ir.ui.view">
+        <field name="name">medibook.clinic.list</field>
+        <field name="model">medibook.clinic</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="code"/><field name="organization_id"/><field name="timezone"/></list></field>
+    </record>
+</odoo>
