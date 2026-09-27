@@ -436,13 +436,6 @@ class MediBookApi(http.Controller):
             return self._json({"id":str(rec.id),"name":rec.name,"amount_total":rec.amount_total,"amount_paid":rec.amount_paid,"state":rec.state,"currency":rec.currency_id.name})
         except AccessDenied:return self._error("unauthorized",401)
 
-    @http.route("/audit",type="http",auth="none",methods=["GET"],csrf=False)
-    def audit(self,**kw):
-        try:
-            user=self._require_user()
-            if not user.has_group("medibook_base.group_medibook_org_admin"):return self._error("forbidden",403)
-            return self._json([])
-        except AccessDenied:return self._error("unauthorized",401)
 
 
     def _audit(self, action, entity_type, entity_id, outcome="success", correlation_id=None, metadata=None):
