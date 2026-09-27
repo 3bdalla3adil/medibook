@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 class MediBookInvoice(models.Model):
     _name="medibook.invoice"
@@ -27,7 +27,8 @@ class MediBookInvoiceLine(models.Model):
     subtotal=fields.Monetary(compute="_compute_subtotal",store=True,currency_field="currency_id")
     @api.depends("quantity","unit_price")
     def _compute_subtotal(self):
-        for r in self:r.subtotal=r.quantity*r.unit_price
+        for r in self:
+            r.subtotal=r.quantity*r.unit_price
 
 class MediBookPayment(models.Model):
     _name="medibook.payment"
