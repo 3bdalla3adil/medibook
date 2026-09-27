@@ -1,9 +1,9 @@
 <odoo>
+ <record id="action_medibook_clinics" model="ir.actions.act_window"><field name="name">Clinics</field><field name="res_model">medibook.clinic</field><field name="view_mode">list,form</field></record>
+ <record id="action_medibook_doctors" model="ir.actions.act_window"><field name="name">Practitioners</field><field name="res_model">medibook.practitioner</field><field name="view_mode">list,form</field></record>
+ <record id="action_medibook_services" model="ir.actions.act_window"><field name="name">Medical Services</field><field name="res_model">medibook.medical.service</field><field name="view_mode">list,form</field></record>
  <menuitem id="menu_medibook_root" name="MediBook" groups="medibook_base.group_medibook_receptionist"/>
  <menuitem id="menu_medibook_clinics" name="Clinics" parent="menu_medibook_root" groups="medibook_base.group_medibook_clinic_admin" action="action_medibook_clinics"/>
  <menuitem id="menu_medibook_doctors" name="Practitioners" parent="menu_medibook_root" groups="medibook_base.group_medibook_clinic_admin" action="action_medibook_doctors"/>
  <menuitem id="menu_medibook_services" name="Medical Services" parent="menu_medibook_root" groups="medibook_base.group_medibook_clinic_admin" action="action_medibook_services"/>
- <record id="action_medibook_clinics" model="ir.actions.act_window"><field name="name">Clinics</field><field name="res_model">medibook.clinic</field><field name="view_mode">list,form</field></record>
- <record id="action_medibook_doctors" model="ir.actions.act_window"><field name="name">Practitioners</field><field name="res_model">medibook.practitioner</field><field name="view_mode">list,form</field></record>
- <record id="action_medibook_services" model="ir.actions.act_window"><field name="name">Medical Services</field><field name="res_model">medibook.medical.service</field><field name="view_mode">list,form</field></record>
 </odoo>
