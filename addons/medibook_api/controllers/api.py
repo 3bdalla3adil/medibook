@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 from odoo import http
 from odoo.exceptions import AccessDenied, AccessError, ValidationError
-from odoo.http import request
+from odoo.http import request, root
 
 
 class MediBookApi(http.Controller):
@@ -38,7 +38,7 @@ class MediBookApi(http.Controller):
         if auth.lower().startswith("bearer "):
             sid=auth[7:].strip()
             if sid:
-                session=request.root.session_store.get(sid)
+                session=root.session_store.get(sid)
                 if session and session.get("uid") and session.get("db")==request.db:
                     request.update_env(user=int(session["uid"]))
                     request.session=session
@@ -139,7 +139,7 @@ class MediBookApi(http.Controller):
             password=body.get("password") or ""
             if not login or not password:
                 return self._error("invalid_credentials",400)
-            request.session.authenticate(request.db,{"login":login,"password":password,"type":"password"})
+            request.session.authenticate(request.env,{"login":login,"password":password,"type":"password"})
             user=request.env.user
             now=datetime.utcnow()
             return self._json({
