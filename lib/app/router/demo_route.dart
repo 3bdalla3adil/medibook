@@ -14,7 +14,8 @@ abstract final class DemoRoute {
   /// unreachable.
   static String? redirectFor(AuthUser user, String location) {
     if (!isDemoUser(user)) return null;
-    if (location == Routes.dashboard ||
+    if (location == '/' ||
+        location == Routes.dashboard ||
         location == Routes.splash ||
         location == Routes.login ||
         location == Routes.register) {
