@@ -313,6 +313,8 @@ class MediBookApi(http.Controller):
             if not allowed:return self._error("forbidden",403)
             if request.httprequest.method=="GET":return self._json(self._appointment_json(rec))
             body=self._body()
+            if_match=request.httprequest.headers.get("If-Match")
+            if if_match and if_match.strip('"') != str(rec.version):return self._error("conflict",409)
             if "starts_at" in body:rec.write({"starts_at":body["starts_at"]})
             if "notes" in body:rec.write({"notes":body["notes"]})
             return self._json(self._appointment_json(rec))
