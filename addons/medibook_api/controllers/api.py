@@ -252,7 +252,7 @@ class MediBookApi(http.Controller):
           "starts_at":a.starts_at.isoformat()+"Z" if a.starts_at else None,
           "duration_minutes":a.duration_minutes,"status":a.status,"is_telehealth":a.is_telehealth,
           "room_label":a.room_label,"cancellation_reason":a.cancellation_reason,"cancelled_at":a.cancelled_at.isoformat()+"Z" if a.cancelled_at else None,
-          "notes":a.notes,"created_at":a.create_date.isoformat()+"Z","updated_at":a.write_date.isoformat()+"Z","version":a.write_date.timestamp() if a.write_date else 1,
+          "notes":a.notes,"created_at":a.create_date.isoformat()+"Z","updated_at":a.write_date.isoformat()+"Z","version":a.version,
         }
 
 
