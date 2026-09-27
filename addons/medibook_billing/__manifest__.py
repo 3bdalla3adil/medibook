@@ -1,0 +1,1 @@
+{"name":"MediBook Billing","version":"19.0.1.0.0","depends":["medibook_appointment","account"],"data":["security/ir.model.access.csv","views/billing_views.xml"],"installable":true}
