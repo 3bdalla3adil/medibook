@@ -106,7 +106,10 @@ Future<void> registerFeatures() async {
     ..registerLazySingleton<AuthRepository>(() {
       final config = getIt<AppConfig>();
       if (config.enableDemoAuth) {
-        return DemoAuthRepository(getIt<AuthRemoteDataSource>());
+        return DemoAuthRepository(
+          remote: getIt<AuthRemoteDataSource>(),
+          local: getIt<AuthLocalDataSource>(),
+        );
       }
       return AuthRepositoryImpl(remote: getIt(), local: getIt(), store: store);
     })
