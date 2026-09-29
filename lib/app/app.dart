@@ -27,7 +27,22 @@ class _MediBookAppState extends State<MediBookApp> {
     _authBloc = getIt<AuthBloc>();
     _router = AppRouter(_authBloc).router;
     _authBloc.add(const AuthBootstrapRequested());
+
+    // Safety net: if nothing resolves in 15s, force unauthenticated.
+    _bootstrapTimeout = Timer(const Duration(seconds: 15), () {
+      final s = _authBloc.state;
+      if (s is AuthUnknown || s is AuthRestoring) {
+        _authBloc.add(const AuthSessionExpired());
+      }
+    });
   }
+
+  @override
+  void dispose() {
+    _bootstrapTimeout?.cancel();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {

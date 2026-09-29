@@ -4,28 +4,19 @@ class Doctor extends Equatable {
   const Doctor({
     required this.id,
     required this.displayName,
-    required this.specialization,
-    required this.licenseNumber,
-    required this.bio,
-    required this.avatarUrl,
-    required this.clinicIds,
-    required this.serviceIds,
-    required this.languages,
+    this.specialization,
+    this.avatarUrl,
+    this.bio,
+    this.languages = const {},
   });
 
   final String id;
   final String displayName;
-  final String specialization;
-  final String licenseNumber;
-  final String bio;
+  final String? specialization;
   final String? avatarUrl;
-  final List<String> clinicIds;
-  final List<String> serviceIds;
-  final List<String> languages;
+  final String? bio;
+  final Set<String> languages;
 
   @override
-  List<Object?> get props => [
-        id, displayName, specialization, licenseNumber, bio,
-        avatarUrl, clinicIds, serviceIds, languages,
-      ];
+  List<Object?> get props => [id, displayName, specialization];
 }

@@ -1,4 +1,5 @@
 config/prod.json
+clinic-app-v4-firebase-adminsdk-fbsvc-0d44a23771.json
 *.keystore
 *.jks
 *.p12

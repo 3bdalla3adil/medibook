@@ -42,6 +42,12 @@ import '../../features/doctors/data/repositories/doctor_repository_impl.dart';
 import '../../features/doctors/domain/repositories/doctor_repository.dart';
 import '../../features/doctors/domain/usecases/get_doctors.dart';
 import '../../features/doctors/presentation/bloc/doctor_list_cubit.dart';
+import '../../features/doctors/data/datasources/doctor_remote_data_source.dart';
+import '../../features/doctors/data/repositories/doctor_repository_impl.dart';
+import '../../features/doctors/domain/repositories/doctor_repository.dart';
+import '../../features/doctors/domain/usecases/get_doctor_assignments.dart';
+import '../../features/doctors/domain/usecases/get_doctor_availability.dart';
+import '../../features/doctors/presentation/bloc/doctor_availability_bloc.dart';
 import '../../features/medical_records/data/datasources/medical_record_demo_data_source.dart';
 import '../../features/medical_records/data/datasources/medical_record_remote_data_source.dart';
 import '../../features/medical_records/data/repositories/medical_record_repository_impl.dart';
@@ -190,14 +196,26 @@ Future<void> registerFeatures() async {
     ..registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl(getIt()))
     ..registerFactory(() => GetServicesUseCase(getIt()))
     ..registerFactory(() => ServiceListCubit(getIt()))
+    // getIt
     ..registerLazySingleton<DoctorRemoteDataSource>(
-      () => getIt<AppConfig>().enableDemoAuth
-          ? const DemoDoctorRemoteDataSource()
-          : DioDoctorRemoteDataSource(dio),
+    () => DioDoctorRemoteDataSource(dio),
     )
-    ..registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(getIt()))
-    ..registerFactory(() => GetDoctorsUseCase(getIt()))
-    ..registerFactory(() => DoctorListCubit(getIt()))
+    ..registerLazySingleton<DoctorRepository>(
+    () => DoctorRepositoryImpl(remote: getIt()),
+    )
+    ..registerFactory(() => GetDoctorAssignmentsUseCase(getIt()))
+    ..registerFactory(() => GetDoctorAvailabilityUseCase(getIt()))
+    ..registerFactory(() => DoctorAvailabilityBloc(getAvailability: getIt(),
+    ),
+    );
+    // ..registerLazySingleton<DoctorRemoteDataSource>(
+    //   () => getIt<AppConfig>().enableDemoAuth
+    //       ? const DemoDoctorRemoteDataSource()
+    //       : DioDoctorRemoteDataSource(dio),
+    // )
+    // ..registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(getIt()))
+    // ..registerFactory(() => GetDoctorsUseCase(getIt()))
+    // ..registerFactory(() => DoctorListCubit(getIt()))
     ..registerLazySingleton<MedicalRecordRemoteDataSource>(
       () => getIt<AppConfig>().enableDemoAuth
           ? const DemoMedicalRecordRemoteDataSource()
