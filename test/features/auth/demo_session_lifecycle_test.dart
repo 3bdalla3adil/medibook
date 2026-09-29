@@ -1,10 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:medibook/core/security/token_store.dart';
+import 'package:medibook/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:medibook/features/auth/data/datasources/demo_auth_remote_data_source.dart';
 import 'package:medibook/features/auth/data/repositories/demo_auth_repository.dart';
 
+class _FakeLocal implements AuthLocalDataSource {
+  AuthTokens? tokens;
+  @override Future<AuthTokens?> readTokens() async => tokens;
+  @override Future<void> persistTokens(AuthTokens value) async => tokens = value;
+  @override Future<void> clear() async => tokens = null;
+}
+
+DemoAuthRepository _repository() => DemoAuthRepository(
+  remote: DemoAuthRemoteDataSource(),
+  local: _FakeLocal(),
+);
+
 void main() {
   test('demo session is restored while the repository stays alive', () async {
-    final repository = DemoAuthRepository(DemoAuthRemoteDataSource());
+    final repository = _repository();
 
     final login = await repository.login(
       email: DemoAuthRemoteDataSource.patientEmail,
