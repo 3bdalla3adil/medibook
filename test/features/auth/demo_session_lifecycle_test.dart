@@ -30,7 +30,7 @@ void main() {
   });
 
   test('a new demo repository cannot restore the previous session', () async {
-    final firstProcessRepository = DemoAuthRepository(DemoAuthRemoteDataSource());
+    final firstProcessRepository = _repository();
 
     await firstProcessRepository.login(
       email: DemoAuthRemoteDataSource.doctorEmail,
@@ -39,7 +39,7 @@ void main() {
 
     // This represents a fresh application process. Nothing is read from
     // Hive, secure storage, SharedPreferences, Firebase, or the API.
-    final newProcessRepository = DemoAuthRepository(DemoAuthRemoteDataSource());
+    final newProcessRepository = _repository();
 
     expect((await newProcessRepository.restoreSession()).isOk, isFalse);
   });
