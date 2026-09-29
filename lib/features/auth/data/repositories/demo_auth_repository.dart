@@ -5,21 +5,28 @@ import '../../../../core/error/result.dart';
 import '../../../../core/security/token_store.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
 
-/// In-memory authentication repository for the demo environment.
+/// Hybrid repository used when demo authentication is enabled.
 ///
-/// Demo login must not depend on platform secure-storage availability or a
-/// backend API. This keeps the demo path deterministic on a freshly installed
-/// APK while the normal repository remains responsible for real sessions.
+/// Demo identities stay deterministic and in-memory. Real Firebase users
+/// delegated by [DemoAuthRemoteDataSource] use the same secure token/session
+/// persistence as production authentication, so a real Firebase account
+/// survives app restarts.
 class DemoAuthRepository implements AuthRepository {
-  DemoAuthRepository(this._remote);
+  DemoAuthRepository({
+    required AuthRemoteDataSource remote,
+    required AuthLocalDataSource local,
+  })  : _remote = remote,
+        _local = local;
 
   final AuthRemoteDataSource _remote;
+  final AuthLocalDataSource _local;
   final _userController = StreamController<AuthUser?>.broadcast();
 
-  AuthTokens? _tokens;
-  AuthUser? _user;
+  AuthTokens? _demoTokens;
+  AuthUser? _demoUser;
 
   @override
   Stream<AuthUser?> watchUser() => _userController.stream;
@@ -29,10 +36,20 @@ class DemoAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final result = await guard(() => _remote.login(email: email, password: password));
-    return result.map((response) {
-      _tokens = response.tokens;
-      _user = response.user;
+    final result = await guard(
+      () => _remote.login(email: email, password: password),
+    );
+
+    return result.mapAsync((response) async {
+      final isDemo = response.tokens.accessToken.startsWith('demo-access-');
+
+      if (isDemo) {
+        _demoTokens = response.tokens;
+        _demoUser = response.user;
+      } else {
+        await _local.persistTokens(response.tokens);
+      }
+
       _userController.add(response.user);
       return Session(
         user: response.user,
@@ -54,9 +71,11 @@ class DemoAuthRepository implements AuthRepository {
         displayName: displayName,
       ),
     );
-    return result.map((response) {
-      _tokens = response.tokens;
-      _user = response.user;
+
+    return result.mapAsync((response) async {
+      // Registration in hybrid mode is Firebase-backed, never a demo
+      // identity. Persist the Firebase ID token securely for restoration.
+      await _local.persistTokens(response.tokens);
       _userController.add(response.user);
       return Session(
         user: response.user,
@@ -67,12 +86,30 @@ class DemoAuthRepository implements AuthRepository {
 
   @override
   Future<Result<Session>> restoreSession() async {
-    final tokens = _tokens;
-    final user = _user;
-    if (tokens == null || user == null || tokens.isAccessExpired(DateTime.now().toUtc())) {
-      return const Err(UnauthorizedFailure());
+    final demoTokens = _demoTokens;
+    final demoUser = _demoUser;
+    if (demoTokens != null &&
+        demoUser != null &&
+        !demoTokens.isAccessExpired(DateTime.now().toUtc())) {
+      _userController.add(demoUser);
+      return Ok(
+        Session(user: demoUser, expiresAt: demoTokens.accessExpiresAt),
+      );
     }
-    return Ok(Session(user: user, expiresAt: tokens.accessExpiresAt));
+
+    final tokens = await _local.readTokens();
+    if (tokens == null) return const Err(UnauthorizedFailure());
+
+    if (tokens.isRefreshExpired(DateTime.now().toUtc())) {
+      await _local.clear();
+      return const Err(UnauthorizedFailure(expired: true));
+    }
+
+    final result = await guard(() => _remote.me());
+    return result.map((user) {
+      _userController.add(user);
+      return Session(user: user, expiresAt: tokens.accessExpiresAt);
+    });
   }
 
   @override
@@ -80,8 +117,10 @@ class DemoAuthRepository implements AuthRepository {
     if (revokeOnServer) {
       await guard(() => _remote.logout());
     }
-    _tokens = null;
-    _user = null;
+
+    _demoTokens = null;
+    _demoUser = null;
+    await _local.clear();
     _userController.add(null);
     return const Ok(null);
   }
