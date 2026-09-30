@@ -31,6 +31,6 @@ void main() {
     );
 
     expect(slots, hasLength(4));
-    expect(slots.every((slot) => slot.toDomain().isAvailable), isTrue);
+    expect(slots.every((slot) => slot.toDomain().isBookable), isTrue);
   });
 }
