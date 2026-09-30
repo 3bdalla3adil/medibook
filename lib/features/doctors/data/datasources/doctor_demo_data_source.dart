@@ -8,7 +8,7 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
   const DemoDoctorRemoteDataSource();
 
   @override
-  Future<List<DoctorDto>> fetchDoctors({String? clinicId, String? serviceId}) async =>
+  Future<List<Map<String, dynamic>>> fetchDoctors({String? clinicId, String? serviceId}) async =>
       DemoSeed.doctors()
           .where((item) {
             final clinics = item.json['clinic_ids'] as List? ?? const [];
@@ -16,12 +16,13 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
             return (clinicId == null || clinics.map((e) => e.toString()).contains(clinicId)) &&
                 (serviceId == null || services.map((e) => e.toString()).contains(serviceId));
           })
+          .map((item) => item.json)
           .toList(growable: false);
 
   @override
-  Future<DoctorDto?> fetchDoctor(String id) async {
+  Future<Map<String, dynamic>?> fetchDoctor(String id) async {
     for (final item in DemoSeed.doctors()) {
-      if (item.json['id'].toString() == id) return item;
+      if (item.json['id'].toString() == id) return item.json;
     }
     return null;
   }
