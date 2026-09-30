@@ -40,7 +40,7 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
             '4': [{'start': 540, 'end': 780}],
             '5': [{'start': 540, 'end': 720}],
           },
-          'exceptions': const [],
+          'exceptions': const <Map<String, dynamic>>[],
           'is_active': true,
           'room_label': 'Demo Room 101',
         }),
