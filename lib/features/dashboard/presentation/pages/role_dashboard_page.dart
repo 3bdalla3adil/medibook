@@ -7,6 +7,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import 'demo_workspace_page.dart';
 import 'patient_dashboard_page.dart';
 
 class RoleDashboardPage extends StatelessWidget {
@@ -196,6 +197,23 @@ class _DemoRoleDashboard extends StatelessWidget {
         ],
     };
     return palette[index % palette.length];
+  }
+
+  DemoWorkspace? _workspaceForRoute(String route, _DemoRole role) {
+    if (route == Routes.bookAppointment) return DemoWorkspace.booking;
+    if (route == Routes.appointments) return DemoWorkspace.appointments;
+    if (route == Routes.services) return DemoWorkspace.services;
+    if (route == Routes.medicalRecords) return DemoWorkspace.records;
+    if (route == Routes.telehealthLobby) return DemoWorkspace.telehealth;
+    if (route == Routes.doctorPatients || route == Routes.adminPatients) {
+      return DemoWorkspace.patients;
+    }
+    if (route == Routes.consultations) return DemoWorkspace.consultations;
+    if (route == Routes.prescriptions) return DemoWorkspace.prescriptions;
+    if (route == Routes.doctors) return DemoWorkspace.doctors;
+    if (route == Routes.clinics) return DemoWorkspace.clinics;
+    if (route == Routes.billing) return DemoWorkspace.billing;
+    return null;
   }
 
   IconData _roleIcon(_DemoRole role) => switch (role) {
