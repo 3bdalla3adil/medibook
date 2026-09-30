@@ -26,8 +26,11 @@ class DoctorRepositoryImpl implements DoctorRepository {
               id: json['id'].toString(),
               displayName: json['display_name'] as String? ?? '',
               specialization: json['specialization'] as String?,
+              licenseNumber: json['license_number'] as String?,
               avatarUrl: json['avatar_url'] as String?,
               bio: json['bio'] as String?,
+              clinicIds: ((json['clinic_ids'] as List?) ?? const []).map((e) => e.toString()).toSet(),
+              serviceIds: ((json['service_ids'] as List?) ?? const []).map((e) => e.toString()).toSet(),
               languages: ((json['languages'] as List?) ?? const [])
                   .map((e) => e.toString())
                   .toSet(),
@@ -44,8 +47,11 @@ class DoctorRepositoryImpl implements DoctorRepository {
         id: json['id'].toString(),
         displayName: json['display_name'] as String? ?? '',
         specialization: json['specialization'] as String?,
+        licenseNumber: json['license_number'] as String?,
         avatarUrl: json['avatar_url'] as String?,
         bio: json['bio'] as String?,
+        clinicIds: ((json['clinic_ids'] as List?) ?? const []).map((e) => e.toString()).toSet(),
+        serviceIds: ((json['service_ids'] as List?) ?? const []).map((e) => e.toString()).toSet(),
       );
     });
   }
