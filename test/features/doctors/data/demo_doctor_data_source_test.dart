@@ -8,15 +8,15 @@ void main() {
     final doctors = await source.fetchDoctors();
 
     expect(doctors, hasLength(1));
-    expect(doctors.single.json['id'], 'demo-doctor-001');
-    expect(doctors.single.json['display_name'], 'Dr. Demo');
+    expect(doctors.single['id'], 'demo-doctor-001');
+    expect(doctors.single['display_name'], 'Dr. Demo');
   });
 
   test('demo doctor source returns profile and assignments', () async {
     final doctor = await source.fetchDoctor('demo-doctor-001');
     final assignments = await source.fetchAssignments('demo-doctor-001');
 
-    expect(doctor?.json['license_number'], 'DEMO-001');
+    expect(doctor?['license_number'], 'DEMO-001');
     expect(assignments, hasLength(1));
     expect(assignments.single.json['clinic_id'], 'demo-clinic-001');
   });
