@@ -213,7 +213,7 @@ class _DemoRoleDashboard extends StatelessWidget {
     return palette[index % palette.length];
   }
 
-  DemoWorkspace? _workspaceForRoute(String route, _DemoRole role) {
+  DemoWorkspace? _workspaceForRoute(String route) {
     if (route == Routes.bookAppointment) return DemoWorkspace.booking;
     if (route == Routes.appointments) return DemoWorkspace.appointments;
     if (route == Routes.services) return DemoWorkspace.services;
