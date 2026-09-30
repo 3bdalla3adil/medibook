@@ -41,6 +41,7 @@ import '../../features/doctors/data/datasources/doctor_remote_data_source.dart';
 import '../../features/doctors/data/repositories/doctor_repository_impl.dart';
 import '../../features/doctors/domain/repositories/doctor_repository.dart';
 import '../../features/doctors/domain/usecases/get_doctors.dart';
+import '../../features/doctors/domain/usecases/get_doctor.dart';
 import '../../features/doctors/presentation/bloc/doctor_list_cubit.dart';
 import '../../features/doctors/data/datasources/doctor_remote_data_source.dart';
 import '../../features/doctors/data/repositories/doctor_repository_impl.dart';
@@ -205,6 +206,7 @@ Future<void> registerFeatures() async {
       () => DoctorRepositoryImpl(remote: getIt()),
     )
     ..registerFactory(() => GetDoctorsUseCase(getIt()))
+    ..registerFactory(() => GetDoctorUseCase(getIt()))
     ..registerFactory(() => DoctorListCubit(getIt()))
     ..registerFactory(() => GetDoctorAssignmentsUseCase(getIt()))
     ..registerFactory(() => GetDoctorAvailabilityUseCase(getIt()))
