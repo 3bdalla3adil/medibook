@@ -58,9 +58,9 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
     return List<AvailabilitySlotDto>.generate(4, (index) {
       final slotStart = start.add(Duration(hours: index));
       return AvailabilitySlotDto({
-        'start': slotStart.toIso8601String(),
-        'end': slotStart.add(const Duration(minutes: 30)).toIso8601String(),
-        'is_available': true,
+        'starts_at': slotStart.toIso8601String(),
+        'duration_minutes': 30,
+        'is_bookable': true,
       });
     });
   }
