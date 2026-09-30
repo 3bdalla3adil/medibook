@@ -117,6 +117,9 @@
       }
     }
   },
+  "doctorDetailsTitle": "Doctor profile",
+  "doctorDetailsUnavailable": "Doctor profile is unavailable.",
+  "doctorLanguages": "Languages",
   "doctorsTitle": "Doctors",
   "doctorsEmpty": "No doctors are available.",
   "patientsTitle": "Patients",
