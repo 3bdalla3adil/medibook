@@ -1,5 +1,7 @@
 import '../../../../core/demo/demo_seed.dart';
+import '../models/doctor_assignment_dto.dart';
 import '../models/doctor_dto.dart';
+import '../models/availability_slot_dto.dart';
 import 'doctor_remote_data_source.dart';
 
 class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
@@ -25,12 +27,33 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchAvailability({
+  @override
+  Future<List<DoctorAssignmentDto>> fetchAssignments(String doctorId) async => [
+        DoctorAssignmentDto({
+          'id': 'demo-assignment-001',
+          'doctor_id': doctorId,
+          'clinic_id': DemoSeed.clinicId,
+          'service_ids': [DemoSeed.serviceId],
+          'weekly_availability': {
+            '1': [{'start': 540, 'end': 780}],
+            '2': [{'start': 540, 'end': 780}],
+            '3': [{'start': 540, 'end': 780}],
+            '4': [{'start': 540, 'end': 780}],
+            '5': [{'start': 540, 'end': 720}],
+          },
+          'exceptions': const [],
+          'is_active': true,
+          'room_label': 'Demo Room 101',
+        }),
+      ];
+
+  @override
+  Future<List<AvailabilitySlotDto>> fetchAvailability({
     required String doctorId,
+    required String clinicId,
+    required String serviceId,
     required DateTime from,
     required DateTime to,
-    String? clinicId,
-    String? serviceId,
   }) async {
     final start = DateTime.utc(from.year, from.month, from.day, 9);
     return List.generate(4, (index) {
