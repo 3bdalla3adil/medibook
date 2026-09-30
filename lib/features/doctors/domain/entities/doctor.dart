@@ -8,7 +8,6 @@ class Doctor extends Equatable {
     this.licenseNumber,
     this.avatarUrl,
     this.bio,
-    this.licenseNumber,
     this.languages = const {},
     this.clinicIds = const {},
     this.serviceIds = const {},
