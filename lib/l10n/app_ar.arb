@@ -117,6 +117,9 @@
       }
     }
   },
+  "doctorDetailsTitle": "ملف الطبيب",
+  "doctorDetailsUnavailable": "ملف الطبيب غير متاح.",
+  "doctorLanguages": "اللغات",
   "doctorsTitle": "الأطباء",
   "doctorsEmpty": "لا يوجد أطباء متاحون.",
   "patientsTitle": "المرضى",
