@@ -196,26 +196,21 @@ Future<void> registerFeatures() async {
     ..registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl(getIt()))
     ..registerFactory(() => GetServicesUseCase(getIt()))
     ..registerFactory(() => ServiceListCubit(getIt()))
-    // getIt
     ..registerLazySingleton<DoctorRemoteDataSource>(
-    () => DioDoctorRemoteDataSource(dio),
+      () => getIt<AppConfig>().enableDemoAuth
+          ? const DemoDoctorRemoteDataSource()
+          : DioDoctorRemoteDataSource(dio),
     )
     ..registerLazySingleton<DoctorRepository>(
-    () => DoctorRepositoryImpl(remote: getIt()),
+      () => DoctorRepositoryImpl(remote: getIt()),
     )
+    ..registerFactory(() => GetDoctorsUseCase(getIt()))
+    ..registerFactory(() => DoctorListCubit(getIt()))
     ..registerFactory(() => GetDoctorAssignmentsUseCase(getIt()))
     ..registerFactory(() => GetDoctorAvailabilityUseCase(getIt()))
-    ..registerFactory(() => DoctorAvailabilityBloc(getAvailability: getIt(),
-    ),
-    );
-    // ..registerLazySingleton<DoctorRemoteDataSource>(
-    //   () => getIt<AppConfig>().enableDemoAuth
-    //       ? const DemoDoctorRemoteDataSource()
-    //       : DioDoctorRemoteDataSource(dio),
-    // )
-    // ..registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(getIt()))
-    // ..registerFactory(() => GetDoctorsUseCase(getIt()))
-    // ..registerFactory(() => DoctorListCubit(getIt()))
+    ..registerFactory(
+      () => DoctorAvailabilityBloc(getAvailability: getIt()),
+    )
     ..registerLazySingleton<MedicalRecordRemoteDataSource>(
       () => getIt<AppConfig>().enableDemoAuth
           ? const DemoMedicalRecordRemoteDataSource()
