@@ -151,15 +151,20 @@ class _DemoRoleDashboard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        if (demo && item.route == Routes.billing) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => _DemoWorkflowPage(title: item.title),
-                            ),
-                          );
+                        if (!demo) {
+                          context.push(item.route);
                           return;
                         }
-                        context.push(item.route);
+                        final workspace = _workspaceForRoute(item.route);
+                        if (workspace == null) return;
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => DemoWorkspacePage(
+                              user: user,
+                              workspace: workspace,
+                            ),
+                          ),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -241,71 +246,6 @@ class _DemoRoleDashboard extends StatelessWidget {
         _DemoRole.doctor => l10n.roleDoctor,
         _DemoRole.admin => l10n.roleAdmin,
       };
-}
-
-class _DemoWorkflowPage extends StatefulWidget {
-  const _DemoWorkflowPage({required this.title});
-
-  final String title;
-
-  @override
-  State<_DemoWorkflowPage> createState() => _DemoWorkflowPageState();
-}
-
-class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
-  bool paid = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.payments_outlined, size: 32),
-              title: Text(widget.title),
-              subtitle: Text(l10n.demoWorkflowReady),
-            ),
-          ),
-          const SizedBox(height: 12),
-          _section(l10n.adminBilling, [
-            _item(
-              l10n.demoBillingInvoice,
-              l10n.demoBillingAmount,
-              l10n.demoBillingPaid,
-            ),
-          ]),
-          FilledButton.icon(
-            onPressed: paid ? null : () => setState(() => paid = true),
-            icon: const Icon(Icons.payments_outlined),
-            label: Text(paid ? l10n.demoBillingPaid : l10n.demoActionPay),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _section(String title, List<Widget> children) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
-          ...children,
-          const SizedBox(height: 12),
-        ],
-      );
-
-  Widget _item(String title, String subtitle, String detail) => Card(
-        child: ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.payments_outlined)),
-          title: Text(title),
-          subtitle: Text('$subtitle\n$detail'),
-          isThreeLine: true,
-        ),
-      );
 }
 
 class _DashboardAuthLoading extends StatelessWidget {
