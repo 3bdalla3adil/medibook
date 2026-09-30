@@ -62,7 +62,7 @@ class _DoctorListView extends StatelessWidget {
                           : null,
                     ),
                     title: Text(doctor.displayName),
-                    subtitle: Text(doctor.specialization),
+                    subtitle: Text(doctor.specialization ?? ''),
                   ),
                 );
               },
