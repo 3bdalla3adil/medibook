@@ -18,6 +18,6 @@ class DoctorDto {
         languages: _strings(json['languages']),
       );
 
-  static List<String> _strings(Object? value) =>
-      value is List ? value.map((e) => e.toString()).toList(growable: false) : const [];
+  static Set<String> _strings(Object? value) =>
+      value is List ? value.map((e) => e.toString()).toSet() : const <String>{};
 }
