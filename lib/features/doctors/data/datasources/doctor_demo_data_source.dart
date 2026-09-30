@@ -1,7 +1,7 @@
 import '../../../../core/demo/demo_seed.dart';
+import '../models/availability_slot_dto.dart';
 import '../models/doctor_assignment_dto.dart';
 import '../models/doctor_dto.dart';
-import '../models/availability_slot_dto.dart';
 import 'doctor_remote_data_source.dart';
 
 class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
@@ -26,7 +26,6 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
     return null;
   }
 
-  @override
   @override
   Future<List<DoctorAssignmentDto>> fetchAssignments(String doctorId) async => [
         DoctorAssignmentDto({
@@ -58,11 +57,11 @@ class DemoDoctorRemoteDataSource implements DoctorRemoteDataSource {
     final start = DateTime.utc(from.year, from.month, from.day, 9);
     return List.generate(4, (index) {
       final slotStart = start.add(Duration(hours: index));
-      return {
+      return AvailabilitySlotDto({
         'start': slotStart.toIso8601String(),
         'end': slotStart.add(const Duration(minutes: 30)).toIso8601String(),
         'is_available': true,
-      };
+      });
     });
   }
 }
