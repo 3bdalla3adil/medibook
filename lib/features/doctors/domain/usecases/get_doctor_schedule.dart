@@ -36,16 +36,16 @@ class GetDoctorScheduleUseCase {
       doctorId: doctorId,
       from: from,
       to: to,
-      clinicId: clinicId,
-      serviceId: serviceId,
+      clinicId: clinicId ?? '',
+      serviceId: serviceId ?? '',
     );
     return result.map(
       (items) => items.map((item) {
         return DoctorScheduleSlot(
-          start: DateTime.parse(item['start'].toString()).toUtc(),
-          end: DateTime.parse(item['end'].toString()).toUtc(),
-          isAvailable: item['is_available'] as bool? ?? false,
-          reason: item['reason']?.toString(),
+          start: item.startsAt,
+          end: item.endsAt,
+          isAvailable: item.isBookable,
+          reason: item.reason,
         );
       }).toList(growable: false),
     );
