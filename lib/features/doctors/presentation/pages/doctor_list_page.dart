@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../bloc/doctor_list_cubit.dart';
+import 'doctor_details_page.dart';
 
 class DoctorListPage extends StatelessWidget {
   const DoctorListPage({super.key});
@@ -47,6 +48,11 @@ class _DoctorListView extends StatelessWidget {
                 final doctor = state.items[index];
                 return Card(
                   child: ListTile(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => DoctorDetailsPage(doctorId: doctor.id),
+                      ),
+                    ),
                     leading: CircleAvatar(
                       backgroundImage: doctor.avatarUrl == null
                           ? null
