@@ -7,6 +7,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import 'demo_profile_page.dart';
 import 'demo_workspace_page.dart';
 import 'patient_dashboard_page.dart';
 
@@ -88,6 +89,19 @@ class _DemoRoleDashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
+          if (user.id.startsWith('demo-'))
+            IconButton(
+              tooltip: l10n.actionSettings,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => DemoProfilePage(
+                    user: user,
+                    role: _roleLabel(l10n, kind),
+                  ),
+                ),
+              ),
+              icon: const Icon(Icons.person_outline),
+            ),
           IconButton(
             tooltip: l10n.actionSignOut,
             onPressed: () =>
