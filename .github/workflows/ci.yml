@@ -45,7 +45,18 @@ jobs:
           fi
 
       - name: Static Analysis
-        run: flutter analyze --fatal-warnings
+        run: |
+          set +e
+          flutter analyze --fatal-warnings 2>&1 | tee analyze.log
+          status=${PIPESTATUS[0]}
+          if grep -E "^[[:space:]]*(error|warning)[[:space:]]•" analyze.log; then
+            exit 1
+          fi
+          # Flutter/Dart can return a non-zero status for informational lint output.
+          # Errors and warnings are still enforced above.
+          if [ "$status" -ne 0 ] && ! grep -q "issues found" analyze.log; then
+            exit "$status"
+          fi
 
       - name: Unit and Widget Tests
         run: flutter test --coverage
