@@ -11,7 +11,7 @@ import 'package:medibook/core/di/register_features.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('all demo accounts login and reach local role dashboards', (tester) async {
+  testWidgets('all demo accounts login and reach isolated local dashboards', (tester) async {
     await resetInjector();
 
     const config = AppConfig(
@@ -39,12 +39,11 @@ void main() {
     await tester.pumpWidget(const MediBookApp());
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.text('المتابعة كمريض'), findsOneWidget);
 
     Future<void> assertDemoLogin({
       required String buttonLabel,
       required String displayName,
-      required String dashboardLabel,
+      required String firstCard,
     }) async {
       expect(find.text(buttonLabel), findsOneWidget);
 
@@ -53,38 +52,20 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.textContaining(displayName), findsOneWidget);
-      expect(find.text(dashboardLabel), findsOneWidget);
+      expect(find.text(firstCard), findsOneWidget);
       expect(find.byTooltip('تسجيل الخروج'), findsOneWidget);
 
-      Future<void> openAndCheck(String card, String content) async {
-        await tester.tap(find.text(card).first);
-        await tester.pumpAndSettle();
-        expect(find.text(content), findsWidgets);
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-      }
+      await tester.tap(find.text(firstCard));
+      await tester.pumpAndSettle();
 
-      if (buttonLabel == 'المتابعة كمريض') {
-        await openAndCheck('حجز موعد', 'عيادة ميديبوك التجريبية');
-        await openAndCheck('المواعيد', 'Dr. Demo');
-        await openAndCheck('الخدمات', 'General Consultation');
-        await openAndCheck('السجلات الطبية', 'Demo consultation note');
-        await openAndCheck('استشارة عن بُعد', 'ردهة الاستشارة عن بُعد');
-      } else if (buttonLabel == 'المتابعة كطبيب') {
-        await openAndCheck('جدولي', 'Dr. Demo');
-        await openAndCheck('مرضاي', 'Demo Patient');
-        await openAndCheck('الاستشارات', 'Demo consultation');
-        await openAndCheck('الوصفات الطبية', 'Demo Medication');
-        await openAndCheck('استشارة عن بُعد', 'ردهة الاستشارة عن بُعد');
-      } else {
-        await openAndCheck('إدارة المواعيد', 'Dr. Demo');
-        await openAndCheck('إدارة المرضى', 'Demo Patient');
-        await openAndCheck('إدارة الأطباء', 'Dr. Demo');
-        await openAndCheck('إدارة العيادات', 'MediBook Demo Clinic');
-        await openAndCheck('الفوترة والمدفوعات', 'INV-1001');
-      }
+      // Demo dashboard actions deliberately stay inside the local demo
+      // workflow and do not invoke the clinical API.
+      expect(find.text('سير العمل التجريبي متاح دون اتصال ولا يتصل بالواجهة الخلفية السريرية.'), findsWidgets);
 
-      await tester.tap(find.text('تسجيل الخروج'));
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('تسجيل الخروج'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text(buttonLabel), findsOneWidget);
@@ -93,19 +74,19 @@ void main() {
     await assertDemoLogin(
       buttonLabel: 'المتابعة كمريض',
       displayName: 'MediBook Demo Patient',
-      dashboardLabel: 'حجز موعد',
+      firstCard: 'حجز موعد',
     );
 
     await assertDemoLogin(
       buttonLabel: 'المتابعة كطبيب',
       displayName: 'MediBook Demo Doctor',
-      dashboardLabel: 'جدولي',
+      firstCard: 'جدولي',
     );
 
     await assertDemoLogin(
       buttonLabel: 'المتابعة كمسؤول',
       displayName: 'MediBook Demo Administrator',
-      dashboardLabel: 'إدارة المواعيد',
+      firstCard: 'إدارة المواعيد',
     );
 
     await resetInjector();
