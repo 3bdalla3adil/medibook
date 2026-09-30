@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +22,7 @@ class MediBookApp extends StatefulWidget {
 class _MediBookAppState extends State<MediBookApp> {
   late final AuthBloc _authBloc;
   late final GoRouter _router;
+  Timer? _bootstrapTimeout;
 
   @override
   void initState() {
