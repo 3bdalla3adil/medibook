@@ -41,11 +41,7 @@ class DemoProfilePage extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.badge_outlined),
-                  title: Text(l10n.rolePatient == role ||
-                          l10n.roleDoctor == role ||
-                          l10n.roleAdmin == role
-                      ? role
-                      : role),
+                  title: Text(role),
                 ),
                 ListTile(
                   leading: const Icon(Icons.business_outlined),
