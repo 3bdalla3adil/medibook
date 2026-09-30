@@ -46,8 +46,6 @@ import '../../features/doctors/domain/usecases/get_doctor_availability.dart';
 import '../../features/doctors/domain/usecases/get_doctors.dart';
 import '../../features/doctors/presentation/bloc/doctor_availability_bloc.dart';
 import '../../features/doctors/presentation/bloc/doctor_list_cubit.dart';
-import '../../features/doctors/domain/usecases/get_doctor_assignments.dart';
-import '../../features/doctors/domain/usecases/get_doctor_availability.dart';
 import '../../features/medical_records/data/datasources/medical_record_demo_data_source.dart';
 import '../../features/medical_records/data/datasources/medical_record_remote_data_source.dart';
 import '../../features/medical_records/data/repositories/medical_record_repository_impl.dart';
