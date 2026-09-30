@@ -82,7 +82,7 @@ void main() {
     await tester.tap(find.text('اعتماد الوصفة'));
     await tester.pump();
 
-    expect(find.text('اعتماد الوصفة'), findsNothing);
+    expect(find.text('مكتمل'), findsNWidgets(2));
   });
 
   testWidgets('administrator can record a demo payment', (tester) async {
