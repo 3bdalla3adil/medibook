@@ -338,7 +338,7 @@ class MediBookApi(http.Controller):
                 if not ((doctor and rec.doctor_id.id==doctor.id) or user.has_group("medibook_base.group_medibook_receptionist") or self._admin_allowed(user)):
                     return self._error("forbidden",403)
                 body=self._body(); allowed_fields=("triage_bp_systolic","triage_bp_diastolic","triage_heart_rate","triage_temperature_c","triage_spo2","triage_weight_kg","triage_height_cm","triage_respiratory_rate","triage_pain_score","triage_note","triage_urgent")
-                rec.write({**{k:body[k] for k in allowed_fields if k in body},"triage_recorded":True}
+                rec.write({**{k: body[k] for k in allowed_fields if k in body}, "triage_recorded": True})
                 self._audit("appointment_triage_updated","appointment",rec.id,metadata={"urgent":bool(rec.triage_urgent)})
             return self._json({"blood_pressure_systolic":rec.triage_bp_systolic if rec.triage_recorded else None,"blood_pressure_diastolic":rec.triage_bp_diastolic if rec.triage_recorded else None,"heart_rate":rec.triage_heart_rate if rec.triage_recorded else None,"temperature_c":rec.triage_temperature_c if rec.triage_recorded else None,"spo2":rec.triage_spo2 if rec.triage_recorded else None,"weight_kg":rec.triage_weight_kg if rec.triage_recorded else None,"height_cm":rec.triage_height_cm if rec.triage_recorded else None,"respiratory_rate":rec.triage_respiratory_rate if rec.triage_recorded else None,"pain_score":rec.triage_pain_score if rec.triage_recorded else None,"note":rec.triage_note if rec.triage_recorded else None,"urgent":rec.triage_urgent})
         except AccessDenied:return self._error("unauthorized",401)
