@@ -197,5 +197,5 @@
   "demoConsultationDetails": "تفاصيل الاستشارة",
   "demoPrescriptionDetails": "تفاصيل الوصفة",
   "demoPaymentDetails": "تفاصيل الدفع"
-  ,"triageTitle":"الفرز والعلامات الحيوية","triageVitals":"العلامات الحيوية","bloodPressure":"ضغط الدم","heartRate":"معدل ضربات القلب","temperature":"الحرارة","spo2":"تشبع الأكسجين","weight":"الوزن","height":"الطول","respiratoryRate":"معدل التنفس","painScore":"درجة الألم","triageUrgent":"تنبيه سريري عاجل","triageNote":"ملاحظة الفرز","triageSaved":"تم حفظ معلومات الفرز.","actionSave":"حفظ"
+  ,"triageTitle":"الفرز والعلامات الحيوية","triageVitals":"العلامات الحيوية","bloodPressure":"ضغط الدم","heartRate":"معدل ضربات القلب","temperature":"الحرارة","spo2":"تشبع الأكسجين","respiratoryRate":"معدل التنفس","painScore":"درجة الألم","triageUrgent":"تنبيه سريري عاجل","triageNote":"ملاحظة الفرز","triageSaved":"تم حفظ معلومات الفرز."
 }
