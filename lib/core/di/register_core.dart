@@ -1,4 +1,5 @@
 import '../config/app_config.dart';
+import '../../app/settings/app_settings_controller.dart';
 import '../firebase/firebase_token_refresher.dart';
 import '../network/dio_client.dart';
 import '../network/network_info.dart';
@@ -61,6 +62,8 @@ Future<void> registerCore(
     );
 
   await getIt<LocalStore>().init();
+  getIt.registerSingleton<AppSettingsController>(AppSettingsController(getIt<LocalStore>()));
+  await getIt<AppSettingsController>().load();
   await getIt<SyncEngine>().start();
 
   getIt.registerLazySingleton<DioClient>(
