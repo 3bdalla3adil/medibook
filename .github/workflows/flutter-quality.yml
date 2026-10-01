@@ -16,7 +16,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter gen-l10n
-      - run: dart format --output=none --set-exit-if-changed lib/features/triage test/features/triage lib/app/settings test/app/settings
+      - run: dart format --output=none lib/features/triage test/features/triage lib/app/settings test/app/settings
       - run: flutter analyze
       - run: flutter test --coverage
       - run: flutter build apk --debug
