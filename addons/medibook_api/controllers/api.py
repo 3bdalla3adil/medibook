@@ -325,6 +325,25 @@ class MediBookApi(http.Controller):
         except AccessDenied:return self._error("unauthorized",401)
         except (ValidationError,AccessError) as e:return self._error("validation_error",422,str(e))
 
+    @http.route("/appointments/<int:appointment_id>/triage",type="http",auth="none",methods=["GET","PATCH"],csrf=False)
+    def appointment_triage(self,appointment_id,**kw):
+        try:
+            user=self._require_user(); rec=request.env["medibook.appointment"].sudo().browse(appointment_id)
+            if not rec.exists(): return self._error("not_found",404)
+            patient=request.env["medibook.patient"].sudo().sudo().search([("user_id","=",user.id)],limit=1)
+            doctor=request.env["medibook.practitioner"].sudo().sudo().search([("user_id","=",user.id)],limit=1)
+            allowed=(patient and rec.patient_id.id==patient.id) or (doctor and rec.doctor_id.id==doctor.id) or user.has_group("medibook_base.group_medibook_receptionist") or self._admin_allowed(user)
+            if not allowed:return self._error("forbidden",403)
+            if request.httprequest.method=="PATCH":
+                if not ((doctor and rec.doctor_id.id==doctor.id) or user.has_group("medibook_base.group_medibook_receptionist") or self._admin_allowed(user)):
+                    return self._error("forbidden",403)
+                body=self._body(); allowed_fields=("triage_bp_systolic","triage_bp_diastolic","triage_heart_rate","triage_temperature_c","triage_spo2","triage_weight_kg","triage_height_cm","triage_respiratory_rate","triage_pain_score","triage_note","triage_urgent")
+                rec.write({k:body[k] for k in allowed_fields if k in body})
+                self._audit("appointment_triage_updated","appointment",rec.id,metadata={"urgent":bool(rec.triage_urgent)})
+            return self._json({"blood_pressure_systolic":rec.triage_bp_systolic,"blood_pressure_diastolic":rec.triage_bp_diastolic,"heart_rate":rec.triage_heart_rate,"temperature_c":rec.triage_temperature_c,"spo2":rec.triage_spo2,"weight_kg":rec.triage_weight_kg,"height_cm":rec.triage_height_cm,"respiratory_rate":rec.triage_respiratory_rate,"pain_score":rec.triage_pain_score,"note":rec.triage_note,"urgent":rec.triage_urgent})
+        except AccessDenied:return self._error("unauthorized",401)
+        except (ValidationError,AccessError,ValueError) as e:return self._error("validation_error",422,str(e))
+
     @http.route("/appointments/<int:appointment_id>/cancel",type="http",auth="none",methods=["POST"],csrf=False)
     def cancel_appointment(self,appointment_id,**kw):
         try:
