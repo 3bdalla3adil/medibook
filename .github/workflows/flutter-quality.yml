@@ -42,4 +42,9 @@ jobs:
         run: python3 -m compileall -q addons
       - name: Odoo 19 module tests
         run: |
-          docker run --rm --network host --add-host host.docker.internal:host-gateway             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=127.0.0.1 --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
+          docker run --rm --network medibook-ci             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=medibook-db --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
+      - name: Cleanup PostgreSQL test container
+        if: always()
+        run: |
+          docker rm -f medibook-db || true
+          docker network rm medibook-ci || true
