@@ -23,6 +23,7 @@ import '../../features/services/presentation/pages/service_list_page.dart';
 import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
 import '../../features/triage/presentation/pages/triage_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
 import 'demo_route.dart';
@@ -101,10 +102,7 @@ class AppRouter {
             path: Routes.billing,
             builder: (_, __) => const _UnavailableClinicalRoutePage(),
           ),
-          GoRoute(
-            path: Routes.settings,
-            builder: (_, __) => const _UnavailableClinicalRoutePage(),
-          ),
+          GoRoute(path: Routes.settings, builder: (_, __) => const SettingsPage()),
         ],
         errorBuilder: (_, state) =>
             _ErrorPage(message: state.error?.toString() ?? 'Not found'),
