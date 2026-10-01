@@ -86,6 +86,10 @@ class AppRouter {
             ),
           ),
           GoRoute(
+            path: '/appointments/:id/triage',
+            builder: (_, state) => TriagePage(appointmentId: state.pathParameters['id']!),
+          ),
+          GoRoute(
             path: '/telehealth/:appointmentId',
             builder: (_, state) => BlocProvider(
               create: (_) => getIt<TelehealthSessionBloc>(),
