@@ -21,7 +21,7 @@ class TriageCubit extends Cubit<TriageState> {
   Future<void> load() async {
     emit(state.copyWith(status:TriageStatus.loading,clearFailure:true));
     final result=await _repository.getForAppointment(appointmentId);
-    if(result.isSuccess) {
+    if(result.isOk) {
       emit(TriageState(status:TriageStatus.ready,vitals:result.valueOrNull));
     } else {
       emit(state.copyWith(status:TriageStatus.error,failure:result.failureOrNull));
@@ -30,7 +30,7 @@ class TriageCubit extends Cubit<TriageState> {
   Future<bool> save(TriageVitals vitals) async {
     emit(state.copyWith(status:TriageStatus.saving,clearFailure:true));
     final result=await _repository.save(appointmentId,vitals);
-    if(result.isSuccess) {
+    if(result.isOk) {
       emit(TriageState(status:TriageStatus.ready,vitals:result.valueOrNull));
       return true;
     }
