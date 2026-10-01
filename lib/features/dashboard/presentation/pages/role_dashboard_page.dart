@@ -89,6 +89,11 @@ class _DemoRoleDashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
+          IconButton(
+            tooltip: l10n.actionSettings,
+            onPressed: () => context.push(Routes.settings),
+            icon: const Icon(Icons.settings_outlined),
+          ),
           if (user.id.startsWith('demo-'))
             IconButton(
               tooltip: l10n.actionSettings,
