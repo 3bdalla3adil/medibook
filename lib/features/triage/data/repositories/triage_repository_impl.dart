@@ -2,6 +2,7 @@ import '../../../../core/error/result.dart';
 import '../../domain/entities/triage_vitals.dart';
 import '../../domain/repositories/triage_repository.dart';
 import '../datasources/triage_remote_data_source.dart';
+import '../models/triage_vitals_dto.dart';
 
 class TriageRepositoryImpl implements TriageRepository {
   const TriageRepositoryImpl(this._remote);
