@@ -34,6 +34,7 @@ class MediBookAppointment(models.Model):
     triage_pain_score=fields.Integer()
     triage_note=fields.Text()
     triage_urgent=fields.Boolean(default=False)
+    triage_recorded=fields.Boolean(default=False)
     version=fields.Integer(required=True,default=1,index=True)
     idempotency_key=fields.Char(index=True,copy=False)
     organization_id=fields.Many2one(related="clinic_id.organization_id",store=True,index=True)
