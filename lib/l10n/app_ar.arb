@@ -234,5 +234,9 @@
   "settingsUsersRolesDescription": "إدارة حسابات الموظفين والصلاحيات",
   "settingsAuditLog": "سجل التدقيق",
   "settingsAuditLogDescription": "مراجعة النشاط الأمني والتشغيلي",
-  "settingsComingSoon": "هذه الميزة الإدارية سيتم ربطها بالواجهة الخلفية في المرحلة التالية."
+  "settingsComingSoon": "هذه الميزة الإدارية سيتم ربطها بالواجهة الخلفية في المرحلة التالية.",
+  "weight": "الوزن",
+  "height": "الطول",
+  "actionSave": "حفظ",
+  "actionClose": "إغلاق"
 }
