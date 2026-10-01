@@ -43,17 +43,29 @@ class SettingsPage extends StatelessWidget {
   Future<void> _chooseTheme(BuildContext context,AppSettingsController c) async {
     final l=AppLocalizations.of(context);
     final v=await showModalBottomSheet<ThemeMode>(context:context,builder:(_)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[
-      RadioListTile(value:ThemeMode.system,groupValue:c.themeMode,title:Text(l.settingsThemeSystem),onChanged:(v)=>Navigator.pop(context,v)),
-      RadioListTile(value:ThemeMode.light,groupValue:c.themeMode,title:Text(l.settingsThemeLight),onChanged:(v)=>Navigator.pop(context,v)),
-      RadioListTile(value:ThemeMode.dark,groupValue:c.themeMode,title:Text(l.settingsThemeDark),onChanged:(v)=>Navigator.pop(context,v)),
+      RadioGroup<ThemeMode>(
+        groupValue: c.themeMode,
+        onChanged: (v) => Navigator.pop(context, v),
+        child: Column(children: [
+          RadioListTile(value: ThemeMode.system, title: Text(l.settingsThemeSystem)),
+          RadioListTile(value: ThemeMode.light, title: Text(l.settingsThemeLight)),
+          RadioListTile(value: ThemeMode.dark, title: Text(l.settingsThemeDark)),
+        ]),
+      ),
     ])));
     if(v!=null) await c.setThemeMode(v);
   }
   Future<void> _chooseLanguage(BuildContext context,AppSettingsController c) async {
     final l=AppLocalizations.of(context);
     final v=await showModalBottomSheet<Locale>(context:context,builder:(_)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[
-      RadioListTile(value:const Locale('ar'),groupValue:c.locale,title:Text(l.languageArabic),onChanged:(v)=>Navigator.pop(context,v)),
-      RadioListTile(value:const Locale('en'),groupValue:c.locale,title:Text(l.languageEnglish),onChanged:(v)=>Navigator.pop(context,v)),
+      RadioGroup<Locale>(
+        groupValue: c.locale,
+        onChanged: (v) => Navigator.pop(context, v),
+        child: Column(children: [
+          RadioListTile(value: const Locale('ar'), title: Text(l.languageArabic)),
+          RadioListTile(value: const Locale('en'), title: Text(l.languageEnglish)),
+        ]),
+      ),
     ])));
     if(v!=null) await c.setLocale(v);
   }
