@@ -22,6 +22,7 @@ import '../../features/prescriptions/presentation/pages/prescription_list_page.d
 import '../../features/services/presentation/pages/service_list_page.dart';
 import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
 import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
+import '../../features/triage/presentation/pages/triage_page.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
 import 'demo_route.dart';
