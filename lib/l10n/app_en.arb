@@ -197,5 +197,5 @@
   "demoConsultationDetails": "Consultation details",
   "demoPrescriptionDetails": "Prescription details",
   "demoPaymentDetails": "Payment details"
-  ,"triageTitle":"Triage & Vitals","triageVitals":"Vitals","bloodPressure":"Blood pressure","heartRate":"Heart rate","temperature":"Temperature","spo2":"SpO₂","weight":"Weight","height":"Height","respiratoryRate":"Respiratory rate","painScore":"Pain score","triageUrgent":"Urgent clinical flag","triageNote":"Triage note","triageSaved":"Triage information saved.","actionSave":"Save"
+  ,"triageTitle":"Triage & Vitals","triageVitals":"Vitals","bloodPressure":"Blood pressure","heartRate":"Heart rate","temperature":"Temperature","spo2":"SpO₂","respiratoryRate":"Respiratory rate","painScore":"Pain score","triageUrgent":"Urgent clinical flag","triageNote":"Triage note","triageSaved":"Triage information saved."
 }
