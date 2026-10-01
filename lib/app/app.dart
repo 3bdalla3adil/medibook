@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/di/injector.dart';
+import 'settings/app_settings_controller.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../l10n/gen/app_localizations.dart';
 import 'router/app_router.dart';
@@ -23,11 +24,13 @@ class _MediBookAppState extends State<MediBookApp> {
   late final AuthBloc _authBloc;
   late final GoRouter _router;
   Timer? _bootstrapTimeout;
+  late final AppSettingsController _settings;
 
   @override
   void initState() {
     super.initState();
     _authBloc = getIt<AuthBloc>();
+    _settings = getIt<AppSettingsController>();
     _router = AppRouter(_authBloc).router;
     _authBloc.add(const AuthBootstrapRequested());
 
@@ -49,7 +52,9 @@ class _MediBookAppState extends State<MediBookApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
+    return AnimatedBuilder(
+      animation: _settings,
+      builder: (context, _) => BlocProvider.value(
       value: _authBloc,
       child: BlocListener<AuthBloc, AuthState>(
         bloc: _authBloc,
