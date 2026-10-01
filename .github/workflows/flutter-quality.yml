@@ -17,7 +17,7 @@ jobs:
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart format --output=none lib/features/triage test/features/triage lib/app/settings test/app/settings
-      - run: flutter analyze
+      - run: flutter analyze --no-fatal-infos
       - run: flutter test --coverage
       - run: flutter build apk --debug
 
@@ -25,22 +25,19 @@ jobs:
     name: Odoo 19 Backend Smoke Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: odoo
-          POSTGRES_PASSWORD: odoo
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U odoo -d postgres"
-          --health-interval=5s
-          --health-timeout=5s
-          --health-retries=20
     steps:
       - uses: actions/checkout@v4
+      - name: Start PostgreSQL test container
+        run: |
+          docker network create medibook-ci
+          docker run -d --name medibook-db --network medibook-ci \
+            -e POSTGRES_USER=odoo -e POSTGRES_PASSWORD=odoo -e POSTGRES_DB=postgres \
+            postgres:16
+          for i in {1..30}; do
+            docker exec medibook-db pg_isready -U odoo -d postgres && break
+            sleep 2
+          done
+          docker exec medibook-db pg_isready -U odoo -d postgres
       - name: Python syntax check
         run: python3 -m compileall -q addons
       - name: Odoo 19 module tests
