@@ -234,5 +234,9 @@
   "settingsUsersRolesDescription": "Manage staff accounts and permissions",
   "settingsAuditLog": "Audit log",
   "settingsAuditLogDescription": "Review security and operational activity",
-  "settingsComingSoon": "This administration feature is connected to the backend in the next implementation phase."
+  "settingsComingSoon": "This administration feature is connected to the backend in the next implementation phase.",
+  "weight": "Weight",
+  "height": "Height",
+  "actionSave": "Save",
+  "actionClose": "Close"
 }
