@@ -25,16 +25,7 @@ jobs:
         run: flutter create --platforms=android --org com.medibook .
       - name: Build Android debug APK
         run: flutter build apk --debug
-      - name: Persist generated Android platform
-        if: github.event_name == 'push'
-        run: |
-          if git status --porcelain -- android | grep -q .; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add android
-            git commit -m 'chore(android): regenerate Flutter platform'
-            git push
-          fi
+
 
   backend:
     name: Odoo 19 Backend Smoke Tests
