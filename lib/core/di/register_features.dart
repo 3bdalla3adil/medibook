@@ -264,6 +264,8 @@ Future<void> registerFeatures() async {
         clock: getIt(),
       ),
     )
+    ..registerLazySingleton<TriageRemoteDataSource>(() => DioTriageRemoteDataSource(dio))
+    ..registerLazySingleton<TriageRepository>(() => getIt<AppConfig>().enableDemoAuth ? DemoTriageRepository() : TriageRepositoryImpl(getIt()))
     ..registerFactory(
       () => DashboardBloc(
         getProfile: getIt(),
