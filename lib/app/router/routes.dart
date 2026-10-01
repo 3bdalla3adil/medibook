@@ -24,4 +24,5 @@ abstract final class Routes {
   static const doctorPatients = '/doctor/patients';
   static const adminPatients = '/admin/patients';
   static const billing = '/billing';
+  static String triage(String appointmentId) => '/appointments/$appointmentId/triage';
 }
