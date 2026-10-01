@@ -1,4 +1,6 @@
 name: Flutter Quality
+permissions:
+  contents: write
 on:
   push:
     branches: ["**"]
@@ -19,7 +21,20 @@ jobs:
       - run: dart format --output=none lib/features/triage test/features/triage lib/app/settings test/app/settings
       - run: flutter analyze --no-fatal-infos
       - run: flutter test --coverage
-      - run: flutter build apk --debug
+      - name: Ensure Android platform uses Flutter embedding v2
+        run: flutter create --platforms=android --org com.medibook .
+      - name: Build Android debug APK
+        run: flutter build apk --debug
+      - name: Persist generated Android platform
+        if: github.event_name == 'push'
+        run: |
+          if git status --porcelain -- android | grep -q .; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add android
+            git commit -m 'chore(android): regenerate Flutter platform'
+            git push
+          fi
 
   backend:
     name: Odoo 19 Backend Smoke Tests
@@ -42,7 +57,7 @@ jobs:
         run: python3 -m compileall -q addons
       - name: Odoo 19 module tests
         run: |
-          docker run --rm --network medibook-ci             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=medibook-db --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
+          docker run --rm --network medibook-ci             -e HOST=medibook-db -e PORT=5432 -e USER=odoo -e PASSWORD=odoo             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=medibook-db --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
       - name: Cleanup PostgreSQL test container
         if: always()
         run: |
