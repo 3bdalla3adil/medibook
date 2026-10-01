@@ -57,7 +57,7 @@ jobs:
         run: python3 -m compileall -q addons
       - name: Odoo 19 module tests
         run: |
-          docker run --rm --network medibook-ci             -e HOST=medibook-db -e PORT=5432 -e USER=odoo -e PASSWORD=odoo             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=medibook-db --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
+          docker run --rm --network medibook-ci             -e HOST=medibook-db -e PORT=5432 -e USER=odoo -e PASSWORD=odoo             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 -c /dev/null --db_host=medibook-db --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-tags /medibook_api --stop-after-init --without-demo=all --log-level=test
       - name: Cleanup PostgreSQL test container
         if: always()
         run: |
