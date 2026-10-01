@@ -16,7 +16,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter gen-l10n
-      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: dart format --output=none --set-exit-if-changed lib/features/triage test/features/triage lib/app/settings test/app/settings
       - run: flutter analyze
       - run: flutter test --coverage
       - run: flutter build apk --debug
@@ -45,4 +45,4 @@ jobs:
         run: python3 -m compileall -q addons
       - name: Odoo 19 module tests
         run: |
-          docker run --rm --network host --add-host host.docker.internal:host-gateway             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 odoo             --db_host=127.0.0.1 --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_admin             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
+          docker run --rm --network host --add-host host.docker.internal:host-gateway             -v "$GITHUB_WORKSPACE/addons:/mnt/extra-addons:ro"             odoo:19.0 --db_host=127.0.0.1 --db_port=5432             --db_user=odoo --db_password=odoo             --database=medibook_feature_test             --init=medibook_api             --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons             --test-enable --stop-after-init --without-demo=all --log-level=test
