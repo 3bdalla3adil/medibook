@@ -252,5 +252,9 @@
   "settingsBiometricsConfirm": "أكد هويتك لتفعيل الحماية بالمصادقة الحيوية.",
   "settingsSlotDuration": "مدة الموعد (بالدقائق)",
   "settingsAdvanceBooking": "مدة الحجز المسبق (بالأيام)",
-  "settingsCancellationNotice": "مهلة الإلغاء (بالساعات)"
+  "settingsCancellationNotice": "مهلة الإلغاء (بالساعات)",
+  "bookingClinic": "العيادة",
+  "bookingService": "الخدمة",
+  "bookingDoctor": "الطبيب",
+  "patientProfileUnavailable": "ملف المريض غير متاح."
 }
