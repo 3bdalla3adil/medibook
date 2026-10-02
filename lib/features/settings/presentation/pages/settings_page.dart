@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/settings/app_settings_controller.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../core/security/biometric_service.dart';
+import '../../../audit/presentation/pages/audit_log_page.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -52,7 +53,7 @@ class SettingsPage extends StatelessWidget {
             ]),
             _section(context,l.settingsAdministration,Icons.admin_panel_settings_outlined,[
               ListTile(leading:const Icon(Icons.people_alt_outlined),title:Text(l.settingsUsersRoles),subtitle:Text(l.settingsUsersRolesDescription),onTap:()=>_info(context,l.settingsUsersRoles,l.settingsComingSoon)),
-              ListTile(leading:const Icon(Icons.history_outlined),title:Text(l.settingsAuditLog),subtitle:Text(l.settingsAuditLogDescription),onTap:()=>_info(context,l.settingsAuditLog,l.settingsComingSoon)),
+              ListTile(leading:const Icon(Icons.history_outlined),title:Text(l.settingsAuditLog),subtitle:Text(l.settingsAuditLogDescription),onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const AuditLogPage()))),
             ]),
           ]),
         );
