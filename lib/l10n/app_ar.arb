@@ -247,5 +247,10 @@
   "billingPending": "معلّق",
   "billingRecordPayment": "تسجيل دفعة",
   "billingAmount": "المبلغ",
-  "billingInvalidAmount": "أدخل مبلغاً صحيحاً"
+  "billingInvalidAmount": "أدخل مبلغاً صحيحاً",
+  "settingsBiometricsUnavailable": "المصادقة الحيوية غير متاحة على هذا الجهاز.",
+  "settingsBiometricsConfirm": "أكد هويتك لتفعيل الحماية بالمصادقة الحيوية.",
+  "settingsSlotDuration": "مدة الموعد (بالدقائق)",
+  "settingsAdvanceBooking": "مدة الحجز المسبق (بالأيام)",
+  "settingsCancellationNotice": "مهلة الإلغاء (بالساعات)"
 }
