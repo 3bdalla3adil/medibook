@@ -1,6 +1,6 @@
 name: Flutter Quality
 permissions:
-  contents: write
+  contents: read
 on:
   push:
     branches: ["**"]
@@ -14,16 +14,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.47.2'
           channel: stable
           cache: true
       - run: flutter pub get
       - run: flutter gen-l10n
-      - name: Format Dart sources
-        run: dart format lib test
+      - name: Verify Dart formatting
+        run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze --no-fatal-infos
       - run: flutter test --coverage
-      - name: Ensure Android platform uses Flutter embedding v2
-        run: flutter create --platforms=android --org com.medibook .
       - name: Build Android debug APK
         run: flutter build apk --debug
 
@@ -36,18 +35,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.47.2'
           channel: stable
           cache: true
       - run: flutter pub get
       - name: Select supported Xcode toolchain
         run: |
-          sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
           xcodebuild -version
       - run: flutter gen-l10n
-      - name: Prepare iOS build workspace
-        run: mkdir -p build/ios/SourcePackages
-      - name: Generate iOS platform
-        run: flutter create --platforms=ios --org com.medibook .
+      - name: Verify iOS platform
+        run: test -f ios/Runner.xcodeproj/project.pbxproj && test -f ios/Runner/Info.plist
       - name: Build unsigned release IPA
         run: flutter build ipa --release --no-codesign
       - name: Package unsigned IPA from archive
