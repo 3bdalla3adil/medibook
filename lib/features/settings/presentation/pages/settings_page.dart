@@ -52,7 +52,7 @@ class SettingsPage extends StatelessWidget {
               SwitchListTile(secondary:const Icon(Icons.fingerprint),title:Text(l.settingsBiometrics),subtitle:Text(l.settingsBiometricsDescription),value:controller.biometricsEnabled,onChanged:(value)=>_setBiometrics(context,controller,value)),
             ]),
             _section(context,l.settingsAdministration,Icons.admin_panel_settings_outlined,[
-              ListTile(leading:const Icon(Icons.people_alt_outlined),title:Text(l.settingsUsersRoles),subtitle:Text(l.settingsUsersRolesDescription),onTap:()=>_info(context,l.settingsUsersRoles,l.settingsComingSoon)),
+              ListTile(leading:const Icon(Icons.people_alt_outlined),title:Text(l.settingsUsersRoles),subtitle:Text(l.settingsUsersRolesDescription),onTap:()=>_info(context,l.settingsUsersRoles,l.settingsUsersRolesManaged)),
               ListTile(leading:const Icon(Icons.history_outlined),title:Text(l.settingsAuditLog),subtitle:Text(l.settingsAuditLogDescription),onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const AuditLogPage()))),
             ]),
           ]),
