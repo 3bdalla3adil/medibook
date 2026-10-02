@@ -247,5 +247,10 @@
   "billingPending": "Pending",
   "billingRecordPayment": "Record payment",
   "billingAmount": "Amount",
-  "billingInvalidAmount": "Enter a valid amount"
+  "billingInvalidAmount": "Enter a valid amount",
+  "settingsBiometricsUnavailable": "Biometrics are not available on this device.",
+  "settingsBiometricsConfirm": "Confirm your identity to enable biometric protection.",
+  "settingsSlotDuration": "Appointment duration (minutes)",
+  "settingsAdvanceBooking": "Advance booking window (days)",
+  "settingsCancellationNotice": "Cancellation notice (hours)"
 }
