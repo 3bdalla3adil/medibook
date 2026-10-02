@@ -1,3 +1,5 @@
+import '../../features/audit/data/repositories/dio_audit_repository.dart';
+import '../../features/audit/domain/repositories/audit_repository.dart';
 import '../../features/appointments/data/datasources/appointment_demo_data_source.dart';
 import '../../features/appointments/data/datasources/appointment_local_data_source.dart';
 import '../../features/appointments/data/datasources/appointment_remote_data_source.dart';
@@ -100,6 +102,7 @@ Future<void> registerFeatures() async {
   final sync = getIt<SyncEngine>();
 
   getIt
+    ..registerLazySingleton<AuditRepository>(() => DioAuditRepository(dio))
     ..registerLazySingleton<AuthRemoteDataSource>(() {
       final config = getIt<AppConfig>();
       if (config.enableDemoAuth) {
