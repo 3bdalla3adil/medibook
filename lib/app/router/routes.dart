@@ -17,6 +17,7 @@ abstract final class Routes {
   static String appointmentDetails(String id) => '/appointments/$id';
 
   static const settings = '/settings';
+  static const auditLog = '/settings/audit-log';
   static const doctors = '/doctors';
   static const clinics = '/clinics';
   static const consultations = '/consultations';
