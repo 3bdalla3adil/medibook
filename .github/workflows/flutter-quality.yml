@@ -18,7 +18,8 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter gen-l10n
-      - run: dart format --output=none lib/features/triage test/features/triage lib/app/settings test/app/settings
+      - name: Format Dart sources
+        run: dart format lib test
       - run: flutter analyze --no-fatal-infos
       - run: flutter test --coverage
       - name: Ensure Android platform uses Flutter embedding v2
@@ -39,6 +40,8 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter gen-l10n
+      - name: Prepare iOS build workspace
+        run: mkdir -p build/ios/SourcePackages
       - name: Generate iOS platform
         run: flutter create --platforms=ios --org com.medibook .
       - name: Build unsigned release IPA
