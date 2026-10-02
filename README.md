@@ -21,6 +21,10 @@ Backend integrations remain behind domain repository contracts so REST, Odoo RES
 - Offline appointment cache and outbox synchronization
 - Patient profile data flow
 - Telehealth session abstraction
+- Patient-only registration plus expiring staff invitations
+- Persistent accessibility and appearance settings
+- Odoo-authorized WebSocket/WebRTC telehealth signaling
+- Medication schedules, dose logs, reminders, and pharmacy dispensing workflow
 - Arabic-first localization with English support
 - RTL-aware Material 3 interface
 - Secure token storage
@@ -69,3 +73,5 @@ Environment values are supplied with Dart defines. See config/staging.json and t
       l10n/         Arabic and English localization
 
 See docs/architecture.md for dependency rules and docs/feature-roadmap.md for the planned clinical modules.
+
+See [docs/target-implementation.md](docs/target-implementation.md) for the target-scope implementation map and validation limits.

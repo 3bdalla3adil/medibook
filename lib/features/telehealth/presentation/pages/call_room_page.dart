@@ -1,0 +1,3 @@
+import 'package:flutter/material.dart';
+import '../../../../l10n/gen/app_localizations.dart';
+class CallRoomPage extends StatelessWidget { const CallRoomPage({super.key}); @override Widget build(BuildContext c){final l=AppLocalizations.of(c);return Scaffold(appBar:AppBar(title:Text(l.telehealthRoom)),body:Center(child:Column(mainAxisSize:MainAxisSize.min,children:[const Icon(Icons.videocam_outlined,size:64),const SizedBox(height:16),Text(l.telehealthPermissionExplanation),const SizedBox(height:16),FilledButton.icon(onPressed:(){},icon:const Icon(Icons.settings),label:Text(l.telehealthPermissionDenied))])));}}

@@ -2,6 +2,8 @@ abstract final class Routes {
   static const splash = '/splash';
   static const login = '/login';
   static const register = '/register';
+  static const registerSuccess = '/register/success';
+  static const invitation = '/invitation/:token';
   static const forbidden = '/forbidden';
 
   static const dashboard = '/';
@@ -17,6 +19,14 @@ abstract final class Routes {
   static String appointmentDetails(String id) => '/appointments/$id';
 
   static const settings = '/settings';
+  static const settingsProfile = '/settings/profile';
+  static const settingsAppearance = '/settings/appearance';
+  static const settingsLanguage = '/settings/language';
+  static const settingsNotifications = '/settings/notifications';
+  static const settingsPrivacy = '/settings/privacy';
+  static const settingsData = '/settings/data';
+  static const settingsAbout = '/settings/about';
+  static const settingsSessions = '/settings/sessions';
   static const doctors = '/doctors';
   static const clinics = '/clinics';
   static const consultations = '/consultations';
@@ -24,4 +34,6 @@ abstract final class Routes {
   static const doctorPatients = '/doctor/patients';
   static const adminPatients = '/admin/patients';
   static const billing = '/billing';
+  static const medications = '/medications';
+  static const pharmacy = '/pharmacy';
 }

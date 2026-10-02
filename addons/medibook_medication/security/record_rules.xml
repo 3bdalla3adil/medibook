@@ -1,0 +1,6 @@
+<odoo><data noupdate="1">
+<record id="rule_medication_portal_deny" model="ir.rule"><field name="name">Medication portal deny</field><field name="model_id" ref="model_medibook_medication"/><field name="domain_force">[(0,'=',1)]</field><field name="groups" eval="[(4,ref('base.group_portal'))]"/></record>
+<record id="rule_patient_medication_portal_deny" model="ir.rule"><field name="name">Patient medication portal deny</field><field name="model_id" ref="model_medibook_patient_medication"/><field name="domain_force">[(0,'=',1)]</field><field name="groups" eval="[(4,ref('base.group_portal'))]"/></record>
+<record id="rule_patient_medication_own" model="ir.rule"><field name="name">Patient medication own</field><field name="model_id" ref="model_medibook_patient_medication"/><field name="domain_force">[('patient_id.user_id','=',user.id)]</field><field name="groups" eval="[(4,ref('medibook_base.group_medibook_patient'))]"/></record>
+<record id="rule_patient_medication_doctor" model="ir.rule"><field name="name">Patient medication care team</field><field name="model_id" ref="model_medibook_patient_medication"/><field name="domain_force">[('patient_id.appointment_ids.doctor_id.user_id','=',user.id)]</field><field name="groups" eval="[(4,ref('medibook_base.group_medibook_doctor'))]"/></record>
+</data></odoo>

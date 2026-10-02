@@ -78,6 +78,7 @@ class MediBookApi(http.Controller):
           ("viewBilling","viewBilling"),
           ("processPayment","processPayment"),
           ("manageOrganization","manageOrganization"),
+          ("managePharmacy","managePharmacy"),
         ]
         out=[]
         groups=user.group_ids
@@ -98,6 +99,8 @@ class MediBookApi(http.Controller):
             request.env.ref("medibook_base.group_medibook_super_admin").id,
         }):
             out += ["processPayment","manageOrganization","viewAnyMedicalRecord"]
+        if groups.filtered(lambda g:g.id == request.env.ref("medibook_base.group_medibook_pharmacist").id):
+            out += ["managePharmacy"]
         return sorted(set(out))
 
     def _roles(self,user):
@@ -109,6 +112,7 @@ class MediBookApi(http.Controller):
           "clinicAdmin":"medibook_base.group_medibook_clinic_admin",
           "orgAdmin":"medibook_base.group_medibook_org_admin",
           "superAdmin":"medibook_base.group_medibook_super_admin",
+          "pharmacist":"medibook_base.group_medibook_pharmacist",
         }
         for name,xmlid in refs.items():
             if user.has_group(xmlid): r.append(name)

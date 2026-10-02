@@ -10,7 +10,19 @@ import '../../features/appointments/presentation/pages/appointments_page.dart';
 import '../../features/appointments/presentation/pages/book_appointment_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
-import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/registration/presentation/bloc/registration_bloc.dart';
+import '../../features/registration/presentation/pages/accept_invitation_page.dart';
+import '../../features/registration/presentation/pages/register_page.dart';
+import '../../features/registration/presentation/pages/register_success_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/medications/presentation/pages/medication_detail_page.dart';
+import '../../features/medications/presentation/pages/medication_edit_page.dart';
+import '../../features/medications/presentation/pages/medication_list_page.dart';
+import '../../features/pharmacy/presentation/pages/dispense_history_page.dart';
+import '../../features/pharmacy/presentation/pages/pharmacy_dashboard_page.dart';
+import '../../features/pharmacy/presentation/pages/prescription_queue_page.dart';
+import '../../features/telehealth/presentation/pages/call_room_page.dart';
+import '../../features/telehealth/presentation/pages/telehealth_home_page.dart';
 import '../../features/authorization/presentation/pages/forbidden_page.dart';
 import '../../features/clinics/presentation/pages/clinic_list_page.dart';
 import '../../features/consultations/presentation/pages/consultation_list_page.dart';
@@ -43,7 +55,21 @@ class AppRouter {
         routes: [
           GoRoute(path: Routes.splash, builder: (_, __) => const _SplashPage()),
           GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
-          GoRoute(path: Routes.register, builder: (_, __) => const RegisterPage()),
+          GoRoute(
+            path: Routes.register,
+            builder: (_, __) => BlocProvider(
+              create: (_) => getIt<RegistrationBloc>(),
+              child: const RegisterPage(),
+            ),
+          ),
+          GoRoute(path: Routes.registerSuccess, builder: (_, __) => const RegisterSuccessPage()),
+          GoRoute(
+            path: Routes.invitation,
+            builder: (_, state) => BlocProvider(
+              create: (_) => getIt<RegistrationBloc>(),
+              child: AcceptInvitationPage(token: state.pathParameters['token']!),
+            ),
+          ),
           GoRoute(path: Routes.forbidden, builder: (_, __) => const ForbiddenPage()),
           GoRoute(
             path: Routes.demo,
@@ -92,18 +118,32 @@ class AppRouter {
               ),
             ),
           ),
+          GoRoute(path: '/telehealth/:appointmentId/room', builder: (_, __) => const CallRoomPage()),
+          GoRoute(path: '/telehealth/incoming/:sessionId', builder: (_, __) => const CallRoomPage()),
+          GoRoute(path: Routes.medications, builder: (_, __) => const MedicationListPage()),
+          GoRoute(path: '/medications/:id', builder: (_, state) => MedicationDetailPage(id: state.pathParameters['id']!)),
+          GoRoute(path: '/medications/:id/edit', builder: (_, __) => const MedicationEditPage()),
+          GoRoute(path: Routes.pharmacy, builder: (_, __) => const PharmacyDashboardPage()),
+          GoRoute(path: '/pharmacy/queue', builder: (_, __) => const PrescriptionQueuePage()),
+          GoRoute(path: '/pharmacy/dispense/:prescriptionId', builder: (_, __) => const PharmacyDashboardPage()),
+          GoRoute(path: '/pharmacy/history', builder: (_, __) => const DispenseHistoryPage()),
           GoRoute(
             path: Routes.telehealthLobby,
-            builder: (_, __) => const _UnavailableClinicalRoutePage(),
+            builder: (_, __) => const TelehealthHomePage(),
           ),
           GoRoute(
             path: Routes.billing,
             builder: (_, __) => const _UnavailableClinicalRoutePage(),
           ),
-          GoRoute(
-            path: Routes.settings,
-            builder: (_, __) => const _UnavailableClinicalRoutePage(),
-          ),
+          GoRoute(path: Routes.settings, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsProfile, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsAppearance, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsLanguage, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsNotifications, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsPrivacy, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsData, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsAbout, builder: (_, __) => const SettingsPage()),
+          GoRoute(path: Routes.settingsSessions, builder: (_, __) => const SettingsPage()),
         ],
         errorBuilder: (_, state) =>
             _ErrorPage(message: state.error?.toString() ?? 'Not found'),

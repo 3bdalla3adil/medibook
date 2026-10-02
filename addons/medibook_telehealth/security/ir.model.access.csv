@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_telehealth_session_doctor,telehealth session doctor,model_medibook_telehealth_session,medibook_base.group_medibook_doctor,1,1,1,0
+access_telehealth_session_patient,telehealth session patient,model_medibook_telehealth_session,medibook_base.group_medibook_patient,1,1,1,0
+access_telehealth_signal_doctor,telehealth signal doctor,model_medibook_telehealth_signal,medibook_base.group_medibook_doctor,1,1,1,0
+access_telehealth_signal_patient,telehealth signal patient,model_medibook_telehealth_signal,medibook_base.group_medibook_patient,1,1,1,0

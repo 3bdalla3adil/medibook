@@ -19,9 +19,11 @@ class AuthGuard {
     final location = state.matchedLocation;
     final isLoggingIn = location == Routes.login;
     final isRegistering = location == Routes.register;
+    final isRegisterSuccess = location == Routes.registerSuccess;
+    final isInvitation = location.startsWith('/invitation/');
     final isSplash = location == Routes.splash;
     final isForbidden = location == Routes.forbidden;
-    final isAuthEntry = isLoggingIn || isRegistering;
+    final isAuthEntry = isLoggingIn || isRegistering || isRegisterSuccess || isInvitation;
 
     // While login/registration is still running, keep the user on the
     // authentication screen. Previously AuthAuthenticating/AuthFailure fell
@@ -38,6 +40,7 @@ class AuthGuard {
     }
 
     if (isForbidden) return null;
+    if (isInvitation || isRegisterSuccess) return null;
 
     final user = authState.user;
     if (user != null) {
@@ -132,6 +135,20 @@ class AuthGuard {
           Permission.viewAnyMedicalRecord,
         },
       );
+    }
+
+    if (location == Routes.pharmacy || location.startsWith('/pharmacy/')) {
+      return const RouteRequirement(roles: {UserRole.pharmacist});
+    }
+
+    if (location == Routes.medications || location.startsWith('/medications/')) {
+      return const RouteRequirement(
+        permissions: {Permission.viewOwnMedicalRecord, Permission.viewAnyMedicalRecord},
+      );
+    }
+
+    if (location == Routes.settings || location.startsWith('/settings/')) {
+      return const RouteRequirement();
     }
 
     return null;

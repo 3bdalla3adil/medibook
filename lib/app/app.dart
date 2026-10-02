@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/di/injector.dart';
+import '../core/theme/theme_controller.dart';
+import '../core/theme/theme_preference.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../l10n/gen/app_localizations.dart';
 import 'router/app_router.dart';
@@ -22,6 +24,7 @@ class MediBookApp extends StatefulWidget {
 class _MediBookAppState extends State<MediBookApp> {
   late final AuthBloc _authBloc;
   late final GoRouter _router;
+  late final ThemeController _themeController;
   Timer? _bootstrapTimeout;
 
   @override
@@ -29,6 +32,7 @@ class _MediBookAppState extends State<MediBookApp> {
     super.initState();
     _authBloc = getIt<AuthBloc>();
     _router = AppRouter(_authBloc).router;
+    _themeController = getIt<ThemeController>()..load();
     _authBloc.add(const AuthBootstrapRequested());
 
     // Safety net: if nothing resolves in 15s, force unauthenticated.
@@ -43,6 +47,7 @@ class _MediBookAppState extends State<MediBookApp> {
   @override
   void dispose() {
     _bootstrapTimeout?.cancel();
+    _themeController.dispose();
     super.dispose();
   }
 
@@ -70,12 +75,18 @@ class _MediBookAppState extends State<MediBookApp> {
             _router.go(Routes.login);
           }
         },
-        child: MaterialApp.router(
+        child: AnimatedBuilder(
+          animation: _themeController,
+          builder: (context, _) => MaterialApp.router(
         title: 'MediBook',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
-        themeMode: ThemeMode.system,
+        themeMode: switch (_themeController.preference) {
+          ThemePreference.system => ThemeMode.system,
+          ThemePreference.light => ThemeMode.light,
+          ThemePreference.dark => ThemeMode.dark,
+        },
         routerConfig: _router,
         locale: const Locale('ar'),
         supportedLocales: AppLocalizations.supportedLocales,
@@ -92,12 +103,14 @@ class _MediBookAppState extends State<MediBookApp> {
               textScaler: media.textScaler.clamp(
                 minScaleFactor: 0.85,
                 maxScaleFactor: 1.6,
-              ),
+              ).scale(_themeController.textScale),
+              disableAnimations: media.disableAnimations || _themeController.reduceMotion,
             ),
             child: child!,
           );
         },
         ),
+          ),
       ),
     );
   }
