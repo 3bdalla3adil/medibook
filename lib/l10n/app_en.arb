@@ -257,5 +257,6 @@
   "bookingService": "Service",
   "bookingDoctor": "Doctor",
   "patientProfileUnavailable": "Patient profile is unavailable.",
-  "settingsUsersRolesManaged": "User roles and organization permissions are managed by the authorized backend."
+  "settingsUsersRolesManaged": "User roles and organization permissions are managed by the authorized backend.",
+  "telehealthAppointmentRequired": "Select an appointment before joining a telehealth session."
 }
