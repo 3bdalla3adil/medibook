@@ -101,7 +101,10 @@ class AppRouter {
           ),
           GoRoute(
             path: Routes.telehealthLobby,
-            builder: (_, __) => const TelehealthLobbyPage(appointmentId: ''),
+            builder: (_, __) => BlocProvider(
+              create: (_) => getIt<TelehealthSessionBloc>(),
+              child: const TelehealthLobbyPage(appointmentId: ''),
+            ),
           ),
           GoRoute(
             path: Routes.billing,
