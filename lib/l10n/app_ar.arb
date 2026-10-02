@@ -233,7 +233,7 @@
   "settingsUsersRoles": "المستخدمون والأدوار",
   "settingsUsersRolesDescription": "إدارة حسابات الموظفين والصلاحيات",
   "settingsAuditLog": "سجل التدقيق",
-  "settingsAuditLogDescription": "مراجعة النشاط الأمني والتشغيلي",
+  "settingsAuditLogDescription": "سجل تدقيق للقراءة فقط من الخادم المعتمد.",
   "settingsComingSoon": "هذه الميزة الإدارية سيتم ربطها بالواجهة الخلفية في المرحلة التالية.",
   "weight": "الوزن",
   "height": "الطول",
@@ -256,5 +256,6 @@
   "bookingClinic": "العيادة",
   "bookingService": "الخدمة",
   "bookingDoctor": "الطبيب",
-  "patientProfileUnavailable": "ملف المريض غير متاح."
+  "patientProfileUnavailable": "ملف المريض غير متاح.",
+  "settingsUsersRolesManaged": "تتم إدارة أدوار المستخدمين وصلاحيات المؤسسة من خلال الخادم المصرح به."
 }
