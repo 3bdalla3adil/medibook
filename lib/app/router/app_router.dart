@@ -21,6 +21,7 @@ import '../../features/patients/presentation/pages/patient_directory_page.dart';
 import '../../features/prescriptions/presentation/pages/prescription_list_page.dart';
 import '../../features/services/presentation/pages/service_list_page.dart';
 import '../../features/telehealth/presentation/bloc/telehealth_session_bloc.dart';
+import '../../features/billing/presentation/pages/billing_page.dart';
 import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
 import '../../features/triage/presentation/pages/triage_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
@@ -100,11 +101,11 @@ class AppRouter {
           ),
           GoRoute(
             path: Routes.telehealthLobby,
-            builder: (_, __) => const _UnavailableClinicalRoutePage(),
+            builder: (_, __) => const TelehealthLobbyPage(appointmentId: ''),
           ),
           GoRoute(
             path: Routes.billing,
-            builder: (_, __) => const _UnavailableClinicalRoutePage(),
+            builder: (_, __) => const BillingPage(),
           ),
           GoRoute(path: Routes.settings, builder: (_, __) => const SettingsPage()),
         ],
