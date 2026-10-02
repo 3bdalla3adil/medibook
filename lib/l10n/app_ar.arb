@@ -257,5 +257,6 @@
   "bookingService": "الخدمة",
   "bookingDoctor": "الطبيب",
   "patientProfileUnavailable": "ملف المريض غير متاح.",
-  "settingsUsersRolesManaged": "تتم إدارة أدوار المستخدمين وصلاحيات المؤسسة من خلال الخادم المصرح به."
+  "settingsUsersRolesManaged": "تتم إدارة أدوار المستخدمين وصلاحيات المؤسسة من خلال الخادم المصرح به.",
+  "telehealthAppointmentRequired": "اختر موعداً قبل الانضمام إلى جلسة الاستشارة عن بُعد."
 }
