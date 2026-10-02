@@ -238,5 +238,14 @@
   "weight": "الوزن",
   "height": "الطول",
   "actionSave": "حفظ",
-  "actionClose": "إغلاق"
+  "actionClose": "إغلاق",
+  "billingTitle": "الفوترة والمدفوعات",
+  "billingOutstanding": "المستحق",
+  "billingCollected": "المحصّل",
+  "billingAll": "الكل",
+  "billingPaid": "مدفوع",
+  "billingPending": "معلّق",
+  "billingRecordPayment": "تسجيل دفعة",
+  "billingAmount": "المبلغ",
+  "billingInvalidAmount": "أدخل مبلغاً صحيحاً"
 }
