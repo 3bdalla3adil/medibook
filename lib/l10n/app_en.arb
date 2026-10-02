@@ -233,7 +233,7 @@
   "settingsUsersRoles": "Users & roles",
   "settingsUsersRolesDescription": "Manage staff accounts and permissions",
   "settingsAuditLog": "Audit log",
-  "settingsAuditLogDescription": "Review security and operational activity",
+  "settingsAuditLogDescription": "Read-only audit history from the authoritative backend.",
   "settingsComingSoon": "This administration feature is connected to the backend in the next implementation phase.",
   "weight": "Weight",
   "height": "Height",
@@ -256,5 +256,6 @@
   "bookingClinic": "Clinic",
   "bookingService": "Service",
   "bookingDoctor": "Doctor",
-  "patientProfileUnavailable": "Patient profile is unavailable."
+  "patientProfileUnavailable": "Patient profile is unavailable.",
+  "settingsUsersRolesManaged": "User roles and organization permissions are managed by the authorized backend."
 }
