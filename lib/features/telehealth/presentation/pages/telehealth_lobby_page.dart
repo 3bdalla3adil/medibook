@@ -16,6 +16,7 @@ class TelehealthLobbyPage extends StatelessWidget {
       body: BlocBuilder<TelehealthSessionBloc, TelehealthSessionState>(
         builder: (context, state) => Center(
           child: switch (state.status) {
+            TelehealthSessionStatus.idle when appointmentId.isEmpty => Text(l10n.telehealthAppointmentRequired),
             TelehealthSessionStatus.idle => FilledButton(
                 onPressed: () => context.read<TelehealthSessionBloc>().add(
                   TelehealthStartRequested(appointmentId),
