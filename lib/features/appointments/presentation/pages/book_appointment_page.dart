@@ -74,7 +74,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final profile = await getIt<GetPatientProfileUseCase>()();
     final patient = profile.valueOrNull;
     if (patient == null) {
-      if (mounted) setState(() { submitting = false; error = l10n.patientProfileUnavailable; });
+      if (mounted) setState(() { submitting = false; error = AppLocalizations.of(context).patientProfileUnavailable; });
       return;
     }
     final now = getIt<Clock>().now();
