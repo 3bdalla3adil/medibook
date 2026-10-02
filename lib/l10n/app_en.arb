@@ -238,5 +238,14 @@
   "weight": "Weight",
   "height": "Height",
   "actionSave": "Save",
-  "actionClose": "Close"
+  "actionClose": "Close",
+  "billingTitle": "Billing & Payments",
+  "billingOutstanding": "Outstanding",
+  "billingCollected": "Collected",
+  "billingAll": "All",
+  "billingPaid": "Paid",
+  "billingPending": "Pending",
+  "billingRecordPayment": "Record payment",
+  "billingAmount": "Amount",
+  "billingInvalidAmount": "Enter a valid amount"
 }
