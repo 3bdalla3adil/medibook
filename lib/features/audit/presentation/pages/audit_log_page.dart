@@ -50,7 +50,7 @@ class _AuditLogPageState extends State<AuditLogPage>{
                 },
               ),
             ),
-            Err(:final failure)=>Center(child:Padding(
+            Err()=>Center(child:Padding(
               padding:const EdgeInsets.all(24),
               child:Text(l.errorGeneric,textAlign:TextAlign.center),
             )),
