@@ -74,7 +74,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final profile = await getIt<GetPatientProfileUseCase>()();
     final patient = profile.valueOrNull;
     if (patient == null) {
-      if (mounted) setState(() { submitting = false; error = 'Patient profile is unavailable.'; });
+      if (mounted) setState(() { submitting = false; error = l10n.patientProfileUnavailable; });
       return;
     }
     final now = getIt<Clock>().now();
@@ -117,12 +117,12 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
           : ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                _Dropdown(label: 'Clinic', value: clinic, items: clinics, onChanged: _selectClinic),
+                _Dropdown(label: l10n.bookingClinic, value: clinic, items: clinics, onChanged: _selectClinic),
                 const SizedBox(height: 16),
-                _Dropdown(label: 'Service', value: service, items: services, onChanged: clinic == null ? null : _selectService),
+                _Dropdown(label: l10n.bookingService, value: service, items: services, onChanged: clinic == null ? null : _selectService),
                 const SizedBox(height: 16),
                 _Dropdown(
-                  label: 'Doctor',
+                  label: l10n.bookingDoctor,
                   value: doctor,
                   items: doctors,
                   onChanged: service == null
