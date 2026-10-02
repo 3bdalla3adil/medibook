@@ -27,11 +27,21 @@ void main(){
     await settings.setLocale(const Locale('en'));
     await settings.setNotifications(false);
     await settings.setBiometrics(true);
+    await settings.setAppointmentRules(slotDurationMinutes: 45, advanceBookingDays: 60, cancellationNoticeHours: 4);
+    await settings.setDepartments(['General', 'Laboratory']);
+    await settings.setRooms(['Room A', 'Room B']);
+    await settings.setPaymentMethods(['Cash', 'Card', 'Insurance']);
     final restored=AppSettingsController(store);
     await restored.load();
     expect(restored.themeMode,ThemeMode.dark);
     expect(restored.locale.languageCode,'en');
     expect(restored.notificationsEnabled,isFalse);
     expect(restored.biometricsEnabled,isTrue);
+    expect(restored.slotDurationMinutes,45);
+    expect(restored.advanceBookingDays,60);
+    expect(restored.cancellationNoticeHours,4);
+    expect(restored.departments,['General', 'Laboratory']);
+    expect(restored.rooms,['Room A', 'Room B']);
+    expect(restored.paymentMethods,['Cash', 'Card', 'Insurance']);
   });
 }
