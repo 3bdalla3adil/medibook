@@ -50,13 +50,21 @@ jobs:
         run: flutter create --platforms=ios --org com.medibook .
       - name: Build unsigned release IPA
         run: flutter build ipa --release --no-codesign
+      - name: Package unsigned IPA from archive
+        run: |
+          rm -rf build/ios/ipa
+          mkdir -p build/ios/ipa/Payload
+          cp -R build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app build/ios/ipa/Payload/Medibook.app
+          cd build/ios/ipa
+          /usr/bin/zip -qry Medibook-unsigned.ipa Payload
+          rm -rf Payload
       - name: Verify IPA artifact
-        run: test -s build/ios/ipa/*.ipa
+        run: test -s build/ios/ipa/Medibook-unsigned.ipa
       - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
         with:
           name: medibook-ios-unsigned-ipa
-          path: build/ios/ipa/*.ipa
+          path: build/ios/ipa/Medibook-unsigned.ipa
           if-no-files-found: error
           retention-days: 14
 
