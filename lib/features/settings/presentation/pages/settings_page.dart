@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
             ]),
             _section(context,l.settingsAdministration,Icons.admin_panel_settings_outlined,[
               ListTile(leading:const Icon(Icons.people_alt_outlined),title:Text(l.settingsUsersRoles),subtitle:Text(l.settingsUsersRolesDescription),onTap:()=>_info(context,l.settingsUsersRoles,l.settingsUsersRolesManaged)),
-              ListTile(leading:const Icon(Icons.history_outlined),title:Text(l.settingsAuditLog),subtitle:Text(l.settingsAuditLogDescription),onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const AuditLogPage()))),
+              ListTile(leading:const Icon(Icons.history_outlined),title:Text(l.settingsAuditLog),subtitle:Text(l.settingsAuditLogDescription),onTap:()=>Navigator.of(context).push<void>(MaterialPageRoute<void>(builder:(_)=>const AuditLogPage()))),
             ]),
           ]),
         );
@@ -97,7 +97,7 @@ class SettingsPage extends StatelessWidget {
     final l=AppLocalizations.of(context);
     if(value){
       final available=await getIt<BiometricService>().isAvailable();
-      if(!available){_info(context,l.settingsBiometrics,l.settingsBiometricsUnavailable);return;}
+      if(!available){if(!context.mounted)return;_info(context,l.settingsBiometrics,l.settingsBiometricsUnavailable);return;}
       final ok=await getIt<BiometricService>().authenticate(reason:l.settingsBiometricsConfirm);
       if(!ok||!context.mounted)return;
     }
