@@ -44,8 +44,8 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
           xcodebuild -version
       - run: flutter gen-l10n
-      - name: Verify iOS platform
-        run: test -f ios/Runner.xcodeproj/project.pbxproj && test -f ios/Runner/Info.plist
+      - name: Generate iOS platform
+        run: flutter create --platforms=ios --org com.medibook --project-name medibook .
       - name: Build unsigned release IPA
         run: flutter build ipa --release --no-codesign
       - name: Package unsigned IPA from archive
