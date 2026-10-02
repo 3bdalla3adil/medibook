@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../config/app_config.dart';
 import '../firebase/firebase_token_refresher.dart';
 import '../network/dio_client.dart';
@@ -15,6 +17,7 @@ import '../storage/hive_local_store.dart';
 import '../storage/local_store.dart';
 import '../sync/sync_engine.dart';
 import '../utils/clock.dart';
+import '../theme/theme_controller.dart';
 import 'injector.dart';
 Future<void> registerCore(
   AppConfig config, {
@@ -22,10 +25,13 @@ Future<void> registerCore(
 }) async {
   SecureLogger.configure(level: config.logLevel);
 
+  final preferences = await SharedPreferences.getInstance();
   getIt
     ..registerSingleton<AppConfig>(config)
     ..registerSingleton<SessionExpirySignal>(SessionExpirySignal())
     ..registerSingleton<Clock>(const SystemClock())
+    ..registerSingleton<SharedPreferences>(preferences)
+    ..registerLazySingleton<ThemeController>(() => ThemeController(preferences))
     ..registerLazySingleton<SecureStorage>(FlutterSecureStorageAdapter.new)
     ..registerLazySingleton<TokenStore>(() => TokenStore(getIt<SecureStorage>()))
     ..registerLazySingleton<EncryptionKeyProvider>(

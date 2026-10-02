@@ -1,0 +1,2 @@
+import 'package:equatable/equatable.dart';
+class HealthPassport extends Equatable { const HealthPassport({required this.patientName,required this.bloodType,required this.allergies,required this.conditions,required this.emergencyContact,required this.lastUpdated}); final String patientName,bloodType,emergencyContact; final List<String> allergies,conditions; final DateTime lastUpdated; @override List<Object?> get props=>[patientName,bloodType,allergies,conditions,emergencyContact,lastUpdated]; }

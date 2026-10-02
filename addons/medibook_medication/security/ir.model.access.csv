@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_medication_catalog_patient,medication catalog patient,model_medibook_medication,medibook_base.group_medibook_patient,1,0,0,0
+access_medication_catalog_doctor,medication catalog doctor,model_medibook_medication,medibook_base.group_medibook_doctor,1,0,0,0
+access_patient_medication_patient,patient medication patient,model_medibook_patient_medication,medibook_base.group_medibook_patient,1,1,1,0
+access_patient_medication_doctor,patient medication doctor,model_medibook_patient_medication,medibook_base.group_medibook_doctor,1,1,1,0
+access_medication_schedule_patient,medication schedule patient,model_medibook_medication_schedule,medibook_base.group_medibook_patient,1,1,1,0
+access_dose_log_patient,dose log patient,model_medibook_medication_dose_log,medibook_base.group_medibook_patient,1,1,1,0
+access_reminder_patient,reminder patient,model_medibook_medication_reminder,medibook_base.group_medibook_patient,1,1,1,0

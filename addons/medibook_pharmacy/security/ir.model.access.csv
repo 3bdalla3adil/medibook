@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pharmacy_pharmacist,pharmacy pharmacist,model_medibook_pharmacy,medibook_base.group_medibook_pharmacist,1,0,0,0
+access_pharmacy_admin,pharmacy admin,model_medibook_pharmacy,medibook_base.group_medibook_org_admin,1,1,1,1
+access_dispense_pharmacist,dispense pharmacist,model_medibook_dispense_record,medibook_base.group_medibook_pharmacist,1,1,1,0
+access_dispense_admin,dispense admin,model_medibook_dispense_record,medibook_base.group_medibook_org_admin,1,1,1,1

@@ -99,6 +99,12 @@ class _DashboardBody extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+            child: _CompassBanner(onTap: () => context.push(Routes.careCompass)),
+          ),
+        ),
+        SliverToBoxAdapter(
           child: _Section(
             title: l10n.dashboardUpcoming,
             child: state.upcomingAppointment == null
@@ -206,6 +212,36 @@ class _EmptyUpcoming extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class _CompassBanner extends StatelessWidget {
+  const _CompassBanner({required this.onTap});
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsetsDirectional.all(20),
+          decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xff163B5C), Color(0xff0B6E69)])),
+          child: Row(children: [
+            const Icon(Icons.explore_outlined, color: Colors.white, size: 34),
+            const SizedBox(width: 14),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(l10n.compassTitle, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 4),
+              Text(l10n.compassHeroSubtitle, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70)),
+            ])),
+            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+          ]),
         ),
       ),
     );

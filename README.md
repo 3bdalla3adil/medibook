@@ -21,6 +21,10 @@ Backend integrations remain behind domain repository contracts so REST, Odoo RES
 - Offline appointment cache and outbox synchronization
 - Patient profile data flow
 - Telehealth session abstraction
+- Patient-only registration plus expiring staff invitations
+- Persistent accessibility and appearance settings
+- Odoo-authorized WebSocket/WebRTC telehealth signaling
+- Medication schedules, dose logs, reminders, and pharmacy dispensing workflow
 - Arabic-first localization with English support
 - RTL-aware Material 3 interface
 - Secure token storage
@@ -29,6 +33,10 @@ Backend integrations remain behind domain repository contracts so REST, Odoo RES
 - Security extension points
 - Unit/BLoC/widget tests
 - CI validation and Android/iOS release builds
+- **Care Compass** next-best-action patient experience
+- Visit-readiness checklist for higher-value appointments
+- Family Care profile switching with visible sharing state
+- Smart Waitlist with preference-controlled quiet alerts
 
 ## Important security note
 
@@ -69,3 +77,7 @@ Environment values are supplied with Dart defines. See config/staging.json and t
       l10n/         Arabic and English localization
 
 See docs/architecture.md for dependency rules and docs/feature-roadmap.md for the planned clinical modules.
+
+See [docs/target-implementation.md](docs/target-implementation.md) for the target-scope implementation map and validation limits.
+
+See [docs/product/differentiation.md](docs/product/differentiation.md) for the Calm Orbit product direction and future differentiators.

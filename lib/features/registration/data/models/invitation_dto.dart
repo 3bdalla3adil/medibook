@@ -1,0 +1,3 @@
+import '../../domain/entities/invitation.dart';
+import '../../../auth/domain/entities/auth_user.dart';
+class InvitationDto { const InvitationDto(this.value); final Invitation value; factory InvitationDto.fromJson(Map<String,dynamic> j)=>InvitationDto(Invitation(token:j['token'] as String,email:j['email'] as String,role:UserRole.values.firstWhere((r)=>r.name==j['role'],orElse:()=>UserRole.patient),organizationId:j['organization_id'].toString(),clinicIds:{...(j['clinic_ids'] as List? ?? const []).map((e)=>e.toString())},expiresAt:DateTime.parse(j['expires_at'] as String),acceptedAt:j['accepted_at']==null?null:DateTime.parse(j['accepted_at'] as String))); }

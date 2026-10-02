@@ -97,9 +97,7 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
     final result = await appointments.createAppointment(appointment);
     if (!mounted) return;
     if (result.valueOrNull != null) {
-      // Keep the booking/list page in the navigation stack so the
-      // appointment details page can return to it with the AppBar back button.
-      context.push(Routes.appointmentDetails(appointment.id));
+      context.go(Routes.appointmentDetails(appointment.id));
     } else {
       setState(() { submitting = false; error = AppLocalizations.of(context).errorGeneric; });
     }

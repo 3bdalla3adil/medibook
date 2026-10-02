@@ -7,8 +7,6 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
-import 'demo_profile_page.dart';
-import 'demo_workspace_page.dart';
 import 'patient_dashboard_page.dart';
 
 class RoleDashboardPage extends StatelessWidget {
@@ -63,6 +61,10 @@ class _DemoRoleDashboard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final items = switch (kind) {
       _DemoRole.patient => [
+          _WorkflowItem(l10n.compassTitle, Icons.explore_outlined, Routes.careCompass),
+          _WorkflowItem(l10n.familyCareTitle, Icons.people_alt_outlined, Routes.familyCare),
+          _WorkflowItem(l10n.waitlistTitle, Icons.bolt_outlined, Routes.smartWaitlist),
+          _WorkflowItem(l10n.passportTitle, Icons.verified_user_outlined, Routes.healthPassport),
           _WorkflowItem(l10n.actionBookAppointment, Icons.event_available, Routes.bookAppointment),
           _WorkflowItem(l10n.actionSeeAppointments, Icons.calendar_month, Routes.appointments),
           _WorkflowItem(l10n.actionServices, Icons.medical_services_outlined, Routes.services),
@@ -89,19 +91,6 @@ class _DemoRoleDashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
-          if (user.id.startsWith('demo-'))
-            IconButton(
-              tooltip: l10n.actionSettings,
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => DemoProfilePage(
-                    user: user,
-                    role: _roleLabel(l10n, kind),
-                  ),
-                ),
-              ),
-              icon: const Icon(Icons.person_outline),
-            ),
           IconButton(
             tooltip: l10n.actionSignOut,
             onPressed: () =>
@@ -151,20 +140,15 @@ class _DemoRoleDashboard extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        if (!demo) {
-                          context.push(item.route);
+                        if (demo && item.route == Routes.billing) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => _DemoWorkflowPage(title: item.title),
+                            ),
+                          );
                           return;
                         }
-                        final workspace = _workspaceForRoute(item.route);
-                        if (workspace == null) return;
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => DemoWorkspacePage(
-                              user: user,
-                              workspace: workspace,
-                            ),
-                          ),
-                        );
+                        context.push(item.route);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -218,23 +202,6 @@ class _DemoRoleDashboard extends StatelessWidget {
     return palette[index % palette.length];
   }
 
-  DemoWorkspace? _workspaceForRoute(String route) {
-    if (route == Routes.bookAppointment) return DemoWorkspace.booking;
-    if (route == Routes.appointments) return DemoWorkspace.appointments;
-    if (route == Routes.services) return DemoWorkspace.services;
-    if (route == Routes.medicalRecords) return DemoWorkspace.records;
-    if (route == Routes.telehealthLobby) return DemoWorkspace.telehealth;
-    if (route == Routes.doctorPatients || route == Routes.adminPatients) {
-      return DemoWorkspace.patients;
-    }
-    if (route == Routes.consultations) return DemoWorkspace.consultations;
-    if (route == Routes.prescriptions) return DemoWorkspace.prescriptions;
-    if (route == Routes.doctors) return DemoWorkspace.doctors;
-    if (route == Routes.clinics) return DemoWorkspace.clinics;
-    if (route == Routes.billing) return DemoWorkspace.billing;
-    return null;
-  }
-
   IconData _roleIcon(_DemoRole role) => switch (role) {
         _DemoRole.patient => Icons.person_outline,
         _DemoRole.doctor => Icons.medical_services_outlined,
@@ -246,6 +213,71 @@ class _DemoRoleDashboard extends StatelessWidget {
         _DemoRole.doctor => l10n.roleDoctor,
         _DemoRole.admin => l10n.roleAdmin,
       };
+}
+
+class _DemoWorkflowPage extends StatefulWidget {
+  const _DemoWorkflowPage({required this.title});
+
+  final String title;
+
+  @override
+  State<_DemoWorkflowPage> createState() => _DemoWorkflowPageState();
+}
+
+class _DemoWorkflowPageState extends State<_DemoWorkflowPage> {
+  bool paid = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.payments_outlined, size: 32),
+              title: Text(widget.title),
+              subtitle: Text(l10n.demoWorkflowReady),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _section(l10n.adminBilling, [
+            _item(
+              l10n.demoBillingInvoice,
+              l10n.demoBillingAmount,
+              l10n.demoBillingPaid,
+            ),
+          ]),
+          FilledButton.icon(
+            onPressed: paid ? null : () => setState(() => paid = true),
+            icon: const Icon(Icons.payments_outlined),
+            label: Text(paid ? l10n.demoBillingPaid : l10n.demoActionPay),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _section(String title, List<Widget> children) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          ...children,
+          const SizedBox(height: 12),
+        ],
+      );
+
+  Widget _item(String title, String subtitle, String detail) => Card(
+        child: ListTile(
+          leading: const CircleAvatar(child: Icon(Icons.payments_outlined)),
+          title: Text(title),
+          subtitle: Text('$subtitle\n$detail'),
+          isThreeLine: true,
+        ),
+      );
 }
 
 class _DashboardAuthLoading extends StatelessWidget {

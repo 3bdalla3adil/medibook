@@ -70,6 +70,14 @@ import '../../features/prescriptions/data/repositories/prescription_repository_i
 import '../../features/prescriptions/domain/repositories/prescription_repository.dart';
 import '../../features/prescriptions/domain/usecases/get_prescriptions.dart';
 import '../../features/prescriptions/presentation/bloc/prescription_list_cubit.dart';
+import '../../features/registration/data/datasources/dio_registration_remote_data_source.dart';
+import '../../features/registration/data/datasources/registration_remote_data_source.dart';
+import '../../features/registration/data/repositories/registration_repository_impl.dart';
+import '../../features/registration/domain/repositories/registration_repository.dart';
+import '../../features/registration/domain/usecases/accept_invitation.dart';
+import '../../features/registration/domain/usecases/register_patient.dart';
+import '../../features/registration/domain/usecases/validate_invitation.dart';
+import '../../features/registration/presentation/bloc/registration_bloc.dart';
 import '../../features/services/data/datasources/service_demo_data_source.dart';
 import '../../features/services/data/datasources/service_remote_data_source.dart';
 import '../../features/services/data/repositories/service_repository_impl.dart';
@@ -240,6 +248,18 @@ Future<void> registerFeatures() async {
     )
     ..registerFactory(() => GetPrescriptionsUseCase(getIt()))
     ..registerFactory(() => PrescriptionListCubit(getIt()))
+    ..registerLazySingleton<RegistrationRemoteDataSource>(
+      () => DioRegistrationRemoteDataSource(dio),
+    )
+    ..registerLazySingleton<RegistrationRepository>(
+      () => RegistrationRepositoryImpl(getIt()),
+    )
+    ..registerFactory(() => RegisterPatient(getIt()))
+    ..registerFactory(() => ValidateInvitation(getIt()))
+    ..registerFactory(() => AcceptInvitation(getIt()))
+    ..registerFactory(
+      () => RegistrationBloc(register: getIt(), validate: getIt(), accept: getIt()),
+    )
     ..registerLazySingleton<TelehealthRepository>(
       () => getIt<AppConfig>().enableDemoAuth
           ? const DemoTelehealthRepository()

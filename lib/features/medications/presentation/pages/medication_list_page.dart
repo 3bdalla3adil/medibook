@@ -1,0 +1,3 @@
+import 'package:flutter/material.dart';
+import '../../../../l10n/gen/app_localizations.dart';
+class MedicationListPage extends StatelessWidget { const MedicationListPage({super.key}); @override Widget build(BuildContext c){final l=AppLocalizations.of(c);return Scaffold(appBar:AppBar(title:Text(l.medicationsTitle)),floatingActionButton:FloatingActionButton(onPressed:(){},child:const Icon(Icons.add)),body:ListView(padding:const EdgeInsetsDirectional.all(16),children:[Card(child:ListTile(leading:const Icon(Icons.medication_outlined),title:Text(l.medicationsEmptyTitle),subtitle:Text(l.medicationsEmptyMessage))) ]);}}

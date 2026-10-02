@@ -23,4 +23,11 @@ abstract final class AppColors {
 
   static const errorSeed = Color(0xFFB3261E);
   static const warningSeed = Color(0xFFB7791F);
+
+  // Calm Orbit palette used by Care Compass and high-attention moments.
+  static const orbitNavy = Color(0xFF163B5C);
+  static const orbitTeal = Color(0xFF0B6E69);
+  static const orbitMint = Color(0xFF49B7A8);
+  static const orbitAmber = Color(0xFFD99B54);
+  static const orbitLavender = Color(0xFF6C63A8);
 }

@@ -1,0 +1,1 @@
+{'name':'MediBook Medications','version':'19.0.1.0.0','depends':['medibook_patient','medibook_prescription'],'data':['security/ir.model.access.csv','security/record_rules.xml','data/ir_cron.xml'],'installable':True}

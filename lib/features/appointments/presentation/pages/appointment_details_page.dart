@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injector.dart';
@@ -74,20 +73,7 @@ class _AppointmentDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.actionDetails),
-        leading: IconButton(
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/appointments');
-            }
-          },
-        ),
-      ),
+      appBar: AppBar(title: Text(l10n.actionDetails)),
       body: BlocBuilder<_AppointmentDetailsCubit, _AppointmentDetailsState>(
         builder: (context, state) {
           if (state.status == 'loading') return const Center(child: CircularProgressIndicator.adaptive());

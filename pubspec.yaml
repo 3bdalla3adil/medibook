@@ -35,6 +35,9 @@ dependencies:
   cloud_firestore: ^6.7.0
   firebase_messaging: ^16.7.0
   daily_flutter: ^0.39.0
+  flutter_webrtc: ^0.11.7
+  web_socket_channel: ^3.0.2
+  shared_preferences: ^2.3.3
 
 # Flutter 3.47 currently exposes compileSdk 35. Keep the Daily dependency
 # compatible with that SDK until the stable Flutter toolchain exposes API 36.
