@@ -52,7 +52,7 @@ class _AuditLogPageState extends State<AuditLogPage>{
             ),
             Err(:final failure)=>Center(child:Padding(
               padding:const EdgeInsets.all(24),
-              child:Text(failure.message??l.errorGeneric,textAlign:TextAlign.center),
+              child:Text(l.errorGeneric,textAlign:TextAlign.center),
             )),
           };
         },
