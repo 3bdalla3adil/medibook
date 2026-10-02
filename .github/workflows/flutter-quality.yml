@@ -30,8 +30,8 @@ jobs:
 
   ios:
     name: iOS Release IPA
-    runs-on: macos-14
-    timeout-minutes: 35
+    runs-on: macos-26
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -39,6 +39,10 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Select supported Xcode toolchain
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          xcodebuild -version
       - run: flutter gen-l10n
       - name: Prepare iOS build workspace
         run: mkdir -p build/ios/SourcePackages
