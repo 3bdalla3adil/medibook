@@ -252,5 +252,9 @@
   "settingsBiometricsConfirm": "Confirm your identity to enable biometric protection.",
   "settingsSlotDuration": "Appointment duration (minutes)",
   "settingsAdvanceBooking": "Advance booking window (days)",
-  "settingsCancellationNotice": "Cancellation notice (hours)"
+  "settingsCancellationNotice": "Cancellation notice (hours)",
+  "bookingClinic": "Clinic",
+  "bookingService": "Service",
+  "bookingDoctor": "Doctor",
+  "patientProfileUnavailable": "Patient profile is unavailable."
 }
