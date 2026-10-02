@@ -25,7 +25,6 @@ import '../../features/billing/presentation/pages/billing_page.dart';
 import '../../features/telehealth/presentation/pages/telehealth_lobby_page.dart';
 import '../../features/triage/presentation/pages/triage_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../l10n/gen/app_localizations.dart';
 import 'auth_guard.dart';
 import 'demo_route.dart';
 import 'routes.dart';
